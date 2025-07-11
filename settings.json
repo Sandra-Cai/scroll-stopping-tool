@@ -7,5 +7,20 @@
   },
   "notifications_enabled": true,
   "auto_break": true,
-  "auto_lock": false
+  "auto_lock": true,
+  "blocking_enabled": true,
+  "blocked_sites": [
+    "facebook.com",
+    "instagram.com",
+    "twitter.com",
+    "tiktok.com",
+    "example.com"
+  ],
+  "scheduled_breaks": [
+    "12:00",
+    "15:00",
+    "18:00",
+    "21:52"
+  ],
+  "custom_notifications": []
 }
