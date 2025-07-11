@@ -1,0 +1,5 @@
+psutil==5.9.6
+plyer==2.1.0
+schedule==1.2.0
+matplotlib==3.7.2
+tkinter-tooltip==2.0.0 
