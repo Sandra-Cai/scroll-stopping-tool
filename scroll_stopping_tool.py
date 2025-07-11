@@ -16,6 +16,8 @@ from plyer import notification
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import os
+import platform
+import subprocess
 
 class ScrollStoppingTool:
     def __init__(self, root):
@@ -87,7 +89,8 @@ class ScrollStoppingTool:
                     'break_reminder': 30,  # minutes
                     'block_hours': {'start': '22:00', 'end': '07:00'},
                     'notifications_enabled': True,
-                    'auto_break': True
+                    'auto_break': True,
+                    'auto_lock': False  # New setting
                 }
         except:
             self.settings = {
@@ -95,7 +98,8 @@ class ScrollStoppingTool:
                 'break_reminder': 30,
                 'block_hours': {'start': '22:00', 'end': '07:00'},
                 'notifications_enabled': True,
-                'auto_break': True
+                'auto_break': True,
+                'auto_lock': False
             }
     
     def save_settings(self):
@@ -117,11 +121,11 @@ class ScrollStoppingTool:
         # Title
         title_label = ttk.Label(main_frame, text="Scroll Stopping Tool", 
                                font=('Arial', 16, 'bold'))
-        title_label.grid(row=0, column=0, columnspan=3, pady=(0, 20))
+        title_label.grid(row=0, column=0, columnspan=4, pady=(0, 20))
         
         # Control buttons
         control_frame = ttk.LabelFrame(main_frame, text="Controls", padding="10")
-        control_frame.grid(row=1, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
+        control_frame.grid(row=1, column=0, columnspan=4, sticky=(tk.W, tk.E), pady=(0, 10))
         
         self.start_button = ttk.Button(control_frame, text="Start Tracking", 
                                       command=self.start_tracking)
@@ -137,11 +141,15 @@ class ScrollStoppingTool:
         
         self.break_button = ttk.Button(control_frame, text="Take Break", 
                                       command=self.take_break)
-        self.break_button.grid(row=0, column=3)
+        self.break_button.grid(row=0, column=3, padx=(0, 10))
+        
+        self.lock_button = ttk.Button(control_frame, text="Lock Screen Now", 
+                                      command=self.lock_screen)
+        self.lock_button.grid(row=0, column=4)
         
         # Stats frame
         stats_frame = ttk.LabelFrame(main_frame, text="Today's Statistics", padding="10")
-        stats_frame.grid(row=2, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
+        stats_frame.grid(row=2, column=0, columnspan=4, sticky=(tk.W, tk.E), pady=(0, 10))
         
         # Today's usage
         self.today_usage_label = ttk.Label(stats_frame, text="Today's Usage: 0 minutes")
@@ -159,11 +167,11 @@ class ScrollStoppingTool:
         self.progress_var = tk.DoubleVar()
         self.progress_bar = ttk.Progressbar(stats_frame, variable=self.progress_var, 
                                            maximum=100, length=300)
-        self.progress_bar.grid(row=1, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(10, 0))
+        self.progress_bar.grid(row=1, column=0, columnspan=4, sticky=(tk.W, tk.E), pady=(10, 0))
         
         # Alternative activities frame
         activities_frame = ttk.LabelFrame(main_frame, text="Alternative Activities", padding="10")
-        activities_frame.grid(row=3, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
+        activities_frame.grid(row=3, column=0, columnspan=4, sticky=(tk.W, tk.E), pady=(0, 10))
         
         activities = [
             "Read a book", "Go for a walk", "Call a friend", "Exercise",
@@ -177,7 +185,7 @@ class ScrollStoppingTool:
         
         # Chart frame
         chart_frame = ttk.LabelFrame(main_frame, text="Weekly Usage Chart", padding="10")
-        chart_frame.grid(row=4, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
+        chart_frame.grid(row=4, column=0, columnspan=4, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
         
         # Create matplotlib figure
         self.fig, self.ax = plt.subplots(figsize=(8, 4))
@@ -189,7 +197,7 @@ class ScrollStoppingTool:
         self.status_var.set("Ready to start tracking")
         status_bar = ttk.Label(main_frame, textvariable=self.status_var, 
                               relief=tk.SUNKEN, anchor=tk.W)
-        status_bar.grid(row=5, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(10, 0))
+        status_bar.grid(row=5, column=0, columnspan=4, sticky=(tk.W, tk.E), pady=(10, 0))
     
     def start_tracking(self):
         """Start tracking social media usage"""
@@ -296,6 +304,30 @@ class ScrollStoppingTool:
                 timeout=10
             )
     
+    def lock_screen(self):
+        """Lock the user's screen (cross-platform)"""
+        system = platform.system()
+        try:
+            if system == "Darwin":  # macOS
+                subprocess.run(["/System/Library/CoreServices/Menu\u20Bar.app/Contents/Resources/CGSession", "-suspend"])
+            elif system == "Windows":
+                subprocess.run(["rundll32.exe", "user32.dll,LockWorkStation"])
+            elif system == "Linux":
+                # Try common Linux lock commands
+                if subprocess.call(["which", "gnome-screensaver-command"]) == 0:
+                    subprocess.run(["gnome-screensaver-command", "--lock"])
+                elif subprocess.call(["which", "loginctl"]) == 0:
+                    subprocess.run(["loginctl", "lock-session"])
+                else:
+                    messagebox.showwarning("Screen Lock", "No supported screen lock command found.")
+                    return
+            else:
+                messagebox.showwarning("Screen Lock", f"Screen lock not supported on {system}.")
+                return
+            self.status_var.set("Screen locked!")
+        except Exception as e:
+            messagebox.showerror("Screen Lock Error", f"Failed to lock screen: {e}")
+    
     def send_limit_reached_notification(self):
         """Send notification when daily limit is reached"""
         if self.settings['notifications_enabled']:
@@ -304,12 +336,14 @@ class ScrollStoppingTool:
                 message='You\'ve reached your daily social media limit. Time to disconnect!',
                 timeout=10
             )
+        if self.settings.get('auto_lock', False):
+            self.lock_screen()
     
     def open_settings(self):
         """Open settings dialog"""
         settings_window = tk.Toplevel(self.root)
         settings_window.title("Settings")
-        settings_window.geometry("400x300")
+        settings_window.geometry("400x350")
         settings_window.transient(self.root)
         settings_window.grab_set()
         
@@ -337,6 +371,12 @@ class ScrollStoppingTool:
                                           variable=auto_break_var)
         auto_break_check.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
         
+        # Auto lock
+        auto_lock_var = tk.BooleanVar(value=self.settings.get('auto_lock', False))
+        auto_lock_check = ttk.Checkbutton(settings_window, text="Auto Lock Screen on Limit", 
+                                          variable=auto_lock_var)
+        auto_lock_check.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+        
         # Save button
         def save_settings():
             try:
@@ -344,6 +384,7 @@ class ScrollStoppingTool:
                 self.settings['break_reminder'] = int(reminder_var.get())
                 self.settings['notifications_enabled'] = notif_var.get()
                 self.settings['auto_break'] = auto_break_var.get()
+                self.settings['auto_lock'] = auto_lock_var.get()
                 self.save_settings()
                 settings_window.destroy()
                 self.update_display()
@@ -351,7 +392,7 @@ class ScrollStoppingTool:
             except ValueError:
                 messagebox.showerror("Error", "Please enter valid numbers for limits and reminders.")
         
-        ttk.Button(settings_window, text="Save", command=save_settings).grid(row=4, column=0, columnspan=2, pady=20)
+        ttk.Button(settings_window, text="Save", command=save_settings).grid(row=5, column=0, columnspan=2, pady=20)
     
     def update_display(self):
         """Update the display with current data"""
