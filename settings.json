@@ -1,0 +1,15 @@
+{
+  "daily_limit": 120,
+  "break_reminder": 30,
+  "block_hours": {
+    "start": "22:00",
+    "end": "07:00"
+  },
+  "notifications_enabled": true,
+  "auto_break": true,
+  "auto_lock": true,
+  "blocking_enabled": false,
+  "blocked_sites": ["facebook.com", "instagram.com", "twitter.com", "tiktok.com"],
+  "scheduled_breaks": ["12:00", "15:00", "18:00"],
+  "custom_notifications": []
+} 
