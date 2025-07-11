@@ -1,8 +1,6 @@
 {
-  "daily_usage": {
-    "2024-07-10": 7500
-  },
-  "total_time": 7500,
+  "daily_usage": {},
+  "total_time": 0,
   "breaks_taken": 0,
   "goals_met": 0
-} 
+}
