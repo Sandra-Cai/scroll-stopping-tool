@@ -1,155 +1,275 @@
-# Scroll Stopping Tool
+# Scroll Stopping Tool - Advanced
 
-## Overview
+A comprehensive Python application designed to help users break the habit of excessive social media scrolling and improve digital wellbeing. This advanced version includes focus mode, productivity tracking, website blocking, and detailed analytics.
 
-This program is designed to help users break the habit of excessive social media scrolling. It aims to promote healthier digital habits by providing tools and features that encourage mindful technology use.
+## 🚀 Features
 
-## Purpose
+### Core Features
+- **Real-time Usage Tracking**: Monitors social media usage across multiple platforms
+- **Daily Limits**: Set and enforce daily time limits for social media
+- **Break Reminders**: Automatic reminders to take breaks from screen time
+- **Screen Locking**: Cross-platform screen locking when limits are reached
+- **Alternative Activities**: Suggestions for offline activities
 
-Social media platforms are designed to capture and maintain user attention through infinite scrolling, notifications, and engaging content. This can lead to:
+### Advanced Features
+- **Focus Mode**: Enhanced blocking with productivity tracking
+- **Website Blocking**: Block specific social media sites during work hours
+- **Scheduled Breaks**: Set up automatic break reminders at specific times
+- **Productivity Analytics**: Track focus sessions and productivity scores
+- **Data Export**: Export usage data to CSV for analysis
+- **Goal Setting**: Set daily, weekly, and monthly goals
+- **Custom Notifications**: Personalized notification messages
+- **SQLite Database**: Persistent storage for productivity sessions
 
-- **Time waste**: Hours spent mindlessly scrolling
-- **Reduced productivity**: Distraction from important tasks
-- **Mental health impacts**: Comparison, FOMO, and anxiety
-- **Sleep disruption**: Blue light exposure and late-night usage
+### Focus Mode
+- **Enhanced Blocking**: More aggressive site blocking during focus sessions
+- **Interruption Tracking**: Monitor and score focus sessions based on interruptions
+- **Productivity Scoring**: Calculate focus scores based on session quality
+- **Session Analytics**: Detailed tracking of focus session performance
 
-This tool helps combat these issues by providing features that:
+### Analytics & Reporting
+- **Weekly Usage Charts**: Visual representation of social media usage
+- **Productivity Metrics**: Track focus sessions and productivity scores
+- **Goal Progress**: Monitor progress toward daily, weekly, and monthly goals
+- **Data Export**: Export comprehensive usage data to CSV format
+- **Historical Data**: Persistent storage of all usage and productivity data
 
-- Track social media usage time
-- Set daily limits and reminders
-- Block or restrict access during certain hours
-- Provide mindfulness prompts and breaks
-- Offer alternative activities and suggestions
+## 📋 Requirements
 
-## Features
+- Python 3.7+
+- macOS, Windows, or Linux
+- Required packages (see requirements.txt):
+  - tkinter (usually included with Python)
+  - psutil
+  - plyer
+  - matplotlib
+  - schedule
 
-- **Usage Tracking**: Monitor time spent on social media platforms
-- **Time Limits**: Set daily or session-based limits
-- **Scheduled Blocks**: Restrict access during work hours or bedtime
-- **Mindfulness Prompts**: Gentle reminders to take breaks
-- **Alternative Suggestions**: Recommend offline activities
-- **Progress Reports**: Track your digital wellness journey
-- **Weekly Charts**: Visualize your usage patterns
-- **Notifications**: Get gentle reminders and alerts
+## 🛠️ Installation
 
-## Getting Started
+### Option 1: Automated Installation
+```bash
+python install.py
+```
 
-### Prerequisites
-
-- Python 3.7 or higher
-- pip (Python package installer)
-
-### Installation
-
-#### Option 1: Quick Install (Recommended)
-1. **Clone or download this repository**
-   ```bash
-   git clone <repository-url>
-   cd scroll-stopping-tool
-   ```
-
-2. **Run the installation script**
-   ```bash
-   python install.py
-   ```
-   
-   This will automatically:
-   - Check Python version compatibility
-   - Install all required dependencies
-   - Optionally create a desktop shortcut
-
-#### Option 2: Manual Install
-1. **Clone or download this repository**
-   ```bash
-   git clone <repository-url>
-   cd scroll-stopping-tool
-   ```
-
-2. **Install required dependencies**
+### Option 2: Manual Installation
+1. Clone or download the repository
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-
-3. **Test the installation**
-   ```bash
-   python test_installation.py
-   ```
-
-4. **Run the application**
+3. Run the application:
    ```bash
    python run.py
    ```
-   
-   Or alternatively:
-   ```bash
-   python scroll_stopping_tool.py
-   ```
 
-### Usage
+### macOS Users
+For matplotlib installation issues on macOS, use conda:
+```bash
+conda install matplotlib
+```
 
-1. **Start Tracking**: Click "Start Tracking" to begin monitoring your social media usage
-2. **Set Limits**: Use the Settings button to configure daily limits and break reminders
-3. **Take Breaks**: Click "Take Break" when you want to pause and do something else
-4. **View Progress**: Check the statistics and weekly chart to see your usage patterns
-5. **Try Alternatives**: Use the alternative activities buttons for suggestions
+## 🎯 Usage
 
-### Configuration
+### Getting Started
+1. Launch the application using `python run.py`
+2. Click "Start Tracking" to begin monitoring social media usage
+3. Configure your settings in the Settings dialog
+4. Set up your daily limits and goals
 
-The application automatically saves your settings and usage data in:
-- `settings.json` - Your preferences and limits
-- `usage_data.json` - Your usage history and statistics
+### Core Controls
+- **Start/Stop Tracking**: Begin or end usage monitoring
+- **Focus Mode**: Enable enhanced blocking and productivity tracking
+- **Take Break**: Manually trigger a break reminder
+- **Lock Screen**: Immediately lock your screen
+- **Block Sites**: Configure website blocking settings
+- **Export Data**: Export usage data to CSV
 
-## How It Works
+### Settings Configuration
+Access advanced settings through the Settings button:
 
-The tool monitors your system for:
-- **Browser processes** (Chrome, Firefox, Safari, Edge)
-- **Social media apps** (Instagram, Facebook, Twitter, TikTok)
-- **Social media websites** in browser tabs
+#### General Tab
+- **Daily Limit**: Set maximum daily social media usage (minutes)
+- **Break Reminder**: Set interval for break reminders (minutes)
+- **Notifications**: Enable/disable system notifications
+- **Auto Break**: Enable automatic break reminders
+- **Auto Lock**: Automatically lock screen when limit reached
+- **Focus Mode**: Enable focus mode features
 
-When social media is detected, it:
-- Tracks usage time
-- Sends break reminders
-- Enforces daily limits
-- Provides gentle notifications
+#### Scheduled Breaks Tab
+- Add/remove scheduled break times (HH:MM format)
+- Automatic notifications at scheduled times
+- Customizable break schedule
 
-## Contributing
+#### Goals Tab
+- **Daily Limit**: Set daily usage goal
+- **Weekly Goal**: Set weekly goal for days under limit
+- **Monthly Goal**: Set monthly goal for days under limit
 
-We welcome contributions to help improve this tool and make it more effective for users worldwide.
+### Focus Mode
+1. Click "Focus Mode" to enable enhanced blocking
+2. Focus sessions are automatically tracked
+3. Interruptions are monitored and scored
+4. Productivity scores are calculated and stored
+5. Click "Exit Focus Mode" to end the session
 
-### Development Setup
+### Website Blocking
+1. Click "Block Sites" to open blocking configuration
+2. Enable website blocking
+3. Add/remove sites from the blocked list
+4. Blocking works in conjunction with focus mode
 
-1. Install development dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Data Export
+1. Click "Export Data" to save usage data
+2. Choose location and filename
+3. Data is exported in CSV format with:
+   - Daily usage statistics
+   - Break counts
+   - Focus session data
+   - Productivity scores
 
-2. Run the application in development mode:
-   ```bash
-   python scroll_stopping_tool.py
-   ```
+## 📊 Analytics
 
-## Troubleshooting
+### Usage Tracking
+- Real-time monitoring of social media processes
+- Daily usage statistics
+- Weekly usage charts
+- Progress toward daily limits
+
+### Productivity Metrics
+- Focus session duration
+- Interruption tracking
+- Productivity scores
+- Session quality analysis
+
+### Goal Progress
+- Daily limit adherence
+- Weekly goal tracking
+- Monthly goal progress
+- Historical performance
+
+## 🔧 Configuration
+
+### Settings File (`settings.json`)
+```json
+{
+  "daily_limit": 120,
+  "break_reminder": 30,
+  "block_hours": {
+    "start": "22:00",
+    "end": "07:00"
+  },
+  "notifications_enabled": true,
+  "auto_break": true,
+  "auto_lock": false,
+  "blocking_enabled": false,
+  "blocked_sites": ["facebook.com", "instagram.com"],
+  "scheduled_breaks": ["12:00", "15:00", "18:00"],
+  "focus_mode_enabled": true,
+  "goals": {
+    "daily_limit": 120,
+    "weekly_goal": 5,
+    "monthly_goal": 20
+  }
+}
+```
+
+### Data Files
+- `usage_data.json`: Usage statistics and tracking data
+- `productivity.db`: SQLite database for focus sessions
+- `settings.json`: Application configuration
+
+## 🎨 Features in Detail
+
+### Focus Mode
+- **Enhanced Blocking**: More aggressive site blocking during focus sessions
+- **Interruption Tracking**: Count and score interruptions during focus
+- **Session Analytics**: Detailed tracking of focus session performance
+- **Productivity Scoring**: Calculate focus scores (0-100) based on interruptions
+
+### Website Blocking
+- **Process Monitoring**: Monitor browser processes for social media sites
+- **Cross-Platform**: Works on Windows, macOS, and Linux
+- **Configurable**: Add/remove sites from blocked list
+- **Integration**: Works with focus mode for enhanced blocking
+
+### Scheduled Breaks
+- **Time-Based**: Set specific times for break reminders
+- **Automatic**: No manual intervention required
+- **Customizable**: Add/remove break times as needed
+- **Notifications**: System notifications at scheduled times
+
+### Data Export
+- **CSV Format**: Standard format for data analysis
+- **Comprehensive**: Includes all usage and productivity data
+- **Historical**: Export historical data for trend analysis
+- **Customizable**: Choose export location and filename
+
+## 🚀 Advanced Usage
+
+### Productivity Tracking
+1. Enable focus mode for enhanced tracking
+2. Monitor focus sessions and interruptions
+3. Review productivity scores in analytics
+4. Export data for detailed analysis
+
+### Goal Setting
+1. Set realistic daily, weekly, and monthly goals
+2. Monitor progress in the main interface
+3. Review goal achievement in analytics
+4. Adjust goals based on performance
+
+### Custom Notifications
+1. Configure notification preferences in settings
+2. Set up scheduled break notifications
+3. Customize focus mode notifications
+4. Enable/disable different notification types
+
+## 🔒 Privacy & Security
+
+- All data is stored locally on your device
+- No data is transmitted to external servers
+- Usage data is stored in JSON and SQLite formats
+- Settings are stored in local configuration files
+
+## 🛠️ Troubleshooting
 
 ### Common Issues
+1. **Matplotlib Installation**: Use conda for macOS users
+2. **Permission Errors**: Run with appropriate permissions for screen locking
+3. **Process Detection**: Some browsers may not be detected in all configurations
+4. **Notification Issues**: Check system notification permissions
 
-1. **"Module not found" errors**: Make sure you've installed all dependencies with `pip install -r requirements.txt`
+### Platform-Specific Notes
+- **macOS**: Screen locking uses CGSession
+- **Windows**: Screen locking uses LockWorkStation
+- **Linux**: Screen locking supports multiple methods (gnome-screensaver, loginctl)
 
-2. **Permission errors**: On some systems, you may need to run with administrator privileges to monitor processes
+## 📈 Future Enhancements
 
-3. **Notifications not working**: Check your system's notification settings and ensure the application has permission
+- Machine learning for usage pattern analysis
+- Integration with calendar applications
+- Mobile app companion
+- Cloud sync for multi-device usage
+- Advanced analytics dashboard
+- Custom themes and UI customization
 
-4. **Tracking not accurate**: The tool monitors common social media processes and websites. Some apps or sites might not be detected
+## 🤝 Contributing
 
-### Platform Support
+Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
 
-- **Windows**: Full support
-- **macOS**: Full support (may require accessibility permissions)
-- **Linux**: Full support
+## 📄 License
 
-## License
+This project is open source and available under the MIT License.
 
-[License information will be added here]
+## 🙏 Acknowledgments
+
+- Built with Python and tkinter
+- Uses psutil for process monitoring
+- Matplotlib for data visualization
+- Plyer for cross-platform notifications
+- Schedule for task scheduling
 
 ---
 
-**Remember**: The goal isn't to eliminate social media entirely, but to develop a healthier, more intentional relationship with technology.
+**Start your journey to better digital wellbeing today!** 🎯

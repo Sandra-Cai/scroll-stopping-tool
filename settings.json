@@ -7,20 +7,16 @@
   },
   "notifications_enabled": true,
   "auto_break": true,
-  "auto_lock": true,
-  "blocking_enabled": true,
-  "blocked_sites": [
-    "facebook.com",
-    "instagram.com",
-    "twitter.com",
-    "tiktok.com",
-    "example.com"
-  ],
-  "scheduled_breaks": [
-    "12:00",
-    "15:00",
-    "18:00",
-    "21:52"
-  ],
-  "custom_notifications": []
+  "auto_lock": false,
+  "blocking_enabled": false,
+  "blocked_sites": ["facebook.com", "instagram.com", "twitter.com", "tiktok.com", "youtube.com", "reddit.com"],
+  "scheduled_breaks": ["12:00", "15:00", "18:00", "21:00"],
+  "custom_notifications": [],
+  "focus_mode_enabled": true,
+  "theme": "default",
+  "goals": {
+    "daily_limit": 120,
+    "weekly_goal": 5,
+    "monthly_goal": 20
+  }
 }

@@ -5,7 +5,7 @@ A Python application to help users break the habit of excessive social media scr
 """
 
 import tkinter as tk
-from tkinter import ttk, messagebox, simpledialog
+from tkinter import ttk, messagebox, simpledialog, filedialog
 import json
 import time
 import threading
@@ -20,24 +20,30 @@ import platform
 import subprocess
 import webbrowser
 import urllib.parse
+import csv
+import sqlite3
 
 class ScrollStoppingTool:
     def __init__(self, root):
         self.root = root
-        self.root.title("Scroll Stopping Tool")
-        self.root.geometry("900x700")
+        self.root.title("Scroll Stopping Tool - Advanced")
+        self.root.geometry("1000x800")
         self.root.configure(bg='#f0f0f0')
         
         # Data storage
         self.data_file = "usage_data.json"
         self.settings_file = "settings.json"
+        self.db_file = "productivity.db"
         self.load_data()
         self.load_settings()
+        self.init_database()
         
         # Tracking variables
         self.is_tracking = False
+        self.is_focus_mode = False
         self.tracking_thread = None
         self.blocking_thread = None
+        self.focus_thread = None
         self.social_media_processes = [
             'chrome.exe', 'firefox.exe', 'safari.exe', 'msedge.exe',
             'instagram.exe', 'facebook.exe', 'twitter.exe', 'tiktok.exe'
@@ -54,12 +60,40 @@ class ScrollStoppingTool:
         # Scheduled breaks
         self.scheduled_breaks = self.settings.get('scheduled_breaks', [])
         
+        # Productivity tracking
+        self.productivity_sessions = []
+        self.current_session = None
+        
+        # Goals
+        self.goals = self.settings.get('goals', {
+            'daily_limit': 120,
+            'weekly_goal': 5,
+            'monthly_goal': 20
+        })
+        
         # Create GUI
         self.create_widgets()
         self.update_display()
         
         # Start background tasks
         self.start_background_tasks()
+    
+    def init_database(self):
+        """Initialize SQLite database for productivity tracking"""
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS productivity_sessions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                start_time TEXT,
+                end_time TEXT,
+                duration INTEGER,
+                focus_score INTEGER,
+                notes TEXT
+            )
+        ''')
+        conn.commit()
+        conn.close()
     
     def load_data(self):
         """Load usage data from file"""
@@ -72,14 +106,18 @@ class ScrollStoppingTool:
                     'daily_usage': {},
                     'total_time': 0,
                     'breaks_taken': 0,
-                    'goals_met': 0
+                    'goals_met': 0,
+                    'focus_sessions': 0,
+                    'productivity_score': 0
                 }
         except:
             self.usage_data = {
                 'daily_usage': {},
                 'total_time': 0,
                 'breaks_taken': 0,
-                'goals_met': 0
+                'goals_met': 0,
+                'focus_sessions': 0,
+                'productivity_score': 0
             }
     
     def save_data(self):
@@ -100,11 +138,18 @@ class ScrollStoppingTool:
                     'block_hours': {'start': '22:00', 'end': '07:00'},
                     'notifications_enabled': True,
                     'auto_break': True,
-                    'auto_lock': False,  # New setting
+                    'auto_lock': False,
                     'blocking_enabled': False,
                     'blocked_sites': [],
                     'scheduled_breaks': [],
-                    'custom_notifications': []
+                    'custom_notifications': [],
+                    'focus_mode_enabled': False,
+                    'theme': 'default',
+                    'goals': {
+                        'daily_limit': 120,
+                        'weekly_goal': 5,
+                        'monthly_goal': 20
+                    }
                 }
         except:
             self.settings = {
@@ -117,7 +162,14 @@ class ScrollStoppingTool:
                 'blocking_enabled': False,
                 'blocked_sites': [],
                 'scheduled_breaks': [],
-                'custom_notifications': []
+                'custom_notifications': [],
+                'focus_mode_enabled': False,
+                'theme': 'default',
+                'goals': {
+                    'daily_limit': 120,
+                    'weekly_goal': 5,
+                    'monthly_goal': 20
+                }
             }
     
     def save_settings(self):
@@ -137,13 +189,13 @@ class ScrollStoppingTool:
         main_frame.columnconfigure(1, weight=1)
         
         # Title
-        title_label = ttk.Label(main_frame, text="Scroll Stopping Tool", 
+        title_label = ttk.Label(main_frame, text="Scroll Stopping Tool - Advanced", 
                                font=('Arial', 16, 'bold'))
-        title_label.grid(row=0, column=0, columnspan=5, pady=(0, 20))
+        title_label.grid(row=0, column=0, columnspan=6, pady=(0, 20))
         
         # Control buttons
         control_frame = ttk.LabelFrame(main_frame, text="Controls", padding="10")
-        control_frame.grid(row=1, column=0, columnspan=5, sticky=(tk.W, tk.E), pady=(0, 10))
+        control_frame.grid(row=1, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(0, 10))
         
         self.start_button = ttk.Button(control_frame, text="Start Tracking", 
                                       command=self.start_tracking)
@@ -153,25 +205,33 @@ class ScrollStoppingTool:
                                      command=self.stop_tracking, state='disabled')
         self.stop_button.grid(row=0, column=1, padx=(0, 10))
         
+        self.focus_button = ttk.Button(control_frame, text="Focus Mode", 
+                                      command=self.toggle_focus_mode)
+        self.focus_button.grid(row=0, column=2, padx=(0, 10))
+        
         self.settings_button = ttk.Button(control_frame, text="Settings", 
                                          command=self.open_settings)
-        self.settings_button.grid(row=0, column=2, padx=(0, 10))
+        self.settings_button.grid(row=0, column=3, padx=(0, 10))
         
         self.break_button = ttk.Button(control_frame, text="Take Break", 
                                       command=self.take_break)
-        self.break_button.grid(row=0, column=3, padx=(0, 10))
+        self.break_button.grid(row=0, column=4, padx=(0, 10))
         
-        self.lock_button = ttk.Button(control_frame, text="Lock Screen Now", 
+        self.lock_button = ttk.Button(control_frame, text="Lock Screen", 
                                       command=self.lock_screen)
-        self.lock_button.grid(row=0, column=4, padx=(0, 10))
+        self.lock_button.grid(row=0, column=5, padx=(0, 10))
         
         self.block_button = ttk.Button(control_frame, text="Block Sites", 
                                       command=self.open_blocking_dialog)
-        self.block_button.grid(row=0, column=5)
+        self.block_button.grid(row=0, column=6, padx=(0, 10))
+        
+        self.export_button = ttk.Button(control_frame, text="Export Data", 
+                                       command=self.export_data)
+        self.export_button.grid(row=0, column=7)
         
         # Stats frame
         stats_frame = ttk.LabelFrame(main_frame, text="Today's Statistics", padding="10")
-        stats_frame.grid(row=2, column=0, columnspan=5, sticky=(tk.W, tk.E), pady=(0, 10))
+        stats_frame.grid(row=2, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(0, 10))
         
         # Today's usage
         self.today_usage_label = ttk.Label(stats_frame, text="Today's Usage: 0 minutes")
@@ -185,19 +245,23 @@ class ScrollStoppingTool:
         self.breaks_label = ttk.Label(stats_frame, text="Breaks Taken: 0")
         self.breaks_label.grid(row=0, column=2, sticky=tk.W, padx=(0, 20))
         
-        # Blocking status
-        self.blocking_status_label = ttk.Label(stats_frame, text="Blocking: Disabled")
-        self.blocking_status_label.grid(row=0, column=3, sticky=tk.W)
+        # Focus sessions
+        self.focus_label = ttk.Label(stats_frame, text="Focus Sessions: 0")
+        self.focus_label.grid(row=0, column=3, sticky=tk.W, padx=(0, 20))
+        
+        # Productivity score
+        self.productivity_label = ttk.Label(stats_frame, text="Productivity: 0%")
+        self.productivity_label.grid(row=0, column=4, sticky=tk.W)
         
         # Progress bar
         self.progress_var = tk.DoubleVar()
         self.progress_bar = ttk.Progressbar(stats_frame, variable=self.progress_var, 
                                            maximum=100, length=300)
-        self.progress_bar.grid(row=1, column=0, columnspan=5, sticky=(tk.W, tk.E), pady=(10, 0))
+        self.progress_bar.grid(row=1, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(10, 0))
         
         # Alternative activities frame
         activities_frame = ttk.LabelFrame(main_frame, text="Alternative Activities", padding="10")
-        activities_frame.grid(row=3, column=0, columnspan=5, sticky=(tk.W, tk.E), pady=(0, 10))
+        activities_frame.grid(row=3, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(0, 10))
         
         activities = [
             "Read a book", "Go for a walk", "Call a friend", "Exercise",
@@ -211,7 +275,7 @@ class ScrollStoppingTool:
         
         # Chart frame
         chart_frame = ttk.LabelFrame(main_frame, text="Weekly Usage Chart", padding="10")
-        chart_frame.grid(row=4, column=0, columnspan=5, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
+        chart_frame.grid(row=4, column=0, columnspan=6, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
         
         # Create matplotlib figure
         self.fig, self.ax = plt.subplots(figsize=(8, 4))
@@ -223,7 +287,7 @@ class ScrollStoppingTool:
         self.status_var.set("Ready to start tracking")
         status_bar = ttk.Label(main_frame, textvariable=self.status_var, 
                               relief=tk.SUNKEN, anchor=tk.W)
-        status_bar.grid(row=5, column=0, columnspan=5, sticky=(tk.W, tk.E), pady=(10, 0))
+        status_bar.grid(row=5, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(10, 0))
     
     def start_tracking(self):
         """Start tracking social media usage"""
@@ -249,6 +313,118 @@ class ScrollStoppingTool:
         
         # Stop website blocking
         self.stop_website_blocking()
+        
+        # End current focus session if active
+        if self.current_session:
+            self.end_focus_session()
+    
+    def toggle_focus_mode(self):
+        """Toggle focus mode on/off"""
+        if not self.is_focus_mode:
+            self.start_focus_mode()
+        else:
+            self.stop_focus_mode()
+    
+    def start_focus_mode(self):
+        """Start focus mode"""
+        self.is_focus_mode = True
+        self.focus_button.config(text="Exit Focus Mode")
+        self.status_var.set("Focus mode active - enhanced blocking enabled")
+        
+        # Start focus mode thread
+        self.focus_thread = threading.Thread(target=self.focus_mode_loop, daemon=True)
+        self.focus_thread.start()
+        
+        # Start focus session
+        self.start_focus_session()
+        
+        if self.settings['notifications_enabled']:
+            notification.notify(
+                title='Focus Mode Started!',
+                message='Enhanced blocking enabled. Stay focused!',
+                timeout=5
+            )
+    
+    def stop_focus_mode(self):
+        """Stop focus mode"""
+        self.is_focus_mode = False
+        self.focus_button.config(text="Focus Mode")
+        self.status_var.set("Focus mode disabled")
+        
+        # End focus session
+        if self.current_session:
+            self.end_focus_session()
+        
+        if self.settings['notifications_enabled']:
+            notification.notify(
+                title='Focus Mode Ended',
+                message='Great job staying focused!',
+                timeout=5
+            )
+    
+    def start_focus_session(self):
+        """Start a new focus session"""
+        self.current_session = {
+            'start_time': datetime.now(),
+            'focus_score': 0,
+            'interruptions': 0
+        }
+    
+    def end_focus_session(self):
+        """End the current focus session"""
+        if self.current_session:
+            duration = (datetime.now() - self.current_session['start_time']).total_seconds()
+            focus_score = max(0, 100 - (self.current_session['interruptions'] * 10))
+            
+            # Save to database
+            conn = sqlite3.connect(self.db_file)
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO productivity_sessions (start_time, end_time, duration, focus_score, notes)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (
+                self.current_session['start_time'].isoformat(),
+                datetime.now().isoformat(),
+                int(duration),
+                focus_score,
+                f"Focus session with {self.current_session['interruptions']} interruptions"
+            ))
+            conn.commit()
+            conn.close()
+            
+            self.usage_data['focus_sessions'] += 1
+            self.usage_data['productivity_score'] = focus_score
+            self.save_data()
+            
+            self.current_session = None
+    
+    def focus_mode_loop(self):
+        """Focus mode monitoring loop"""
+        while self.is_focus_mode and self.is_tracking:
+            try:
+                # Check for any social media activity
+                if self.is_social_media_active():
+                    if self.current_session:
+                        self.current_session['interruptions'] += 1
+                    
+                    # More aggressive blocking in focus mode
+                    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+                        try:
+                            if proc.info['cmdline']:
+                                cmdline = ' '.join(proc.info['cmdline']).lower()
+                                if any(site in cmdline for site in self.social_media_sites):
+                                    proc.terminate()
+                                    if self.settings['notifications_enabled']:
+                                        notification.notify(
+                                            title='Focus Mode: Site Blocked!',
+                                            message='Stay focused - social media blocked.',
+                                            timeout=3
+                                        )
+                        except (psutil.NoSuchProcess, psutil.AccessDenied):
+                            continue
+            except:
+                pass
+            time.sleep(2)  # Check every 2 seconds in focus mode
     
     def tracking_loop(self):
         """Main tracking loop"""
@@ -372,6 +548,32 @@ class ScrollStoppingTool:
         except Exception as e:
             messagebox.showerror("Screen Lock Error", f"Failed to lock screen: {e}")
     
+    def export_data(self):
+        """Export usage data to CSV"""
+        filename = filedialog.asksaveasfilename(
+            defaultextension=".csv",
+            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
+        )
+        
+        if filename:
+            try:
+                with open(filename, 'w', newline='') as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerow(['Date', 'Usage (minutes)', 'Breaks Taken', 'Focus Sessions', 'Productivity Score'])
+                    
+                    for date, usage in self.usage_data['daily_usage'].items():
+                        writer.writerow([
+                            date,
+                            usage // 60,
+                            self.usage_data.get('breaks_taken', 0),
+                            self.usage_data.get('focus_sessions', 0),
+                            self.usage_data.get('productivity_score', 0)
+                        ])
+                
+                messagebox.showinfo("Export", f"Data exported successfully to {filename}")
+            except Exception as e:
+                messagebox.showerror("Export Error", f"Failed to export data: {e}")
+    
     def open_blocking_dialog(self):
         """Open website blocking configuration dialog"""
         blocking_window = tk.Toplevel(self.root)
@@ -485,8 +687,8 @@ class ScrollStoppingTool:
     def open_settings(self):
         """Open settings dialog"""
         settings_window = tk.Toplevel(self.root)
-        settings_window.title("Settings")
-        settings_window.geometry("500x500")
+        settings_window.title("Advanced Settings")
+        settings_window.geometry("600x600")
         settings_window.transient(self.root)
         settings_window.grab_set()
         
@@ -528,6 +730,12 @@ class ScrollStoppingTool:
                                           variable=auto_lock_var)
         auto_lock_check.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
         
+        # Focus mode
+        focus_var = tk.BooleanVar(value=self.settings.get('focus_mode_enabled', False))
+        focus_check = ttk.Checkbutton(general_frame, text="Enable Focus Mode", 
+                                     variable=focus_var)
+        focus_check.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+        
         # Scheduled breaks tab
         breaks_frame = ttk.Frame(notebook)
         notebook.add(breaks_frame, text="Scheduled Breaks")
@@ -561,6 +769,25 @@ class ScrollStoppingTool:
         ttk.Button(breaks_frame, text="Add Break", command=add_break).grid(row=3, column=0, padx=5, pady=5)
         ttk.Button(breaks_frame, text="Remove Break", command=remove_break).grid(row=3, column=1, padx=5, pady=5)
         
+        # Goals tab
+        goals_frame = ttk.Frame(notebook)
+        notebook.add(goals_frame, text="Goals")
+        
+        ttk.Label(goals_frame, text="Daily Limit (minutes):").grid(row=0, column=0, padx=10, pady=10)
+        daily_goal_var = tk.StringVar(value=str(self.goals['daily_limit']))
+        daily_goal_entry = ttk.Entry(goals_frame, textvariable=daily_goal_var)
+        daily_goal_entry.grid(row=0, column=1, padx=10, pady=10)
+        
+        ttk.Label(goals_frame, text="Weekly Goal (days under limit):").grid(row=1, column=0, padx=10, pady=10)
+        weekly_goal_var = tk.StringVar(value=str(self.goals['weekly_goal']))
+        weekly_goal_entry = ttk.Entry(goals_frame, textvariable=weekly_goal_var)
+        weekly_goal_entry.grid(row=1, column=1, padx=10, pady=10)
+        
+        ttk.Label(goals_frame, text="Monthly Goal (days under limit):").grid(row=2, column=0, padx=10, pady=10)
+        monthly_goal_var = tk.StringVar(value=str(self.goals['monthly_goal']))
+        monthly_goal_entry = ttk.Entry(goals_frame, textvariable=monthly_goal_var)
+        monthly_goal_entry.grid(row=2, column=1, padx=10, pady=10)
+        
         # Save button
         def save_settings():
             try:
@@ -569,13 +796,21 @@ class ScrollStoppingTool:
                 self.settings['notifications_enabled'] = notif_var.get()
                 self.settings['auto_break'] = auto_break_var.get()
                 self.settings['auto_lock'] = auto_lock_var.get()
+                self.settings['focus_mode_enabled'] = focus_var.get()
                 self.settings['scheduled_breaks'] = self.scheduled_breaks
+                
+                # Update goals
+                self.goals['daily_limit'] = int(daily_goal_var.get())
+                self.goals['weekly_goal'] = int(weekly_goal_var.get())
+                self.goals['monthly_goal'] = int(monthly_goal_var.get())
+                self.settings['goals'] = self.goals
+                
                 self.save_settings()
                 settings_window.destroy()
                 self.update_display()
                 messagebox.showinfo("Settings", "Settings saved successfully!")
             except ValueError:
-                messagebox.showerror("Error", "Please enter valid numbers for limits and reminders.")
+                messagebox.showerror("Error", "Please enter valid numbers for limits and goals.")
         
         ttk.Button(settings_window, text="Save", command=save_settings).pack(pady=20)
     
@@ -588,6 +823,8 @@ class ScrollStoppingTool:
         self.today_usage_label.config(text=f"Today's Usage: {today_usage} minutes")
         self.limit_progress_label.config(text=f"Daily Limit: {today_usage}/{self.settings['daily_limit']} minutes")
         self.breaks_label.config(text=f"Breaks Taken: {self.usage_data['breaks_taken']}")
+        self.focus_label.config(text=f"Focus Sessions: {self.usage_data['focus_sessions']}")
+        self.productivity_label.config(text=f"Productivity: {self.usage_data.get('productivity_score', 0)}%")
         
         # Update progress bar
         progress = min(100, (today_usage / self.settings['daily_limit']) * 100)
