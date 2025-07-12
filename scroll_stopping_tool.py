@@ -96,6 +96,15 @@ class ScrollStoppingTool:
         self.pomodoro_is_break = False
         self.pomodoro_thread = None
         
+        # Custom timer presets
+        self.custom_timers = self.settings.get('custom_timers', {
+            'Pomodoro': {'work': 25, 'break': 5, 'name': 'Pomodoro'},
+            'Deep Work': {'work': 45, 'break': 15, 'name': 'Deep Work'},
+            'Quick Tasks': {'work': 15, 'break': 3, 'name': 'Quick Tasks'},
+            'Study Session': {'work': 30, 'break': 10, 'name': 'Study Session'}
+        })
+        self.current_timer_preset = 'Pomodoro'
+        
         # Achievement system
         self.achievements = self.usage_data.get('achievements', {})
         self.achievement_definitions = {
@@ -198,6 +207,12 @@ class ScrollStoppingTool:
                         'daily_limit': 120,
                         'weekly_goal': 5,
                         'monthly_goal': 20
+                    },
+                    'custom_timers': {
+                        'Pomodoro': {'work': 25, 'break': 5, 'name': 'Pomodoro'},
+                        'Deep Work': {'work': 45, 'break': 15, 'name': 'Deep Work'},
+                        'Quick Tasks': {'work': 15, 'break': 3, 'name': 'Quick Tasks'},
+                        'Study Session': {'work': 30, 'break': 10, 'name': 'Study Session'}
                     }
                 }
         except:
@@ -218,6 +233,12 @@ class ScrollStoppingTool:
                     'daily_limit': 120,
                     'weekly_goal': 5,
                     'monthly_goal': 20
+                },
+                'custom_timers': {
+                    'Pomodoro': {'work': 25, 'break': 5, 'name': 'Pomodoro'},
+                    'Deep Work': {'work': 45, 'break': 15, 'name': 'Deep Work'},
+                    'Quick Tasks': {'work': 15, 'break': 3, 'name': 'Quick Tasks'},
+                    'Study Session': {'work': 30, 'break': 10, 'name': 'Study Session'}
                 }
             }
     
@@ -359,15 +380,27 @@ class ScrollStoppingTool:
         timer_label = ttk.Label(pomodoro_frame, textvariable=self.timer_var, font=("Arial", 24, "bold"))
         timer_label.grid(row=0, column=0, columnspan=3, pady=(0, 10))
         
+        # Timer preset selector
+        ttk.Label(pomodoro_frame, text="Timer Preset:").grid(row=1, column=0, padx=(0, 5), pady=5)
+        self.timer_preset_var = tk.StringVar(value=self.current_timer_preset)
+        self.timer_preset_combo = ttk.Combobox(pomodoro_frame, textvariable=self.timer_preset_var, 
+                                              values=list(self.custom_timers.keys()), state="readonly", width=15)
+        self.timer_preset_combo.grid(row=1, column=1, padx=5, pady=5)
+        self.timer_preset_combo.bind('<<ComboboxSelected>>', self.on_timer_preset_change)
+        
+        # Custom timer button
+        self.custom_timer_button = ttk.Button(pomodoro_frame, text="Custom Timers", command=self.open_custom_timers)
+        self.custom_timer_button.grid(row=1, column=2, padx=5, pady=5)
+        
         # Timer controls
         self.pomodoro_start_button = ttk.Button(pomodoro_frame, text="Start", command=self.start_pomodoro)
-        self.pomodoro_start_button.grid(row=1, column=0, padx=5)
+        self.pomodoro_start_button.grid(row=2, column=0, padx=5, pady=5)
         
         self.pomodoro_pause_button = ttk.Button(pomodoro_frame, text="Pause", command=self.pause_pomodoro, state='disabled')
-        self.pomodoro_pause_button.grid(row=1, column=1, padx=5)
+        self.pomodoro_pause_button.grid(row=2, column=1, padx=5, pady=5)
         
         self.pomodoro_reset_button = ttk.Button(pomodoro_frame, text="Reset", command=self.reset_pomodoro)
-        self.pomodoro_reset_button.grid(row=1, column=2, padx=5)
+        self.pomodoro_reset_button.grid(row=2, column=2, padx=5, pady=5)
         
         # Timer status
         self.timer_status_var = tk.StringVar()
@@ -1110,12 +1143,15 @@ class ScrollStoppingTool:
     def reset_pomodoro(self):
         """Reset the Pomodoro timer"""
         self.pomodoro_active = False
+        preset = self.custom_timers[self.current_timer_preset]
+        self.pomodoro_work_time = preset['work'] * 60
+        self.pomodoro_break_time = preset['break'] * 60
         self.pomodoro_current_time = self.pomodoro_work_time
         self.pomodoro_is_break = False
         self.pomodoro_start_button.config(state='normal')
         self.pomodoro_pause_button.config(state='disabled')
-        self.timer_var.set("25:00")
-        self.timer_status_var.set("Ready to start")
+        self.timer_var.set(f"{preset['work']:02d}:00")
+        self.timer_status_var.set(f"Ready to start {preset['name']}")
     
     def pomodoro_timer_loop(self):
         """Pomodoro timer loop"""
@@ -1283,6 +1319,103 @@ class ScrollStoppingTool:
         if not suggestions:
             suggestions.append("Tip: Use Focus Mode for deep work or try reducing your daily limit by 10 minutes.")
         return random.choice(suggestions)
+
+    def on_timer_preset_change(self, event=None):
+        """Handle timer preset selection change"""
+        self.current_timer_preset = self.timer_preset_var.get()
+        preset = self.custom_timers[self.current_timer_preset]
+        self.pomodoro_work_time = preset['work'] * 60
+        self.pomodoro_break_time = preset['break'] * 60
+        self.pomodoro_current_time = self.pomodoro_work_time
+        self.timer_var.set(f"{preset['work']:02d}:00")
+        self.timer_status_var.set(f"Ready to start {preset['name']}")
+    
+    def open_custom_timers(self):
+        """Open custom timer configuration dialog"""
+        timer_window = tk.Toplevel(self.root)
+        timer_window.title("Custom Timer Presets")
+        timer_window.geometry("500x400")
+        timer_window.transient(self.root)
+        timer_window.grab_set()
+        
+        # Timer list
+        ttk.Label(timer_window, text="Custom Timer Presets:").pack(anchor=tk.W, padx=10, pady=5)
+        
+        # Listbox for timers
+        timer_frame = ttk.Frame(timer_window)
+        timer_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        
+        timer_listbox = tk.Listbox(timer_frame, height=8)
+        timer_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        
+        scrollbar = ttk.Scrollbar(timer_frame, orient=tk.VERTICAL, command=timer_listbox.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        timer_listbox.config(yscrollcommand=scrollbar.set)
+        
+        # Populate listbox
+        for name, preset in self.custom_timers.items():
+            timer_listbox.insert(tk.END, f"{name}: {preset['work']}min work / {preset['break']}min break")
+        
+        # Add new timer frame
+        add_frame = ttk.LabelFrame(timer_window, text="Add New Timer", padding="10")
+        add_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        ttk.Label(add_frame, text="Name:").grid(row=0, column=0, padx=5, pady=5)
+        name_entry = ttk.Entry(add_frame, width=20)
+        name_entry.grid(row=0, column=1, padx=5, pady=5)
+        
+        ttk.Label(add_frame, text="Work (min):").grid(row=0, column=2, padx=5, pady=5)
+        work_entry = ttk.Entry(add_frame, width=10)
+        work_entry.grid(row=0, column=3, padx=5, pady=5)
+        
+        ttk.Label(add_frame, text="Break (min):").grid(row=0, column=4, padx=5, pady=5)
+        break_entry = ttk.Entry(add_frame, width=10)
+        break_entry.grid(row=0, column=5, padx=5, pady=5)
+        
+        def add_timer():
+            name = name_entry.get().strip()
+            try:
+                work = int(work_entry.get())
+                break_time = int(break_entry.get())
+                if name and work > 0 and break_time > 0:
+                    self.custom_timers[name] = {'work': work, 'break': break_time, 'name': name}
+                    timer_listbox.insert(tk.END, f"{name}: {work}min work / {break_time}min break")
+                    name_entry.delete(0, tk.END)
+                    work_entry.delete(0, tk.END)
+                    break_entry.delete(0, tk.END)
+                    # Update combo box
+                    self.timer_preset_combo['values'] = list(self.custom_timers.keys())
+            except ValueError:
+                messagebox.showerror("Error", "Please enter valid numbers for work and break times.")
+        
+        def remove_timer():
+            selection = timer_listbox.curselection()
+            if selection:
+                timer_name = timer_listbox.get(selection[0]).split(':')[0]
+                if timer_name in self.custom_timers:
+                    del self.custom_timers[timer_name]
+                    timer_listbox.delete(selection[0])
+                    # Update combo box
+                    self.timer_preset_combo['values'] = list(self.custom_timers.keys())
+                    if self.current_timer_preset == timer_name:
+                        self.current_timer_preset = 'Pomodoro'
+                        self.timer_preset_var.set('Pomodoro')
+                        self.on_timer_preset_change()
+        
+        # Buttons
+        button_frame = ttk.Frame(timer_window)
+        button_frame.pack(pady=10)
+        
+        ttk.Button(button_frame, text="Add Timer", command=add_timer).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Remove Timer", command=remove_timer).pack(side=tk.LEFT, padx=5)
+        
+        def save_timers():
+            self.settings['custom_timers'] = self.custom_timers
+            self.save_settings()
+            timer_window.destroy()
+            messagebox.showinfo("Timers", "Custom timers saved successfully!")
+        
+        ttk.Button(button_frame, text="Save", command=save_timers).pack(side=tk.LEFT, padx=5)
 
 def main():
     """Main function to run the application"""
