@@ -298,7 +298,11 @@ class ScrollStoppingTool:
         
         self.export_button = ttk.Button(control_frame, text="Export Data", 
                                        command=self.export_data)
-        self.export_button.grid(row=0, column=7)
+        self.export_button.grid(row=0, column=7, padx=(0, 10))
+        
+        self.analytics_button = ttk.Button(control_frame, text="Analytics", 
+                                          command=self.open_analytics_dashboard)
+        self.analytics_button.grid(row=0, column=8)
         
         # Stats frame
         stats_frame = ttk.LabelFrame(main_frame, text="Today's Statistics", padding="10")
@@ -1416,6 +1420,273 @@ class ScrollStoppingTool:
             messagebox.showinfo("Timers", "Custom timers saved successfully!")
         
         ttk.Button(button_frame, text="Save", command=save_timers).pack(side=tk.LEFT, padx=5)
+
+    def open_analytics_dashboard(self):
+        """Open advanced analytics dashboard"""
+        analytics_window = tk.Toplevel(self.root)
+        analytics_window.title("Advanced Analytics Dashboard")
+        analytics_window.geometry("1200x800")
+        analytics_window.transient(self.root)
+        analytics_window.grab_set()
+        
+        # Create notebook for different analytics views
+        notebook = ttk.Notebook(analytics_window)
+        notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        # Overview tab
+        overview_frame = ttk.Frame(notebook)
+        notebook.add(overview_frame, text="Overview")
+        self.create_overview_tab(overview_frame)
+        
+        # Productivity tab
+        productivity_frame = ttk.Frame(notebook)
+        notebook.add(productivity_frame, text="Productivity")
+        self.create_productivity_tab(productivity_frame)
+        
+        # Focus Sessions tab
+        focus_frame = ttk.Frame(notebook)
+        notebook.add(focus_frame, text="Focus Sessions")
+        self.create_focus_tab(focus_frame)
+        
+        # Trends tab
+        trends_frame = ttk.Frame(notebook)
+        notebook.add(trends_frame, text="Trends")
+        self.create_trends_tab(trends_frame)
+    
+    def create_overview_tab(self, parent):
+        """Create overview analytics tab"""
+        # Key metrics frame
+        metrics_frame = ttk.LabelFrame(parent, text="Key Metrics", padding="10")
+        metrics_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        # Calculate metrics
+        total_days = len(self.usage_data['daily_usage'])
+        total_time = self.usage_data['total_time'] // 60  # Convert to minutes
+        avg_daily = total_time // total_days if total_days > 0 else 0
+        focus_sessions = self.usage_data.get('focus_sessions', 0)
+        breaks_taken = self.usage_data.get('breaks_taken', 0)
+        current_streak = self.usage_data.get('current_streak', 0)
+        best_streak = self.usage_data.get('best_streak', 0)
+        achievements_count = len(self.achievements)
+        
+        # Display metrics in grid
+        metrics = [
+            ("Total Days Tracked", f"{total_days} days"),
+            ("Total Usage Time", f"{total_time} minutes"),
+            ("Average Daily Usage", f"{avg_daily} minutes"),
+            ("Focus Sessions", f"{focus_sessions} sessions"),
+            ("Breaks Taken", f"{breaks_taken} breaks"),
+            ("Current Streak", f"{current_streak} days"),
+            ("Best Streak", f"{best_streak} days"),
+            ("Achievements Unlocked", f"{achievements_count} badges")
+        ]
+        
+        for i, (label, value) in enumerate(metrics):
+            row = i // 4
+            col = i % 4
+            ttk.Label(metrics_frame, text=label, font=("Arial", 10, "bold")).grid(row=row*2, column=col, padx=10, pady=5)
+            ttk.Label(metrics_frame, text=value, font=("Arial", 12)).grid(row=row*2+1, column=col, padx=10, pady=5)
+        
+        # Weekly usage chart
+        chart_frame = ttk.LabelFrame(parent, text="Weekly Usage Overview", padding="10")
+        chart_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        fig, ax = plt.subplots(figsize=(10, 6))
+        self.create_weekly_chart(ax)
+        canvas = FigureCanvasTkAgg(fig, chart_frame)
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    
+    def create_productivity_tab(self, parent):
+        """Create productivity analytics tab"""
+        # Productivity score over time
+        score_frame = ttk.LabelFrame(parent, text="Productivity Score Trends", padding="10")
+        score_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Get productivity data from database
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+        cursor.execute("SELECT start_time, focus_score FROM productivity_sessions ORDER BY start_time")
+        data = cursor.fetchall()
+        conn.close()
+        
+        if data:
+            dates = [row[0][:10] for row in data]
+            scores = [row[1] for row in data]
+            
+            ax.plot(range(len(dates)), scores, marker='o', linewidth=2, markersize=6)
+            ax.set_xlabel('Session Number')
+            ax.set_ylabel('Productivity Score (%)')
+            ax.set_title('Productivity Score Over Time')
+            ax.grid(True, alpha=0.3)
+            ax.set_ylim(0, 100)
+            
+            # Add average line
+            avg_score = sum(scores) / len(scores)
+            ax.axhline(y=avg_score, color='r', linestyle='--', label=f'Average: {avg_score:.1f}%')
+            ax.legend()
+        else:
+            ax.text(0.5, 0.5, 'No productivity data available yet', 
+                   ha='center', va='center', transform=ax.transAxes, fontsize=14)
+            ax.set_title('Productivity Score Over Time')
+        
+        canvas = FigureCanvasTkAgg(fig, score_frame)
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    
+    def create_focus_tab(self, parent):
+        """Create focus sessions analytics tab"""
+        # Focus session statistics
+        stats_frame = ttk.LabelFrame(parent, text="Focus Session Statistics", padding="10")
+        stats_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        # Get focus session data
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+        cursor.execute("SELECT duration, focus_score, notes FROM productivity_sessions")
+        sessions = cursor.fetchall()
+        conn.close()
+        
+        if sessions:
+            durations = [s[0] for s in sessions]
+            scores = [s[1] for s in sessions]
+            
+            avg_duration = sum(durations) / len(durations)
+            avg_score = sum(scores) / len(scores)
+            total_focus_time = sum(durations) // 60  # Convert to minutes
+            
+            stats_text = f"""
+            Total Focus Sessions: {len(sessions)}
+            Total Focus Time: {total_focus_time} minutes
+            Average Session Duration: {avg_duration//60} minutes {avg_duration%60} seconds
+            Average Productivity Score: {avg_score:.1f}%
+            Best Session Score: {max(scores)}%
+            """
+        else:
+            stats_text = "No focus session data available yet."
+        
+        stats_label = ttk.Label(stats_frame, text=stats_text, font=("Arial", 11))
+        stats_label.pack(anchor=tk.W)
+        
+        # Focus session distribution chart
+        chart_frame = ttk.LabelFrame(parent, text="Focus Session Distribution", padding="10")
+        chart_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+        
+        if sessions:
+            # Duration distribution
+            ax1.hist(durations, bins=10, alpha=0.7, color='skyblue', edgecolor='black')
+            ax1.set_xlabel('Duration (seconds)')
+            ax1.set_ylabel('Number of Sessions')
+            ax1.set_title('Session Duration Distribution')
+            ax1.grid(True, alpha=0.3)
+            
+            # Score distribution
+            ax2.hist(scores, bins=10, alpha=0.7, color='lightgreen', edgecolor='black')
+            ax2.set_xlabel('Productivity Score (%)')
+            ax2.set_ylabel('Number of Sessions')
+            ax2.set_title('Productivity Score Distribution')
+            ax2.grid(True, alpha=0.3)
+        else:
+            ax1.text(0.5, 0.5, 'No data available', ha='center', va='center', transform=ax1.transAxes)
+            ax2.text(0.5, 0.5, 'No data available', ha='center', va='center', transform=ax2.transAxes)
+        
+        plt.tight_layout()
+        canvas = FigureCanvasTkAgg(fig, chart_frame)
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    
+    def create_trends_tab(self, parent):
+        """Create trends analytics tab"""
+        # Daily usage trends
+        trends_frame = ttk.LabelFrame(parent, text="Daily Usage Trends", padding="10")
+        trends_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
+        
+        # Get last 30 days of data
+        dates = []
+        usage = []
+        for i in range(30):
+            date = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+            dates.insert(0, date)
+            usage.insert(0, self.usage_data['daily_usage'].get(date, 0) // 60)
+        
+        # Daily usage line chart
+        ax1.plot(range(len(dates)), usage, marker='o', linewidth=2, markersize=4)
+        ax1.set_xlabel('Days Ago')
+        ax1.set_ylabel('Usage (minutes)')
+        ax1.set_title('Daily Usage Over Last 30 Days')
+        ax1.grid(True, alpha=0.3)
+        
+        # Add limit line
+        limit_line = [self.settings['daily_limit']] * len(dates)
+        ax1.plot(range(len(dates)), limit_line, 'r--', label='Daily Limit', linewidth=2)
+        ax1.legend()
+        
+        # Weekly average chart
+        weekly_avgs = []
+        week_labels = []
+        for i in range(0, len(usage), 7):
+            week_usage = usage[i:i+7]
+            if week_usage:
+                weekly_avgs.append(sum(week_usage) / len(week_usage))
+                week_labels.append(f"Week {len(weekly_avgs)}")
+        
+        if weekly_avgs:
+            ax2.bar(week_labels, weekly_avgs, alpha=0.7, color='orange')
+            ax2.set_xlabel('Week')
+            ax2.set_ylabel('Average Daily Usage (minutes)')
+            ax2.set_title('Weekly Average Usage')
+            ax2.grid(True, alpha=0.3)
+            
+            # Add value labels on bars
+            for i, v in enumerate(weekly_avgs):
+                ax2.text(i, v + 1, f'{v:.0f}m', ha='center', va='bottom')
+        
+        plt.tight_layout()
+        canvas = FigureCanvasTkAgg(fig, trends_frame)
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    
+    def create_weekly_chart(self, ax):
+        """Create enhanced weekly usage chart"""
+        # Get last 7 days
+        dates = []
+        usage = []
+        
+        for i in range(7):
+            date = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+            dates.insert(0, date)
+            usage.insert(0, self.usage_data['daily_usage'].get(date, 0) // 60)
+        
+        # Create enhanced bar chart
+        bars = ax.bar(range(len(dates)), usage, color='skyblue', alpha=0.7, edgecolor='navy')
+        
+        # Add limit line
+        limit_line = [self.settings['daily_limit']] * len(dates)
+        ax.plot(range(len(dates)), limit_line, 'r--', label='Daily Limit', linewidth=2)
+        
+        # Customize chart
+        ax.set_xlabel('Date')
+        ax.set_ylabel('Minutes')
+        ax.set_title('Weekly Social Media Usage')
+        ax.set_xticks(range(len(dates)))
+        ax.set_xticklabels([d[5:] for d in dates], rotation=45)
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+        
+        # Add value labels on bars
+        for bar, value in zip(bars, usage):
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2., height,
+                   f'{value}m', ha='center', va='bottom')
+        
+        # Color bars based on limit
+        for i, (bar, value) in enumerate(zip(bars, usage)):
+            if value > self.settings['daily_limit']:
+                bar.set_color('lightcoral')
+            elif value < self.settings['daily_limit'] * 0.8:
+                bar.set_color('lightgreen')
 
 def main():
     """Main function to run the application"""
