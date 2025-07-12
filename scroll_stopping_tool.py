@@ -23,6 +23,7 @@ import urllib.parse
 import csv
 import sqlite3
 import random
+import winsound  # For Windows sound support
 
 class ScrollStoppingTool:
     def __init__(self, root):
@@ -79,11 +80,11 @@ class ScrollStoppingTool:
         # Motivational quotes
         self.quotes = [
             "The secret of getting ahead is getting started. – Mark Twain",
-            "Don’t watch the clock; do what it does. Keep going. – Sam Levenson",
+            "Don't watch the clock; do what it does. Keep going. – Sam Levenson",
             "Success is the sum of small efforts, repeated day in and day out. – Robert Collier",
-            "You don’t have to be perfect to be amazing.",
+            "You don't have to be perfect to be amazing.",
             "Discipline is the bridge between goals and accomplishment. – Jim Rohn",
-            "It always seems impossible until it’s done. – Nelson Mandela",
+            "It always seems impossible until it's done. – Nelson Mandela",
             "The best way to get something done is to begin.",
             "Small steps every day."
         ]
@@ -121,6 +122,16 @@ class ScrollStoppingTool:
             'under_limit_week': {'name': 'Week Winner', 'description': 'Stay under limit for a week', 'icon': '📅'},
             'productivity_90': {'name': 'Productivity Guru', 'description': '90%+ productivity score', 'icon': '💎'}
         }
+        
+        # Sound notification system
+        self.sound_enabled = self.settings.get('sound_enabled', True)
+        self.sound_types = self.settings.get('sound_types', {
+            'break': 'chime',
+            'achievement': 'success',
+            'warning': 'alert',
+            'timer': 'notification'
+        })
+        self.sound_system = platform.system()
         
         # Create GUI
         self.create_widgets()
@@ -213,6 +224,13 @@ class ScrollStoppingTool:
                         'Deep Work': {'work': 45, 'break': 15, 'name': 'Deep Work'},
                         'Quick Tasks': {'work': 15, 'break': 3, 'name': 'Quick Tasks'},
                         'Study Session': {'work': 30, 'break': 10, 'name': 'Study Session'}
+                    },
+                    'sound_enabled': True,
+                    'sound_types': {
+                        'break': 'chime',
+                        'achievement': 'success',
+                        'warning': 'alert',
+                        'timer': 'notification'
                     }
                 }
         except:
@@ -239,6 +257,13 @@ class ScrollStoppingTool:
                     'Deep Work': {'work': 45, 'break': 15, 'name': 'Deep Work'},
                     'Quick Tasks': {'work': 15, 'break': 3, 'name': 'Quick Tasks'},
                     'Study Session': {'work': 30, 'break': 10, 'name': 'Study Session'}
+                },
+                'sound_enabled': True,
+                'sound_types': {
+                    'break': 'chime',
+                    'achievement': 'success',
+                    'warning': 'alert',
+                    'timer': 'notification'
                 }
             }
     
@@ -424,6 +449,37 @@ class ScrollStoppingTool:
         achievement_scrollbar = ttk.Scrollbar(achievements_frame, orient=tk.VERTICAL, command=self.achievement_text.yview)
         achievement_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.achievement_text.config(yscrollcommand=achievement_scrollbar.set)
+        
+        # Sound settings
+        sound_var = tk.BooleanVar(value=self.settings.get('sound_enabled', True))
+        sound_check = ttk.Checkbutton(general_frame, text="Enable Sound Notifications", 
+                                     variable=sound_var)
+        sound_check.grid(row=7, column=0, columnspan=2, padx=10, pady=10)
+        
+        # Sound type selectors
+        ttk.Label(general_frame, text="Break Sound:").grid(row=8, column=0, padx=10, pady=5)
+        break_sound_var = tk.StringVar(value=self.sound_types.get('break', 'chime'))
+        break_sound_combo = ttk.Combobox(general_frame, textvariable=break_sound_var, 
+                                        values=["chime", "bell", "ding", "success"], state="readonly")
+        break_sound_combo.grid(row=8, column=1, padx=10, pady=5)
+        
+        ttk.Label(general_frame, text="Achievement Sound:").grid(row=9, column=0, padx=10, pady=5)
+        achievement_sound_var = tk.StringVar(value=self.sound_types.get('achievement', 'success'))
+        achievement_sound_combo = ttk.Combobox(general_frame, textvariable=achievement_sound_var, 
+                                              values=["success", "fanfare", "chime", "bell"], state="readonly")
+        achievement_sound_combo.grid(row=9, column=1, padx=10, pady=5)
+        
+        ttk.Label(general_frame, text="Warning Sound:").grid(row=10, column=0, padx=10, pady=5)
+        warning_sound_var = tk.StringVar(value=self.sound_types.get('warning', 'alert'))
+        warning_sound_combo = ttk.Combobox(general_frame, textvariable=warning_sound_var, 
+                                          values=["alert", "warning", "error", "ding"], state="readonly")
+        warning_sound_combo.grid(row=10, column=1, padx=10, pady=5)
+        
+        ttk.Label(general_frame, text="Timer Sound:").grid(row=11, column=0, padx=10, pady=5)
+        timer_sound_var = tk.StringVar(value=self.sound_types.get('timer', 'notification'))
+        timer_sound_combo = ttk.Combobox(general_frame, textvariable=timer_sound_var, 
+                                        values=["notification", "chime", "bell", "ding"], state="readonly")
+        timer_sound_combo.grid(row=11, column=1, padx=10, pady=5)
     
     def apply_theme(self):
         """Apply the selected theme to the app"""
@@ -645,7 +701,10 @@ class ScrollStoppingTool:
         self.usage_data['breaks_taken'] += 1
         self.save_data()
         self.update_display()
-        self.check_achievements()  # Check for new achievements
+        self.check_achievements()
+        
+        # Play break sound
+        self.play_sound('break')
         
         if self.settings['notifications_enabled']:
             notification.notify(
@@ -677,6 +736,9 @@ class ScrollStoppingTool:
     
     def send_limit_reached_notification(self):
         """Send notification when daily limit is reached"""
+        # Play warning sound
+        self.play_sound('warning')
+        
         if self.settings['notifications_enabled']:
             notification.notify(
                 title='Daily Limit Reached!',
@@ -989,6 +1051,15 @@ class ScrollStoppingTool:
                 self.settings['scheduled_breaks'] = self.scheduled_breaks
                 self.settings['theme'] = theme_var.get()
                 
+                # Save sound settings
+                self.settings['sound_enabled'] = sound_var.get()
+                self.settings['sound_types'] = {
+                    'break': break_sound_var.get(),
+                    'achievement': achievement_sound_var.get(),
+                    'warning': warning_sound_var.get(),
+                    'timer': timer_sound_var.get()
+                }
+                
                 # Update goals
                 self.goals['daily_limit'] = int(daily_goal_var.get())
                 self.goals['weekly_goal'] = int(weekly_goal_var.get())
@@ -1182,6 +1253,9 @@ class ScrollStoppingTool:
             self.pomodoro_current_time = self.pomodoro_break_time
             self.timer_status_var.set("Break time!")
             
+            # Play timer sound
+            self.play_sound('timer')
+            
             # Take a break
             self.take_break()
             
@@ -1201,6 +1275,9 @@ class ScrollStoppingTool:
             self.pomodoro_is_break = False
             self.pomodoro_current_time = self.pomodoro_work_time
             self.timer_status_var.set("Break finished - ready for next session")
+            
+            # Play timer sound
+            self.play_sound('timer')
             
             # Show notification
             if self.settings['notifications_enabled']:
@@ -1272,6 +1349,10 @@ class ScrollStoppingTool:
         # Show notifications for new achievements
         for achievement_id in new_achievements:
             achievement = self.achievement_definitions[achievement_id]
+            
+            # Play achievement sound
+            self.play_sound('achievement')
+            
             if self.settings['notifications_enabled']:
                 notification.notify(
                     title=f'Achievement Unlocked! {achievement["icon"]}',
@@ -1687,6 +1768,71 @@ class ScrollStoppingTool:
                 bar.set_color('lightcoral')
             elif value < self.settings['daily_limit'] * 0.8:
                 bar.set_color('lightgreen')
+
+    def play_sound(self, sound_type):
+        """Play a sound notification based on type"""
+        if not self.sound_enabled:
+            return
+        
+        sound_name = self.sound_types.get(sound_type, 'chime')
+        
+        try:
+            if self.sound_system == "Windows":
+                # Windows system sounds
+                sound_map = {
+                    'chime': winsound.MB_ICONASTERISK,
+                    'bell': winsound.MB_ICONEXCLAMATION,
+                    'ding': winsound.MB_ICONINFORMATION,
+                    'success': winsound.MB_ICONASTERISK,
+                    'fanfare': winsound.MB_ICONASTERISK,
+                    'alert': winsound.MB_ICONEXCLAMATION,
+                    'warning': winsound.MB_ICONEXCLAMATION,
+                    'error': winsound.MB_ICONHAND,
+                    'notification': winsound.MB_ICONINFORMATION
+                }
+                winsound.MessageBeep(sound_map.get(sound_name, winsound.MB_ICONINFORMATION))
+            
+            elif self.sound_system == "Darwin":  # macOS
+                # macOS system sounds
+                sound_map = {
+                    'chime': 'Glass',
+                    'bell': 'Basso',
+                    'ding': 'Ping',
+                    'success': 'Glass',
+                    'fanfare': 'Hero',
+                    'alert': 'Sosumi',
+                    'warning': 'Sosumi',
+                    'error': 'Basso',
+                    'notification': 'Ping'
+                }
+                sound_file = sound_map.get(sound_name, 'Ping')
+                subprocess.run(['afplay', f'/System/Library/Sounds/{sound_file}.aiff'])
+            
+            elif self.sound_system == "Linux":
+                # Linux system sounds (using aplay or paplay)
+                sound_map = {
+                    'chime': 'message-new-instant',
+                    'bell': 'bell-window-system',
+                    'ding': 'message',
+                    'success': 'complete',
+                    'fanfare': 'complete',
+                    'alert': 'dialog-warning',
+                    'warning': 'dialog-warning',
+                    'error': 'dialog-error',
+                    'notification': 'message'
+                }
+                sound_file = sound_map.get(sound_name, 'message')
+                try:
+                    subprocess.run(['paplay', f'/usr/share/sounds/freedesktop/stereo/{sound_file}.oga'])
+                except FileNotFoundError:
+                    try:
+                        subprocess.run(['aplay', f'/usr/share/sounds/{sound_file}.wav'])
+                    except FileNotFoundError:
+                        # Fallback to simple beep
+                        print('\a')
+        except Exception as e:
+            # Fallback to simple beep if sound system fails
+            print('\a')
 
 def main():
     """Main function to run the application"""
