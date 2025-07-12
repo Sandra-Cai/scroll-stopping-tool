@@ -22,6 +22,7 @@ import webbrowser
 import urllib.parse
 import csv
 import sqlite3
+import random
 
 class ScrollStoppingTool:
     def __init__(self, root):
@@ -75,9 +76,22 @@ class ScrollStoppingTool:
         self.current_streak = self.usage_data.get('current_streak', 0)
         self.best_streak = self.usage_data.get('best_streak', 0)
         
+        # Motivational quotes
+        self.quotes = [
+            "The secret of getting ahead is getting started. – Mark Twain",
+            "Don’t watch the clock; do what it does. Keep going. – Sam Levenson",
+            "Success is the sum of small efforts, repeated day in and day out. – Robert Collier",
+            "You don’t have to be perfect to be amazing.",
+            "Discipline is the bridge between goals and accomplishment. – Jim Rohn",
+            "It always seems impossible until it’s done. – Nelson Mandela",
+            "The best way to get something done is to begin.",
+            "Small steps every day."
+        ]
+        
         # Create GUI
         self.create_widgets()
         self.update_display()
+        self.show_motivational_quote()
         
         # Start background tasks
         self.start_background_tasks()
@@ -187,6 +201,7 @@ class ScrollStoppingTool:
     
     def create_widgets(self):
         """Create the main GUI widgets"""
+        self.apply_theme()  # Apply theme before creating widgets
         # Main frame
         main_frame = ttk.Frame(self.root, padding="10")
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
@@ -303,6 +318,30 @@ class ScrollStoppingTool:
                               relief=tk.SUNKEN, anchor=tk.W)
         status_bar.grid(row=5, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(10, 0))
     
+    def apply_theme(self):
+        """Apply the selected theme to the app"""
+        theme = self.settings.get('theme', 'default')
+        if theme == 'dark':
+            style = ttk.Style()
+            self.root.tk_setPalette(background='#222', foreground='#eee', activeBackground='#333', activeForeground='#fff')
+            style.theme_use('clam')
+            style.configure('.', background='#222', foreground='#eee')
+            style.configure('TLabel', background='#222', foreground='#eee')
+            style.configure('TButton', background='#333', foreground='#eee')
+            style.configure('TFrame', background='#222')
+            style.configure('TNotebook', background='#222')
+            style.configure('TNotebook.Tab', background='#333', foreground='#eee')
+        else:
+            style = ttk.Style()
+            self.root.tk_setPalette(background='#f0f0f0', foreground='#222', activeBackground='#e0e0e0', activeForeground='#222')
+            style.theme_use('default')
+            style.configure('.', background='#f0f0f0', foreground='#222')
+            style.configure('TLabel', background='#f0f0f0', foreground='#222')
+            style.configure('TButton', background='#e0e0e0', foreground='#222')
+            style.configure('TFrame', background='#f0f0f0')
+            style.configure('TNotebook', background='#f0f0f0')
+            style.configure('TNotebook.Tab', background='#e0e0e0', foreground='#222')
+
     def start_tracking(self):
         """Start tracking social media usage"""
         self.is_tracking = True
@@ -508,6 +547,7 @@ class ScrollStoppingTool:
             )
         
         self.status_var.set("Break taken - good job!")
+        self.show_motivational_quote()
     
     def suggest_activity(self, activity):
         """Suggest an alternative activity"""
@@ -750,6 +790,12 @@ class ScrollStoppingTool:
                                      variable=focus_var)
         focus_check.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
         
+        # Theme selector
+        ttk.Label(general_frame, text="Theme:").grid(row=6, column=0, padx=10, pady=10)
+        theme_var = tk.StringVar(value=self.settings.get('theme', 'default'))
+        theme_combo = ttk.Combobox(general_frame, textvariable=theme_var, values=["default", "dark"], state="readonly")
+        theme_combo.grid(row=6, column=1, padx=10, pady=10)
+        
         # Scheduled breaks tab
         breaks_frame = ttk.Frame(notebook)
         notebook.add(breaks_frame, text="Scheduled Breaks")
@@ -812,6 +858,7 @@ class ScrollStoppingTool:
                 self.settings['auto_lock'] = auto_lock_var.get()
                 self.settings['focus_mode_enabled'] = focus_var.get()
                 self.settings['scheduled_breaks'] = self.scheduled_breaks
+                self.settings['theme'] = theme_var.get()
                 
                 # Update goals
                 self.goals['daily_limit'] = int(daily_goal_var.get())
@@ -820,6 +867,7 @@ class ScrollStoppingTool:
                 self.settings['goals'] = self.goals
                 
                 self.save_settings()
+                self.apply_theme()
                 settings_window.destroy()
                 self.update_display()
                 messagebox.showinfo("Settings", "Settings saved successfully!")
@@ -889,6 +937,10 @@ class ScrollStoppingTool:
         
         self.fig.tight_layout()
         self.canvas.draw()
+    
+    def show_motivational_quote(self):
+        quote = random.choice(self.quotes)
+        messagebox.showinfo("Motivation", quote)
     
     def start_background_tasks(self):
         """Start background tasks like scheduling"""
