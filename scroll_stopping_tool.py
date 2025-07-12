@@ -848,6 +848,26 @@ class ScrollStoppingTool:
         monthly_goal_entry = ttk.Entry(goals_frame, textvariable=monthly_goal_var)
         monthly_goal_entry.grid(row=2, column=1, padx=10, pady=10)
         
+        # Session History tab
+        history_frame = ttk.Frame(notebook)
+        notebook.add(history_frame, text="Session History")
+        ttk.Label(history_frame, text="Focus Session History:").pack(anchor=tk.W, padx=10, pady=5)
+        columns = ("Start", "End", "Duration (min)", "Score", "Notes")
+        tree = ttk.Treeview(history_frame, columns=columns, show="headings", height=12)
+        for col in columns:
+            tree.heading(col, text=col)
+            tree.column(col, width=110, anchor=tk.CENTER)
+        tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        # Load data from database
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+        cursor.execute("SELECT start_time, end_time, duration, focus_score, notes FROM productivity_sessions ORDER BY id DESC LIMIT 100")
+        for row in cursor.fetchall():
+            start, end, duration, score, notes = row
+            mins = int(duration) // 60
+            tree.insert("", tk.END, values=(start[:16], end[:16], mins, score, notes))
+        conn.close()
+        
         # Save button
         def save_settings():
             try:
