@@ -317,6 +317,10 @@ class ScrollStoppingTool:
         status_bar = ttk.Label(main_frame, textvariable=self.status_var, 
                               relief=tk.SUNKEN, anchor=tk.W)
         status_bar.grid(row=5, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(10, 0))
+        # Smart Suggestions
+        self.suggestion_var = tk.StringVar()
+        self.suggestion_label = ttk.Label(main_frame, textvariable=self.suggestion_var, font=("Arial", 11, "italic"), foreground="#0077cc")
+        self.suggestion_label.grid(row=6, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(5, 0))
     
     def apply_theme(self):
         """Apply the selected theme to the app"""
@@ -577,6 +581,7 @@ class ScrollStoppingTool:
             )
         if self.settings.get('auto_lock', False):
             self.lock_screen()
+        self.suggestion_var.set(self.get_smart_suggestion())
     
     def lock_screen(self):
         """Lock the user's screen (cross-platform)"""
@@ -919,6 +924,7 @@ class ScrollStoppingTool:
         
         # Update chart
         self.update_chart()
+        self.suggestion_var.set(self.get_smart_suggestion())
     
     def update_chart(self):
         """Update the weekly usage chart"""
@@ -997,6 +1003,7 @@ class ScrollStoppingTool:
         self.usage_data['goals_met'] += 1
         self.save_data()
         self.update_display()
+        self.suggestion_var.set(self.get_smart_suggestion())
     
     def scheduled_break(self):
         """Trigger a scheduled break"""
@@ -1007,6 +1014,27 @@ class ScrollStoppingTool:
                 timeout=10
             )
         self.take_break()
+
+    def get_smart_suggestion(self):
+        """Generate a smart suggestion based on recent usage patterns"""
+        today = datetime.now().strftime('%Y-%m-%d')
+        streak = self.usage_data.get('current_streak', 0)
+        best_streak = self.usage_data.get('best_streak', 0)
+        breaks = self.usage_data.get('breaks_taken', 0)
+        today_usage = self.usage_data['daily_usage'].get(today, 0) // 60
+        limit = self.settings['daily_limit']
+        suggestions = []
+        if streak >= 3:
+            suggestions.append(f"Great job! You've met your goal {streak} days in a row.")
+        if today_usage > limit:
+            suggestions.append("You exceeded your daily limit. Try scheduling an extra break tomorrow.")
+        if breaks == 0 and today_usage > 0:
+            suggestions.append("Remember to take breaks for better focus and wellbeing.")
+        if best_streak >= 7:
+            suggestions.append(f"Amazing! Your best streak is {best_streak} days. Keep it up!")
+        if not suggestions:
+            suggestions.append("Tip: Use Focus Mode for deep work or try reducing your daily limit by 10 minutes.")
+        return random.choice(suggestions)
 
 def main():
     """Main function to run the application"""
