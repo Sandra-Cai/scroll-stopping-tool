@@ -71,6 +71,10 @@ class ScrollStoppingTool:
             'monthly_goal': 20
         })
         
+        # Streak tracking
+        self.current_streak = self.usage_data.get('current_streak', 0)
+        self.best_streak = self.usage_data.get('best_streak', 0)
+        
         # Create GUI
         self.create_widgets()
         self.update_display()
@@ -108,7 +112,9 @@ class ScrollStoppingTool:
                     'breaks_taken': 0,
                     'goals_met': 0,
                     'focus_sessions': 0,
-                    'productivity_score': 0
+                    'productivity_score': 0,
+                    'current_streak': 0,
+                    'best_streak': 0
                 }
         except:
             self.usage_data = {
@@ -117,7 +123,9 @@ class ScrollStoppingTool:
                 'breaks_taken': 0,
                 'goals_met': 0,
                 'focus_sessions': 0,
-                'productivity_score': 0
+                'productivity_score': 0,
+                'current_streak': 0,
+                'best_streak': 0
             }
     
     def save_data(self):
@@ -252,6 +260,12 @@ class ScrollStoppingTool:
         # Productivity score
         self.productivity_label = ttk.Label(stats_frame, text="Productivity: 0%")
         self.productivity_label.grid(row=0, column=4, sticky=tk.W)
+        
+        # Streak labels
+        self.streak_label = ttk.Label(stats_frame, text="Current Streak: 0 days")
+        self.streak_label.grid(row=0, column=5, sticky=tk.W, padx=(0, 20))
+        self.best_streak_label = ttk.Label(stats_frame, text="Best Streak: 0 days")
+        self.best_streak_label.grid(row=0, column=6, sticky=tk.W)
         
         # Progress bar
         self.progress_var = tk.DoubleVar()
@@ -825,6 +839,8 @@ class ScrollStoppingTool:
         self.breaks_label.config(text=f"Breaks Taken: {self.usage_data['breaks_taken']}")
         self.focus_label.config(text=f"Focus Sessions: {self.usage_data['focus_sessions']}")
         self.productivity_label.config(text=f"Productivity: {self.usage_data.get('productivity_score', 0)}%")
+        self.streak_label.config(text=f"Current Streak: {self.usage_data.get('current_streak', 0)} days")
+        self.best_streak_label.config(text=f"Best Streak: {self.usage_data.get('best_streak', 0)} days")
         
         # Update progress bar
         progress = min(100, (today_usage / self.settings['daily_limit']) * 100)
@@ -893,7 +909,19 @@ class ScrollStoppingTool:
         scheduler_thread.start()
     
     def daily_reset(self):
-        """Reset daily counters"""
+        """Reset daily counters and update streaks"""
+        today = datetime.now().strftime('%Y-%m-%d')
+        yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+        # Check if yesterday met the goal
+        if (yesterday in self.usage_data['daily_usage'] and
+            self.usage_data['daily_usage'][yesterday] <= self.settings['daily_limit'] * 60):
+            self.current_streak += 1
+        else:
+            self.current_streak = 0
+        if self.current_streak > self.best_streak:
+            self.best_streak = self.current_streak
+        self.usage_data['current_streak'] = self.current_streak
+        self.usage_data['best_streak'] = self.best_streak
         self.usage_data['goals_met'] += 1
         self.save_data()
         self.update_display()
