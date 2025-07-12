@@ -88,6 +88,14 @@ class ScrollStoppingTool:
             "Small steps every day."
         ]
         
+        # Timer variables
+        self.pomodoro_active = False
+        self.pomodoro_work_time = 25 * 60  # 25 minutes in seconds
+        self.pomodoro_break_time = 5 * 60  # 5 minutes in seconds
+        self.pomodoro_current_time = self.pomodoro_work_time
+        self.pomodoro_is_break = False
+        self.pomodoro_thread = None
+        
         # Create GUI
         self.create_widgets()
         self.update_display()
@@ -321,6 +329,32 @@ class ScrollStoppingTool:
         self.suggestion_var = tk.StringVar()
         self.suggestion_label = ttk.Label(main_frame, textvariable=self.suggestion_var, font=("Arial", 11, "italic"), foreground="#0077cc")
         self.suggestion_label.grid(row=6, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(5, 0))
+        
+        # Pomodoro timer frame
+        pomodoro_frame = ttk.LabelFrame(main_frame, text="Pomodoro Timer", padding="10")
+        pomodoro_frame.grid(row=7, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(10, 0))
+        
+        # Timer display
+        self.timer_var = tk.StringVar()
+        self.timer_var.set("25:00")
+        timer_label = ttk.Label(pomodoro_frame, textvariable=self.timer_var, font=("Arial", 24, "bold"))
+        timer_label.grid(row=0, column=0, columnspan=3, pady=(0, 10))
+        
+        # Timer controls
+        self.pomodoro_start_button = ttk.Button(pomodoro_frame, text="Start", command=self.start_pomodoro)
+        self.pomodoro_start_button.grid(row=1, column=0, padx=5)
+        
+        self.pomodoro_pause_button = ttk.Button(pomodoro_frame, text="Pause", command=self.pause_pomodoro, state='disabled')
+        self.pomodoro_pause_button.grid(row=1, column=1, padx=5)
+        
+        self.pomodoro_reset_button = ttk.Button(pomodoro_frame, text="Reset", command=self.reset_pomodoro)
+        self.pomodoro_reset_button.grid(row=1, column=2, padx=5)
+        
+        # Timer status
+        self.timer_status_var = tk.StringVar()
+        self.timer_status_var.set("Ready to start")
+        timer_status = ttk.Label(pomodoro_frame, textvariable=self.timer_status_var, font=("Arial", 10))
+        timer_status.grid(row=2, column=0, columnspan=3, pady=(5, 0))
     
     def apply_theme(self):
         """Apply the selected theme to the app"""
@@ -1015,6 +1049,99 @@ class ScrollStoppingTool:
             )
         self.take_break()
 
+    def start_pomodoro(self):
+        """Start the Pomodoro timer"""
+        if not self.pomodoro_active:
+            self.pomodoro_active = True
+            self.pomodoro_start_button.config(state='disabled')
+            self.pomodoro_pause_button.config(state='normal')
+            self.timer_status_var.set("Work session in progress")
+            
+            # Start focus mode if not already active
+            if not self.is_focus_mode:
+                self.start_focus_mode()
+            
+            # Start timer thread
+            self.pomodoro_thread = threading.Thread(target=self.pomodoro_timer_loop, daemon=True)
+            self.pomodoro_thread.start()
+    
+    def pause_pomodoro(self):
+        """Pause the Pomodoro timer"""
+        if self.pomodoro_active:
+            self.pomodoro_active = False
+            self.pomodoro_start_button.config(state='normal')
+            self.pomodoro_pause_button.config(state='disabled')
+            self.timer_status_var.set("Timer paused")
+    
+    def reset_pomodoro(self):
+        """Reset the Pomodoro timer"""
+        self.pomodoro_active = False
+        self.pomodoro_current_time = self.pomodoro_work_time
+        self.pomodoro_is_break = False
+        self.pomodoro_start_button.config(state='normal')
+        self.pomodoro_pause_button.config(state='disabled')
+        self.timer_var.set("25:00")
+        self.timer_status_var.set("Ready to start")
+    
+    def pomodoro_timer_loop(self):
+        """Pomodoro timer loop"""
+        while self.pomodoro_active and self.pomodoro_current_time > 0:
+            minutes = self.pomodoro_current_time // 60
+            seconds = self.pomodoro_current_time % 60
+            time_str = f"{minutes:02d}:{seconds:02d}"
+            
+            # Update timer display
+            self.root.after(0, lambda: self.timer_var.set(time_str))
+            
+            time.sleep(1)
+            self.pomodoro_current_time -= 1
+        
+        # Timer finished
+        if self.pomodoro_current_time <= 0:
+            self.root.after(0, self.pomodoro_finished)
+    
+    def pomodoro_finished(self):
+        """Handle Pomodoro timer completion"""
+        if not self.pomodoro_is_break:
+            # Work session finished, start break
+            self.pomodoro_is_break = True
+            self.pomodoro_current_time = self.pomodoro_break_time
+            self.timer_status_var.set("Break time!")
+            
+            # Take a break
+            self.take_break()
+            
+            # Show notification
+            if self.settings['notifications_enabled']:
+                notification.notify(
+                    title='Pomodoro Break!',
+                    message='Great work! Take a 5-minute break.',
+                    timeout=10
+                )
+            
+            # Start break timer
+            self.pomodoro_thread = threading.Thread(target=self.pomodoro_timer_loop, daemon=True)
+            self.pomodoro_thread.start()
+        else:
+            # Break finished, reset to work session
+            self.pomodoro_is_break = False
+            self.pomodoro_current_time = self.pomodoro_work_time
+            self.timer_status_var.set("Break finished - ready for next session")
+            
+            # Show notification
+            if self.settings['notifications_enabled']:
+                notification.notify(
+                    title='Break Finished!',
+                    message='Ready for your next 25-minute work session.',
+                    timeout=5
+                )
+            
+            # Reset timer display
+            self.timer_var.set("25:00")
+            self.pomodoro_active = False
+            self.pomodoro_start_button.config(state='normal')
+            self.pomodoro_pause_button.config(state='disabled')
+    
     def get_smart_suggestion(self):
         """Generate a smart suggestion based on recent usage patterns"""
         today = datetime.now().strftime('%Y-%m-%d')
@@ -1024,6 +1151,11 @@ class ScrollStoppingTool:
         today_usage = self.usage_data['daily_usage'].get(today, 0) // 60
         limit = self.settings['daily_limit']
         suggestions = []
+        
+        # Add Pomodoro suggestions
+        if not self.pomodoro_active:
+            suggestions.append("Try the Pomodoro timer for focused work sessions!")
+        
         if streak >= 3:
             suggestions.append(f"Great job! You've met your goal {streak} days in a row.")
         if today_usage > limit:
