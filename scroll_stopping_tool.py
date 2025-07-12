@@ -96,6 +96,23 @@ class ScrollStoppingTool:
         self.pomodoro_is_break = False
         self.pomodoro_thread = None
         
+        # Achievement system
+        self.achievements = self.usage_data.get('achievements', {})
+        self.achievement_definitions = {
+            'first_break': {'name': 'First Break', 'description': 'Take your first break', 'icon': '☕'},
+            'streak_3': {'name': 'Getting Started', 'description': '3-day streak', 'icon': '🔥'},
+            'streak_7': {'name': 'Week Warrior', 'description': '7-day streak', 'icon': '⚡'},
+            'streak_30': {'name': 'Month Master', 'description': '30-day streak', 'icon': '👑'},
+            'focus_5': {'name': 'Focus Novice', 'description': '5 focus sessions', 'icon': '🎯'},
+            'focus_25': {'name': 'Focus Expert', 'description': '25 focus sessions', 'icon': '🧠'},
+            'breaks_10': {'name': 'Break Taker', 'description': '10 breaks taken', 'icon': '🛑'},
+            'breaks_50': {'name': 'Break Master', 'description': '50 breaks taken', 'icon': '⏰'},
+            'pomodoro_5': {'name': 'Pomodoro Starter', 'description': '5 Pomodoro sessions', 'icon': '🍅'},
+            'pomodoro_20': {'name': 'Pomodoro Pro', 'description': '20 Pomodoro sessions', 'icon': '⏱️'},
+            'under_limit_week': {'name': 'Week Winner', 'description': 'Stay under limit for a week', 'icon': '📅'},
+            'productivity_90': {'name': 'Productivity Guru', 'description': '90%+ productivity score', 'icon': '💎'}
+        }
+        
         # Create GUI
         self.create_widgets()
         self.update_display()
@@ -136,7 +153,8 @@ class ScrollStoppingTool:
                     'focus_sessions': 0,
                     'productivity_score': 0,
                     'current_streak': 0,
-                    'best_streak': 0
+                    'best_streak': 0,
+                    'achievements': {} # Initialize achievements
                 }
         except:
             self.usage_data = {
@@ -147,7 +165,8 @@ class ScrollStoppingTool:
                 'focus_sessions': 0,
                 'productivity_score': 0,
                 'current_streak': 0,
-                'best_streak': 0
+                'best_streak': 0,
+                'achievements': {}
             }
     
     def save_data(self):
@@ -355,6 +374,19 @@ class ScrollStoppingTool:
         self.timer_status_var.set("Ready to start")
         timer_status = ttk.Label(pomodoro_frame, textvariable=self.timer_status_var, font=("Arial", 10))
         timer_status.grid(row=2, column=0, columnspan=3, pady=(5, 0))
+        
+        # Achievements frame
+        achievements_frame = ttk.LabelFrame(main_frame, text="Achievements", padding="10")
+        achievements_frame.grid(row=8, column=0, columnspan=6, sticky=(tk.W, tk.E), pady=(10, 0))
+        
+        # Achievement display
+        self.achievement_text = tk.Text(achievements_frame, height=4, width=80, wrap=tk.WORD, state='disabled')
+        self.achievement_text.pack(fill=tk.BOTH, expand=True)
+        
+        # Scrollbar for achievements
+        achievement_scrollbar = ttk.Scrollbar(achievements_frame, orient=tk.VERTICAL, command=self.achievement_text.yview)
+        achievement_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.achievement_text.config(yscrollcommand=achievement_scrollbar.set)
     
     def apply_theme(self):
         """Apply the selected theme to the app"""
@@ -486,7 +518,7 @@ class ScrollStoppingTool:
             self.usage_data['focus_sessions'] += 1
             self.usage_data['productivity_score'] = focus_score
             self.save_data()
-            
+            self.check_achievements()  # Check for new achievements
             self.current_session = None
     
     def focus_mode_loop(self):
@@ -576,6 +608,7 @@ class ScrollStoppingTool:
         self.usage_data['breaks_taken'] += 1
         self.save_data()
         self.update_display()
+        self.check_achievements()  # Check for new achievements
         
         if self.settings['notifications_enabled']:
             notification.notify(
@@ -959,6 +992,7 @@ class ScrollStoppingTool:
         # Update chart
         self.update_chart()
         self.suggestion_var.set(self.get_smart_suggestion())
+        self.update_achievement_display()
     
     def update_chart(self):
         """Update the weekly usage chart"""
@@ -1141,6 +1175,88 @@ class ScrollStoppingTool:
             self.pomodoro_active = False
             self.pomodoro_start_button.config(state='normal')
             self.pomodoro_pause_button.config(state='disabled')
+            
+            # Track Pomodoro sessions
+            pomodoro_sessions = self.usage_data.get('pomodoro_sessions', 0) + 1
+            self.usage_data['pomodoro_sessions'] = pomodoro_sessions
+            self.save_data()
+            self.check_achievements()  # Check for new achievements
+    
+    def check_achievements(self):
+        """Check and award achievements based on current stats"""
+        new_achievements = []
+        
+        # Check streak achievements
+        streak = self.usage_data.get('current_streak', 0)
+        if streak >= 3 and 'streak_3' not in self.achievements:
+            self.achievements['streak_3'] = datetime.now().isoformat()
+            new_achievements.append('streak_3')
+        if streak >= 7 and 'streak_7' not in self.achievements:
+            self.achievements['streak_7'] = datetime.now().isoformat()
+            new_achievements.append('streak_7')
+        if streak >= 30 and 'streak_30' not in self.achievements:
+            self.achievements['streak_30'] = datetime.now().isoformat()
+            new_achievements.append('streak_30')
+        
+        # Check focus session achievements
+        focus_sessions = self.usage_data.get('focus_sessions', 0)
+        if focus_sessions >= 5 and 'focus_5' not in self.achievements:
+            self.achievements['focus_5'] = datetime.now().isoformat()
+            new_achievements.append('focus_5')
+        if focus_sessions >= 25 and 'focus_25' not in self.achievements:
+            self.achievements['focus_25'] = datetime.now().isoformat()
+            new_achievements.append('focus_25')
+        
+        # Check break achievements
+        breaks = self.usage_data.get('breaks_taken', 0)
+        if breaks >= 1 and 'first_break' not in self.achievements:
+            self.achievements['first_break'] = datetime.now().isoformat()
+            new_achievements.append('first_break')
+        if breaks >= 10 and 'breaks_10' not in self.achievements:
+            self.achievements['breaks_10'] = datetime.now().isoformat()
+            new_achievements.append('breaks_10')
+        if breaks >= 50 and 'breaks_50' not in self.achievements:
+            self.achievements['breaks_50'] = datetime.now().isoformat()
+            new_achievements.append('breaks_50')
+        
+        # Check productivity achievements
+        productivity = self.usage_data.get('productivity_score', 0)
+        if productivity >= 90 and 'productivity_90' not in self.achievements:
+            self.achievements['productivity_90'] = datetime.now().isoformat()
+            new_achievements.append('productivity_90')
+        
+        # Save achievements
+        self.usage_data['achievements'] = self.achievements
+        self.save_data()
+        
+        # Show notifications for new achievements
+        for achievement_id in new_achievements:
+            achievement = self.achievement_definitions[achievement_id]
+            if self.settings['notifications_enabled']:
+                notification.notify(
+                    title=f'Achievement Unlocked! {achievement["icon"]}',
+                    message=f'{achievement["name"]}: {achievement["description"]}',
+                    timeout=10
+                )
+        
+        # Update achievement display
+        self.update_achievement_display()
+    
+    def update_achievement_display(self):
+        """Update the achievement display"""
+        self.achievement_text.config(state='normal')
+        self.achievement_text.delete(1.0, tk.END)
+        
+        if not self.achievements:
+            self.achievement_text.insert(tk.END, "No achievements yet. Keep using the app to unlock badges!")
+        else:
+            for achievement_id, unlock_date in self.achievements.items():
+                if achievement_id in self.achievement_definitions:
+                    achievement = self.achievement_definitions[achievement_id]
+                    date_str = unlock_date[:10] if len(unlock_date) >= 10 else unlock_date
+                    self.achievement_text.insert(tk.END, f"{achievement['icon']} {achievement['name']} - {achievement['description']} (Unlocked: {date_str})\n")
+        
+        self.achievement_text.config(state='disabled')
     
     def get_smart_suggestion(self):
         """Generate a smart suggestion based on recent usage patterns"""
