@@ -140,6 +140,30 @@ class ScrollStoppingTool:
         
         # Start background tasks
         self.start_background_tasks()
+        
+        # Keyboard shortcuts
+        self.root.bind('<Control-t>', lambda e: self.start_tracking())
+        self.root.bind('<Control-s>', lambda e: self.stop_tracking())
+        self.root.bind('<Control-b>', lambda e: self.take_break())
+        self.root.bind('<Control-l>', lambda e: self.lock_screen())
+        self.root.bind('<Control-p>', lambda e: self.start_pomodoro())
+        self.root.bind('<Control-o>', lambda e: self.pause_pomodoro())
+        self.root.bind('<Control-r>', lambda e: self.reset_pomodoro())
+        self.root.bind('<Control-e>', lambda e: self.open_settings())
+        self.root.bind('<Control-a>', lambda e: self.open_analytics_dashboard())
+        
+        # Add tooltips for shortcut hints
+        self.add_tooltip(self.start_button, "Start Tracking (Ctrl+T)")
+        self.add_tooltip(self.stop_button, "Stop Tracking (Ctrl+S)")
+        self.add_tooltip(self.break_button, "Take Break (Ctrl+B)")
+        self.add_tooltip(self.lock_button, "Lock Screen (Ctrl+L)")
+        self.add_tooltip(self.focus_button, "Focus Mode")
+        self.add_tooltip(self.settings_button, "Settings (Ctrl+E)")
+        self.add_tooltip(self.export_button, "Export Data")
+        self.add_tooltip(self.analytics_button, "Analytics (Ctrl+A)")
+        self.add_tooltip(self.pomodoro_start_button, "Start Pomodoro (Ctrl+P)")
+        self.add_tooltip(self.pomodoro_pause_button, "Pause Pomodoro (Ctrl+O)")
+        self.add_tooltip(self.pomodoro_reset_button, "Reset Pomodoro (Ctrl+R)")
     
     def init_database(self):
         """Initialize SQLite database for productivity tracking"""
@@ -1833,6 +1857,24 @@ class ScrollStoppingTool:
         except Exception as e:
             # Fallback to simple beep if sound system fails
             print('\a')
+
+    def add_tooltip(self, widget, text):
+        """Add a tooltip to a widget"""
+        tooltip = tk.Toplevel(widget)
+        tooltip.withdraw()
+        tooltip.overrideredirect(True)
+        label = tk.Label(tooltip, text=text, background="#ffffe0", relief=tk.SOLID, borderwidth=1, font=("Arial", 9))
+        label.pack(ipadx=2)
+        
+        def enter(event):
+            x = widget.winfo_rootx() + 20
+            y = widget.winfo_rooty() + 20
+            tooltip.geometry(f"+{x}+{y}")
+            tooltip.deiconify()
+        def leave(event):
+            tooltip.withdraw()
+        widget.bind('<Enter>', enter)
+        widget.bind('<Leave>', leave)
 
 def main():
     """Main function to run the application"""
