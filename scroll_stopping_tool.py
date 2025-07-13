@@ -24,6 +24,13 @@ import csv
 import sqlite3
 import random
 import winsound  # For Windows sound support
+try:
+    from matplotlib.backends.backend_pdf import PdfPages
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas as pdf_canvas
+    REPORTLAB_AVAILABLE = True
+except ImportError:
+    REPORTLAB_AVAILABLE = False
 
 class ScrollStoppingTool:
     def __init__(self, root):
@@ -160,6 +167,7 @@ class ScrollStoppingTool:
         self.add_tooltip(self.focus_button, "Focus Mode")
         self.add_tooltip(self.settings_button, "Settings (Ctrl+E)")
         self.add_tooltip(self.export_button, "Export Data")
+        self.add_tooltip(self.export_pdf_button, "Export PDF")
         self.add_tooltip(self.analytics_button, "Analytics (Ctrl+A)")
         self.add_tooltip(self.pomodoro_start_button, "Start Pomodoro (Ctrl+P)")
         self.add_tooltip(self.pomodoro_pause_button, "Pause Pomodoro (Ctrl+O)")
@@ -348,6 +356,10 @@ class ScrollStoppingTool:
         self.export_button = ttk.Button(control_frame, text="Export Data", 
                                        command=self.export_data)
         self.export_button.grid(row=0, column=7, padx=(0, 10))
+        
+        self.export_pdf_button = ttk.Button(control_frame, text="Export PDF", 
+                                           command=self.export_pdf_report)
+        self.export_pdf_button.grid(row=0, column=9)
         
         self.analytics_button = ttk.Button(control_frame, text="Analytics", 
                                           command=self.open_analytics_dashboard)
@@ -822,6 +834,64 @@ class ScrollStoppingTool:
                 messagebox.showinfo("Export", f"Data exported successfully to {filename}")
             except Exception as e:
                 messagebox.showerror("Export Error", f"Failed to export data: {e}")
+    
+    def export_pdf_report(self):
+        """Export analytics and reports as a PDF file"""
+        if not REPORTLAB_AVAILABLE:
+            messagebox.showerror("PDF Export", "ReportLab is not installed. Please install it to enable PDF export.")
+            return
+        filename = filedialog.asksaveasfilename(
+            defaultextension=".pdf",
+            filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")]
+        )
+        if not filename:
+            return
+        # Create PDF
+        c = pdf_canvas.Canvas(filename, pagesize=letter)
+        width, height = letter
+        c.setFont("Helvetica-Bold", 16)
+        c.drawString(40, height - 40, "Scroll Stopping Tool - Analytics Report")
+        c.setFont("Helvetica", 12)
+        c.drawString(40, height - 70, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+        c.drawString(40, height - 90, f"Total Days Tracked: {len(self.usage_data['daily_usage'])}")
+        c.drawString(40, height - 110, f"Total Usage Time: {self.usage_data['total_time']//60} minutes")
+        c.drawString(40, height - 130, f"Focus Sessions: {self.usage_data.get('focus_sessions', 0)}")
+        c.drawString(40, height - 150, f"Breaks Taken: {self.usage_data.get('breaks_taken', 0)}")
+        c.drawString(40, height - 170, f"Current Streak: {self.usage_data.get('current_streak', 0)} days")
+        c.drawString(40, height - 190, f"Best Streak: {self.usage_data.get('best_streak', 0)} days")
+        c.drawString(40, height - 210, f"Achievements Unlocked: {len(self.achievements)}")
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(40, height - 240, "Weekly Usage Chart:")
+        # Save weekly chart as image and embed
+        import tempfile
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(figsize=(7, 3))
+        self.create_weekly_chart(ax)
+        tmp_img = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
+        fig.savefig(tmp_img.name)
+        plt.close(fig)
+        c.drawImage(tmp_img.name, 40, height - 420, width=500, height=150)
+        # Focus session summary
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(40, height - 440, "Focus Session Summary:")
+        c.setFont("Helvetica", 11)
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+        cursor.execute("SELECT start_time, duration, focus_score FROM productivity_sessions ORDER BY start_time DESC LIMIT 10")
+        sessions = cursor.fetchall()
+        conn.close()
+        y = height - 460
+        for s in sessions:
+            start, duration, score = s
+            mins = int(duration) // 60
+            c.drawString(50, y, f"{start[:16]} | {mins} min | Score: {score}%")
+            y -= 18
+            if y < 80:
+                c.showPage()
+                y = height - 40
+        c.save()
+        os.unlink(tmp_img.name)
+        messagebox.showinfo("Export PDF", f"PDF report exported successfully to {filename}")
     
     def open_blocking_dialog(self):
         """Open website blocking configuration dialog"""
