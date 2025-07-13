@@ -146,6 +146,12 @@ class ScrollStoppingTool:
         self.calendar_enabled = self.settings.get('calendar_enabled', False)
         self.upcoming_sessions = []
         
+        # Email/SMS reminders settings
+        self.reminder_email_enabled = self.settings.get('reminder_email_enabled', False)
+        self.reminder_sms_enabled = self.settings.get('reminder_sms_enabled', False)
+        self.reminder_email = self.settings.get('reminder_email', '')
+        self.reminder_phone = self.settings.get('reminder_phone', '')
+        
         # Create GUI
         self.create_widgets()
         self.update_display()
@@ -273,7 +279,11 @@ class ScrollStoppingTool:
                     },
                     'calendar_api_key': '',
                     'calendar_id': '',
-                    'calendar_enabled': False
+                    'calendar_enabled': False,
+                    'reminder_email_enabled': False,
+                    'reminder_sms_enabled': False,
+                    'reminder_email': '',
+                    'reminder_phone': ''
                 }
         except:
             self.settings = {
@@ -309,7 +319,11 @@ class ScrollStoppingTool:
                 },
                 'calendar_api_key': '',
                 'calendar_id': '',
-                'calendar_enabled': False
+                'calendar_enabled': False,
+                'reminder_email_enabled': False,
+                'reminder_sms_enabled': False,
+                'reminder_email': '',
+                'reminder_phone': ''
             }
     
     def save_settings(self):
@@ -1238,6 +1252,49 @@ class ScrollStoppingTool:
         sync_btn = ttk.Button(backup_frame, text="Sync (Cloud)", command=self.sync_cloud)
         sync_btn.pack(side=tk.LEFT, padx=5)
         self.add_tooltip(sync_btn, "(Stub) Sync your data to the cloud")
+        
+        # Email/SMS Reminders section in settings
+        reminders_frame = ttk.LabelFrame(settings_window, text="Reminders (Email/SMS)", padding="10")
+        reminders_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        email_enabled_var = tk.BooleanVar(value=self.reminder_email_enabled)
+        email_check = ttk.Checkbutton(reminders_frame, text="Enable Email Reminders", variable=email_enabled_var)
+        email_check.grid(row=0, column=0, padx=10, pady=5, sticky=tk.W)
+        
+        ttk.Label(reminders_frame, text="Email:").grid(row=0, column=1, padx=10, pady=5, sticky=tk.W)
+        email_var = tk.StringVar(value=self.reminder_email)
+        email_entry = ttk.Entry(reminders_frame, textvariable=email_var, width=30)
+        email_entry.grid(row=0, column=2, padx=10, pady=5, sticky=tk.W)
+        
+        sms_enabled_var = tk.BooleanVar(value=self.reminder_sms_enabled)
+        sms_check = ttk.Checkbutton(reminders_frame, text="Enable SMS Reminders", variable=sms_enabled_var)
+        sms_check.grid(row=1, column=0, padx=10, pady=5, sticky=tk.W)
+        
+        ttk.Label(reminders_frame, text="Phone:").grid(row=1, column=1, padx=10, pady=5, sticky=tk.W)
+        phone_var = tk.StringVar(value=self.reminder_phone)
+        phone_entry = ttk.Entry(reminders_frame, textvariable=phone_var, width=20)
+        phone_entry.grid(row=1, column=2, padx=10, pady=5, sticky=tk.W)
+        
+        def save_reminder_settings():
+            self.reminder_email_enabled = email_enabled_var.get()
+            self.reminder_sms_enabled = sms_enabled_var.get()
+            self.reminder_email = email_var.get()
+            self.reminder_phone = phone_var.get()
+            self.settings['reminder_email_enabled'] = self.reminder_email_enabled
+            self.settings['reminder_sms_enabled'] = self.reminder_sms_enabled
+            self.settings['reminder_email'] = self.reminder_email
+            self.settings['reminder_phone'] = self.reminder_phone
+            self.save_settings()
+            messagebox.showinfo("Reminders", "Reminder settings saved!")
+        
+        ttk.Button(reminders_frame, text="Save", command=save_reminder_settings).grid(row=2, column=0, pady=10)
+        ttk.Button(reminders_frame, text="Test Email Reminder", command=self.test_email_reminder).grid(row=2, column=1, pady=10)
+        ttk.Button(reminders_frame, text="Test SMS Reminder", command=self.test_sms_reminder).grid(row=2, column=2, pady=10)
+        self.add_tooltip(email_check, "Enable/disable email reminders for breaks, limits, etc.")
+        self.add_tooltip(sms_check, "Enable/disable SMS reminders for breaks, limits, etc.")
+        self.add_tooltip(email_entry, "Enter your email address for reminders")
+        self.add_tooltip(phone_entry, "Enter your phone number for SMS reminders")
+        self.add_tooltip(reminders_frame, "Reminders are sent for breaks, limits, and scheduled events (stub)")
     
     def update_display(self):
         """Update the display with current data"""
@@ -2103,6 +2160,20 @@ class ScrollStoppingTool:
     def sync_cloud(self):
         """Stub: Sync data to the cloud"""
         messagebox.showinfo("Sync (Cloud)", "(Stub) This will sync your data to the cloud in a future update.")
+
+    def test_email_reminder(self):
+        """Stub: Send a test email reminder"""
+        if not self.reminder_email_enabled or not self.reminder_email:
+            messagebox.showwarning("Test Email Reminder", "Please enable email reminders and enter your email address.")
+            return
+        messagebox.showinfo("Test Email Reminder", "(Stub) A test email reminder would be sent to your address.")
+
+    def test_sms_reminder(self):
+        """Stub: Send a test SMS reminder"""
+        if not self.reminder_sms_enabled or not self.reminder_phone:
+            messagebox.showwarning("Test SMS Reminder", "Please enable SMS reminders and enter your phone number.")
+            return
+        messagebox.showinfo("Test SMS Reminder", "(Stub) A test SMS reminder would be sent to your phone.")
 
 def main():
     """Main function to run the application"""
