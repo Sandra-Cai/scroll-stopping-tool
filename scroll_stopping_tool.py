@@ -31,6 +31,8 @@ try:
     REPORTLAB_AVAILABLE = True
 except ImportError:
     REPORTLAB_AVAILABLE = False
+import smtplib
+from email.mime.text import MIMEText
 
 class ScrollStoppingTool:
     def __init__(self, root):
@@ -151,6 +153,13 @@ class ScrollStoppingTool:
         self.reminder_sms_enabled = self.settings.get('reminder_sms_enabled', False)
         self.reminder_email = self.settings.get('reminder_email', '')
         self.reminder_phone = self.settings.get('reminder_phone', '')
+        
+        # SMTP settings for email reminders
+        self.smtp_server = self.settings.get('smtp_server', '')
+        self.smtp_port = self.settings.get('smtp_port', 587)
+        self.smtp_username = self.settings.get('smtp_username', '')
+        self.smtp_password = self.settings.get('smtp_password', '')
+        self.smtp_tls = self.settings.get('smtp_tls', True)
         
         # Create GUI
         self.create_widgets()
@@ -283,7 +292,12 @@ class ScrollStoppingTool:
                     'reminder_email_enabled': False,
                     'reminder_sms_enabled': False,
                     'reminder_email': '',
-                    'reminder_phone': ''
+                    'reminder_phone': '',
+                    'smtp_server': '',
+                    'smtp_port': 587,
+                    'smtp_username': '',
+                    'smtp_password': '',
+                    'smtp_tls': True
                 }
         except:
             self.settings = {
@@ -323,7 +337,12 @@ class ScrollStoppingTool:
                 'reminder_email_enabled': False,
                 'reminder_sms_enabled': False,
                 'reminder_email': '',
-                'reminder_phone': ''
+                'reminder_phone': '',
+                'smtp_server': '',
+                'smtp_port': 587,
+                'smtp_username': '',
+                'smtp_password': '',
+                'smtp_tls': True
             }
     
     def save_settings(self):
@@ -1295,6 +1314,50 @@ class ScrollStoppingTool:
         self.add_tooltip(email_entry, "Enter your email address for reminders")
         self.add_tooltip(phone_entry, "Enter your phone number for SMS reminders")
         self.add_tooltip(reminders_frame, "Reminders are sent for breaks, limits, and scheduled events (stub)")
+        
+        # SMTP settings for email reminders
+        smtp_frame = ttk.LabelFrame(reminders_frame, text="SMTP Settings (for Email)", padding="10")
+        smtp_frame.grid(row=3, column=0, columnspan=3, padx=10, pady=10, sticky=tk.W)
+        
+        ttk.Label(smtp_frame, text="SMTP Server:").grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+        smtp_server_var = tk.StringVar(value=self.smtp_server)
+        smtp_server_entry = ttk.Entry(smtp_frame, textvariable=smtp_server_var, width=20)
+        smtp_server_entry.grid(row=0, column=1, padx=5, pady=5, sticky=tk.W)
+        
+        ttk.Label(smtp_frame, text="Port:").grid(row=0, column=2, padx=5, pady=5, sticky=tk.W)
+        smtp_port_var = tk.StringVar(value=str(self.smtp_port))
+        smtp_port_entry = ttk.Entry(smtp_frame, textvariable=smtp_port_var, width=6)
+        smtp_port_entry.grid(row=0, column=3, padx=5, pady=5, sticky=tk.W)
+        
+        ttk.Label(smtp_frame, text="Username:").grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
+        smtp_user_var = tk.StringVar(value=self.smtp_username)
+        smtp_user_entry = ttk.Entry(smtp_frame, textvariable=smtp_user_var, width=20)
+        smtp_user_entry.grid(row=1, column=1, padx=5, pady=5, sticky=tk.W)
+        
+        ttk.Label(smtp_frame, text="Password:").grid(row=1, column=2, padx=5, pady=5, sticky=tk.W)
+        smtp_pass_var = tk.StringVar(value=self.smtp_password)
+        smtp_pass_entry = ttk.Entry(smtp_frame, textvariable=smtp_pass_var, width=20, show='*')
+        smtp_pass_entry.grid(row=1, column=3, padx=5, pady=5, sticky=tk.W)
+        
+        smtp_tls_var = tk.BooleanVar(value=self.smtp_tls)
+        smtp_tls_check = ttk.Checkbutton(smtp_frame, text="Use TLS", variable=smtp_tls_var)
+        smtp_tls_check.grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+        
+        def save_smtp_settings():
+            self.smtp_server = smtp_server_var.get()
+            self.smtp_port = int(smtp_port_var.get())
+            self.smtp_username = smtp_user_var.get()
+            self.smtp_password = smtp_pass_var.get()
+            self.smtp_tls = smtp_tls_var.get()
+            self.settings['smtp_server'] = self.smtp_server
+            self.settings['smtp_port'] = self.smtp_port
+            self.settings['smtp_username'] = self.smtp_username
+            self.settings['smtp_password'] = self.smtp_password
+            self.settings['smtp_tls'] = self.smtp_tls
+            self.save_settings()
+            messagebox.showinfo("SMTP Settings", "SMTP settings saved!")
+        
+        ttk.Button(smtp_frame, text="Save SMTP Settings", command=save_smtp_settings).grid(row=2, column=1, pady=10)
     
     def update_display(self):
         """Update the display with current data"""
@@ -2162,11 +2225,27 @@ class ScrollStoppingTool:
         messagebox.showinfo("Sync (Cloud)", "(Stub) This will sync your data to the cloud in a future update.")
 
     def test_email_reminder(self):
-        """Stub: Send a test email reminder"""
+        """Send a test email reminder using SMTP"""
         if not self.reminder_email_enabled or not self.reminder_email:
             messagebox.showwarning("Test Email Reminder", "Please enable email reminders and enter your email address.")
             return
-        messagebox.showinfo("Test Email Reminder", "(Stub) A test email reminder would be sent to your address.")
+        if not self.smtp_server or not self.smtp_username or not self.smtp_password:
+            messagebox.showwarning("Test Email Reminder", "Please enter your SMTP settings.")
+            return
+        try:
+            msg = MIMEText("This is a test reminder from the Scroll Stopping Tool.")
+            msg['Subject'] = "Test Reminder - Scroll Stopping Tool"
+            msg['From'] = self.smtp_username
+            msg['To'] = self.reminder_email
+            server = smtplib.SMTP(self.smtp_server, self.smtp_port, timeout=10)
+            if self.smtp_tls:
+                server.starttls()
+            server.login(self.smtp_username, self.smtp_password)
+            server.sendmail(self.smtp_username, [self.reminder_email], msg.as_string())
+            server.quit()
+            messagebox.showinfo("Test Email Reminder", f"Test email sent to {self.reminder_email}!")
+        except Exception as e:
+            messagebox.showerror("Test Email Reminder", f"Failed to send test email: {e}")
 
     def test_sms_reminder(self):
         """Stub: Send a test SMS reminder"""
