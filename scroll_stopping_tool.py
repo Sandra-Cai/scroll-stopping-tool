@@ -140,6 +140,12 @@ class ScrollStoppingTool:
         })
         self.sound_system = platform.system()
         
+        # Calendar integration settings
+        self.calendar_api_key = self.settings.get('calendar_api_key', '')
+        self.calendar_id = self.settings.get('calendar_id', '')
+        self.calendar_enabled = self.settings.get('calendar_enabled', False)
+        self.upcoming_sessions = []
+        
         # Create GUI
         self.create_widgets()
         self.update_display()
@@ -172,6 +178,7 @@ class ScrollStoppingTool:
         self.add_tooltip(self.pomodoro_start_button, "Start Pomodoro (Ctrl+P)")
         self.add_tooltip(self.pomodoro_pause_button, "Pause Pomodoro (Ctrl+O)")
         self.add_tooltip(self.pomodoro_reset_button, "Reset Pomodoro (Ctrl+R)")
+        self.add_tooltip(self.schedule_calendar_button, "Schedule Focus (Calendar)")
     
     def init_database(self):
         """Initialize SQLite database for productivity tracking"""
@@ -263,7 +270,10 @@ class ScrollStoppingTool:
                         'achievement': 'success',
                         'warning': 'alert',
                         'timer': 'notification'
-                    }
+                    },
+                    'calendar_api_key': '',
+                    'calendar_id': '',
+                    'calendar_enabled': False
                 }
         except:
             self.settings = {
@@ -296,7 +306,10 @@ class ScrollStoppingTool:
                     'achievement': 'success',
                     'warning': 'alert',
                     'timer': 'notification'
-                }
+                },
+                'calendar_api_key': '',
+                'calendar_id': '',
+                'calendar_enabled': False
             }
     
     def save_settings(self):
@@ -364,6 +377,11 @@ class ScrollStoppingTool:
         self.analytics_button = ttk.Button(control_frame, text="Analytics", 
                                           command=self.open_analytics_dashboard)
         self.analytics_button.grid(row=0, column=8)
+        
+        # Calendar integration button
+        self.schedule_calendar_button = ttk.Button(control_frame, text="Schedule Focus (Calendar)", command=self.schedule_focus_session)
+        self.schedule_calendar_button.grid(row=0, column=10)
+        self.add_tooltip(self.schedule_calendar_button, "Schedule next focus session in Google Calendar")
         
         # Stats frame
         stats_frame = ttk.LabelFrame(main_frame, text="Today's Statistics", padding="10")
@@ -1133,6 +1151,36 @@ class ScrollStoppingTool:
             tree.insert("", tk.END, values=(start[:16], end[:16], mins, score, notes))
         conn.close()
         
+        # Calendar integration tab
+        calendar_frame = ttk.Frame(notebook)
+        notebook.add(calendar_frame, text="Calendar")
+        
+        cal_enabled_var = tk.BooleanVar(value=self.calendar_enabled)
+        cal_enabled_check = ttk.Checkbutton(calendar_frame, text="Enable Google Calendar Integration", variable=cal_enabled_var)
+        cal_enabled_check.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky=tk.W)
+        
+        ttk.Label(calendar_frame, text="API Key:").grid(row=1, column=0, padx=10, pady=5, sticky=tk.W)
+        cal_api_var = tk.StringVar(value=self.calendar_api_key)
+        cal_api_entry = ttk.Entry(calendar_frame, textvariable=cal_api_var, width=40)
+        cal_api_entry.grid(row=1, column=1, padx=10, pady=5, sticky=tk.W)
+        
+        ttk.Label(calendar_frame, text="Calendar ID:").grid(row=2, column=0, padx=10, pady=5, sticky=tk.W)
+        cal_id_var = tk.StringVar(value=self.calendar_id)
+        cal_id_entry = ttk.Entry(calendar_frame, textvariable=cal_id_var, width=40)
+        cal_id_entry.grid(row=2, column=1, padx=10, pady=5, sticky=tk.W)
+        
+        def save_calendar_settings():
+            self.calendar_enabled = cal_enabled_var.get()
+            self.calendar_api_key = cal_api_var.get()
+            self.calendar_id = cal_id_var.get()
+            self.settings['calendar_enabled'] = self.calendar_enabled
+            self.settings['calendar_api_key'] = self.calendar_api_key
+            self.settings['calendar_id'] = self.calendar_id
+            self.save_settings()
+            messagebox.showinfo("Calendar Settings", "Calendar integration settings saved!")
+        
+        ttk.Button(calendar_frame, text="Save", command=save_calendar_settings).grid(row=3, column=0, columnspan=2, pady=20)
+        
         # Save button
         def save_settings():
             try:
@@ -1627,6 +1675,18 @@ class ScrollStoppingTool:
         trends_frame = ttk.Frame(notebook)
         notebook.add(trends_frame, text="Trends")
         self.create_trends_tab(trends_frame)
+        
+        # Upcoming sessions display (stub)
+        upcoming_frame = ttk.LabelFrame(overview_frame, text="Upcoming Scheduled Focus Sessions (Calendar)", padding="10")
+        upcoming_frame.pack(fill=tk.X, padx=10, pady=10)
+        if self.calendar_enabled:
+            if self.upcoming_sessions:
+                for sess in self.upcoming_sessions:
+                    ttk.Label(upcoming_frame, text=sess).pack(anchor=tk.W)
+            else:
+                ttk.Label(upcoming_frame, text="(Stub) No upcoming sessions found.").pack(anchor=tk.W)
+        else:
+            ttk.Label(upcoming_frame, text="Calendar integration is disabled.").pack(anchor=tk.W)
     
     def create_overview_tab(self, parent):
         """Create overview analytics tab"""
@@ -1945,6 +2005,15 @@ class ScrollStoppingTool:
             tooltip.withdraw()
         widget.bind('<Enter>', enter)
         widget.bind('<Leave>', leave)
+
+    def schedule_focus_session(self):
+        """Stub: Schedule the next focus session in Google Calendar"""
+        if not self.calendar_enabled or not self.calendar_api_key or not self.calendar_id:
+            messagebox.showwarning("Calendar Integration", "Please enable calendar integration and provide API key and calendar ID in settings.")
+            return
+        # Here you would use Google Calendar API to create an event
+        # For now, just show a stub message
+        messagebox.showinfo("Calendar Integration", "(Stub) Focus session scheduled in Google Calendar!")
 
 def main():
     """Main function to run the application"""
