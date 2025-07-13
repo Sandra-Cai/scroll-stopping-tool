@@ -2175,6 +2175,37 @@ class ScrollStoppingTool:
             return
         messagebox.showinfo("Test SMS Reminder", "(Stub) A test SMS reminder would be sent to your phone.")
 
+    def customize_dashboard(self):
+        """Stub: Customize dashboard layout (show/hide sections)"""
+        # For now, just show a dialog with checkboxes and save preferences
+        layout_prefs = self.settings.get('dashboard_layout', {
+            'weekly_chart': True,
+            'focus_stats': True,
+            'achievements': True,
+            'trends': True
+        })
+        win = tk.Toplevel(self.root)
+        win.title("Customize Dashboard")
+        win.geometry("350x250")
+        win.transient(self.root)
+        win.grab_set()
+        
+        vars = {}
+        row = 0
+        for section, enabled in layout_prefs.items():
+            var = tk.BooleanVar(value=enabled)
+            vars[section] = var
+            ttk.Checkbutton(win, text=f"Show {section.replace('_', ' ').title()}", variable=var).grid(row=row, column=0, sticky=tk.W, padx=20, pady=10)
+            row += 1
+        
+        def save_layout():
+            self.settings['dashboard_layout'] = {k: v.get() for k, v in vars.items()}
+            self.save_settings()
+            win.destroy()
+            messagebox.showinfo("Customize Dashboard", "Dashboard layout preferences saved! (Stub: sections will be shown/hidden in a future update)")
+        
+        ttk.Button(win, text="Save", command=save_layout).grid(row=row, column=0, pady=20)
+
 def main():
     """Main function to run the application"""
     root = tk.Tk()
