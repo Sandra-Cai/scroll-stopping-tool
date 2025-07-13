@@ -497,7 +497,12 @@ class ScrollStoppingTool:
         
         # Achievement display
         self.achievement_text = tk.Text(achievements_frame, height=4, width=80, wrap=tk.WORD, state='disabled')
-        self.achievement_text.pack(fill=tk.BOTH, expand=True)
+        self.achievement_text.pack(fill=tk.BOTH, expand=True, side=tk.LEFT)
+        
+        # Share achievement button
+        self.share_achievement_button = ttk.Button(achievements_frame, text="Share Achievement", command=self.share_achievement)
+        self.share_achievement_button.pack(side=tk.LEFT, padx=10)
+        self.add_tooltip(self.share_achievement_button, "Share your latest achievement (copies to clipboard)")
         
         # Scrollbar for achievements
         achievement_scrollbar = ttk.Scrollbar(achievements_frame, orient=tk.VERTICAL, command=self.achievement_text.yview)
@@ -2014,6 +2019,27 @@ class ScrollStoppingTool:
         # Here you would use Google Calendar API to create an event
         # For now, just show a stub message
         messagebox.showinfo("Calendar Integration", "(Stub) Focus session scheduled in Google Calendar!")
+
+    def share_achievement(self):
+        """Share the latest achievement (copies to clipboard)"""
+        if not self.achievements:
+            messagebox.showinfo("Share Achievement", "No achievements to share yet!")
+            return
+        # Get the most recent achievement
+        latest = max(self.achievements.items(), key=lambda x: x[1])
+        achievement_id, unlock_date = latest
+        if achievement_id in self.achievement_definitions:
+            achievement = self.achievement_definitions[achievement_id]
+            msg = f"I just unlocked '{achievement['name']}' in the Scroll Stopping Tool! {achievement['icon']} ({achievement['description']}) #ScrollStoppingTool"
+            self.root.clipboard_clear()
+            self.root.clipboard_append(msg)
+            messagebox.showinfo("Share Achievement", "Achievement copied to clipboard! Paste it anywhere to share.")
+        else:
+            messagebox.showinfo("Share Achievement", "Achievement not found.")
+
+    def compare_progress(self):
+        """Stub: Compare progress with a friend's exported stats"""
+        messagebox.showinfo("Compare Progress", "(Stub) This will allow you to import a friend's stats and compare side-by-side.")
 
 def main():
     """Main function to run the application"""
