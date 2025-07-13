@@ -1222,6 +1222,22 @@ class ScrollStoppingTool:
                 messagebox.showerror("Error", "Please enter valid numbers for limits and goals.")
         
         ttk.Button(settings_window, text="Save", command=save_settings).pack(pady=20)
+        
+        # Backup & Sync buttons in settings
+        backup_frame = ttk.LabelFrame(settings_window, text="Backup & Sync", padding="10")
+        backup_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        export_backup_btn = ttk.Button(backup_frame, text="Export Backup", command=self.export_backup)
+        export_backup_btn.pack(side=tk.LEFT, padx=5)
+        self.add_tooltip(export_backup_btn, "Export all your data as a JSON backup")
+        
+        import_backup_btn = ttk.Button(backup_frame, text="Import Backup", command=self.import_backup)
+        import_backup_btn.pack(side=tk.LEFT, padx=5)
+        self.add_tooltip(import_backup_btn, "Import a JSON backup to restore your data")
+        
+        sync_btn = ttk.Button(backup_frame, text="Sync (Cloud)", command=self.sync_cloud)
+        sync_btn.pack(side=tk.LEFT, padx=5)
+        self.add_tooltip(sync_btn, "(Stub) Sync your data to the cloud")
     
     def update_display(self):
         """Update the display with current data"""
@@ -2040,6 +2056,53 @@ class ScrollStoppingTool:
     def compare_progress(self):
         """Stub: Compare progress with a friend's exported stats"""
         messagebox.showinfo("Compare Progress", "(Stub) This will allow you to import a friend's stats and compare side-by-side.")
+
+    def export_backup(self):
+        """Export all user data as a JSON backup"""
+        filename = filedialog.asksaveasfilename(
+            defaultextension=".json",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
+        )
+        if not filename:
+            return
+        backup = {
+            'usage_data': self.usage_data,
+            'settings': self.settings
+        }
+        try:
+            with open(filename, 'w') as f:
+                import json
+                json.dump(backup, f, indent=2)
+            messagebox.showinfo("Export Backup", f"Backup exported successfully to {filename}")
+        except Exception as e:
+            messagebox.showerror("Export Backup", f"Failed to export backup: {e}")
+
+    def import_backup(self):
+        """Import user data from a JSON backup"""
+        filename = filedialog.askopenfilename(
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
+        )
+        if not filename:
+            return
+        try:
+            with open(filename, 'r') as f:
+                import json
+                backup = json.load(f)
+            if 'usage_data' in backup and 'settings' in backup:
+                self.usage_data = backup['usage_data']
+                self.settings = backup['settings']
+                self.save_data()
+                self.save_settings()
+                self.update_display()
+                messagebox.showinfo("Import Backup", "Backup imported successfully!")
+            else:
+                messagebox.showerror("Import Backup", "Invalid backup file.")
+        except Exception as e:
+            messagebox.showerror("Import Backup", f"Failed to import backup: {e}")
+
+    def sync_cloud(self):
+        """Stub: Sync data to the cloud"""
+        messagebox.showinfo("Sync (Cloud)", "(Stub) This will sync your data to the cloud in a future update.")
 
 def main():
     """Main function to run the application"""
