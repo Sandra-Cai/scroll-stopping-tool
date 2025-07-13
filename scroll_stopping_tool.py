@@ -38,6 +38,14 @@ try:
     TWILIO_AVAILABLE = True
 except ImportError:
     TWILIO_AVAILABLE = False
+try:
+    from googleapiclient.discovery import build
+    from google_auth_oauthlib.flow import InstalledAppFlow
+    from google.auth.transport.requests import Request
+    import pickle
+    GOOGLE_API_AVAILABLE = True
+except ImportError:
+    GOOGLE_API_AVAILABLE = False
 
 class ScrollStoppingTool:
     def __init__(self, root):
@@ -170,6 +178,16 @@ class ScrollStoppingTool:
         self.twilio_sid = self.settings.get('twilio_sid', '')
         self.twilio_token = self.settings.get('twilio_token', '')
         self.twilio_from = self.settings.get('twilio_from', '')
+        
+        # Google Calendar API integration
+        self.gcal_credentials = None
+        self.gcal_service = None
+        self.gcal_token_file = 'gcal_token.pickle'
+        self.gcal_scopes = ['https://www.googleapis.com/auth/calendar']
+        self.gcal_calendar_list = []
+        self.gcal_selected_calendar = self.settings.get('gcal_selected_calendar', '')
+        if self.calendar_enabled and GOOGLE_API_AVAILABLE:
+            self.init_gcal_service()
         
         # Create GUI
         self.create_widgets()
@@ -310,7 +328,8 @@ class ScrollStoppingTool:
                     'smtp_tls': True,
                     'twilio_sid': '',
                     'twilio_token': '',
-                    'twilio_from': ''
+                    'twilio_from': '',
+                    'gcal_selected_calendar': ''
                 }
         except:
             self.settings = {
@@ -358,7 +377,8 @@ class ScrollStoppingTool:
                 'smtp_tls': True,
                 'twilio_sid': '',
                 'twilio_token': '',
-                'twilio_from': ''
+                'twilio_from': '',
+                'gcal_selected_calendar': ''
             }
     
     def save_settings(self):
@@ -1405,6 +1425,23 @@ class ScrollStoppingTool:
             messagebox.showinfo("Twilio Settings", "Twilio settings saved!")
         
         ttk.Button(twilio_frame, text="Save Twilio Settings", command=save_twilio_settings).grid(row=3, column=1, pady=10)
+        
+        # Google Calendar API integration
+        if GOOGLE_API_AVAILABLE:
+            ttk.Button(calendar_frame, text="Authenticate with Google", command=self.authenticate_gcal).grid(row=4, column=0, pady=10)
+            ttk.Button(calendar_frame, text="Refresh Calendars", command=self.refresh_gcal_calendars).grid(row=4, column=1, pady=10)
+            ttk.Label(calendar_frame, text="Select Calendar:").grid(row=5, column=0, padx=10, pady=5, sticky=tk.W)
+            self.gcal_calendar_var = tk.StringVar(value=self.gcal_selected_calendar)
+            self.gcal_calendar_combo = ttk.Combobox(calendar_frame, textvariable=self.gcal_calendar_var, values=self.gcal_calendar_list, state="readonly", width=40)
+            self.gcal_calendar_combo.grid(row=5, column=1, padx=10, pady=5, sticky=tk.W)
+            def save_gcal_calendar():
+                self.gcal_selected_calendar = self.gcal_calendar_var.get()
+                self.settings['gcal_selected_calendar'] = self.gcal_selected_calendar
+                self.save_settings()
+                messagebox.showinfo("Google Calendar", "Selected calendar saved!")
+            ttk.Button(calendar_frame, text="Save Calendar", command=save_gcal_calendar).grid(row=6, column=0, pady=10)
+        else:
+            ttk.Label(calendar_frame, text="Google Calendar API not available. Please install google-api-python-client and google-auth-oauthlib.").grid(row=4, column=0, columnspan=2, pady=10)
     
     def update_display(self):
         """Update the display with current data"""
@@ -1864,17 +1901,26 @@ class ScrollStoppingTool:
         notebook.add(trends_frame, text="Trends")
         self.create_trends_tab(trends_frame)
         
-        # Upcoming sessions display (stub)
+        # Upcoming sessions display (real fetch)
         upcoming_frame = ttk.LabelFrame(overview_frame, text="Upcoming Scheduled Focus Sessions (Calendar)", padding="10")
         upcoming_frame.pack(fill=tk.X, padx=10, pady=10)
-        if self.calendar_enabled:
-            if self.upcoming_sessions:
-                for sess in self.upcoming_sessions:
-                    ttk.Label(upcoming_frame, text=sess).pack(anchor=tk.W)
-            else:
-                ttk.Label(upcoming_frame, text="(Stub) No upcoming sessions found.").pack(anchor=tk.W)
+        if self.calendar_enabled and self.gcal_service and self.gcal_selected_calendar:
+            try:
+                from datetime import datetime, timedelta
+                now = datetime.utcnow().isoformat() + 'Z'
+                events_result = self.gcal_service.events().list(calendarId=self.gcal_selected_calendar, timeMin=now, maxResults=5, singleEvents=True, orderBy='startTime').execute()
+                events = events_result.get('items', [])
+                if events:
+                    for event in events:
+                        start = event['start'].get('dateTime', event['start'].get('date', ''))
+                        summary = event.get('summary', '')
+                        ttk.Label(upcoming_frame, text=f"{start}: {summary}").pack(anchor=tk.W)
+                else:
+                    ttk.Label(upcoming_frame, text="No upcoming sessions found.").pack(anchor=tk.W)
+            except Exception as e:
+                ttk.Label(upcoming_frame, text=f"Error fetching events: {e}").pack(anchor=tk.W)
         else:
-            ttk.Label(upcoming_frame, text="Calendar integration is disabled.").pack(anchor=tk.W)
+            ttk.Label(upcoming_frame, text="Calendar integration is disabled or not authenticated.").pack(anchor=tk.W)
     
     def create_overview_tab(self, parent):
         """Create overview analytics tab"""
@@ -2195,13 +2241,25 @@ class ScrollStoppingTool:
         widget.bind('<Leave>', leave)
 
     def schedule_focus_session(self):
-        """Stub: Schedule the next focus session in Google Calendar"""
-        if not self.calendar_enabled or not self.calendar_api_key or not self.calendar_id:
-            messagebox.showwarning("Calendar Integration", "Please enable calendar integration and provide API key and calendar ID in settings.")
+        """Schedule the next focus session in Google Calendar"""
+        if not self.calendar_enabled or not self.gcal_service or not self.gcal_selected_calendar:
+            messagebox.showwarning("Calendar Integration", "Please enable calendar integration, authenticate, and select a calendar in settings.")
             return
-        # Here you would use Google Calendar API to create an event
-        # For now, just show a stub message
-        messagebox.showinfo("Calendar Integration", "(Stub) Focus session scheduled in Google Calendar!")
+        from datetime import datetime, timedelta
+        now = datetime.utcnow()
+        start = now + timedelta(minutes=5)
+        end = start + timedelta(minutes=25)
+        event = {
+            'summary': 'Focus Session (Scroll Stopping Tool)',
+            'description': 'Scheduled focus session to avoid distractions.',
+            'start': {'dateTime': start.isoformat() + 'Z'},
+            'end': {'dateTime': end.isoformat() + 'Z'},
+        }
+        try:
+            self.gcal_service.events().insert(calendarId=self.gcal_selected_calendar, body=event).execute()
+            messagebox.showinfo("Calendar Integration", "Focus session scheduled in Google Calendar!")
+        except Exception as e:
+            messagebox.showerror("Calendar Integration", f"Failed to schedule event: {e}")
 
     def share_achievement(self):
         """Share the latest achievement (copies to clipboard)"""
@@ -2347,6 +2405,43 @@ class ScrollStoppingTool:
         
         ttk.Button(win, text="Save", command=save_layout).grid(row=row, column=0, pady=20)
 
+    def init_gcal_service(self):
+        """Initialize Google Calendar API service"""
+        import os
+        creds = None
+        if os.path.exists(self.gcal_token_file):
+            with open(self.gcal_token_file, 'rb') as token:
+                creds = pickle.load(token)
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file('credentials.json', self.gcal_scopes)
+                creds = flow.run_local_server(port=0)
+            with open(self.gcal_token_file, 'wb') as token:
+                pickle.dump(creds, token)
+        self.gcal_credentials = creds
+        self.gcal_service = build('calendar', 'v3', credentials=creds)
+        self.refresh_gcal_calendars()
+    
+    def authenticate_gcal(self):
+        """Authenticate with Google Calendar"""
+        if not GOOGLE_API_AVAILABLE:
+            messagebox.showerror("Google Calendar", "Google API libraries not installed.")
+            return
+        self.init_gcal_service()
+        messagebox.showinfo("Google Calendar", "Authentication successful!")
+    
+    def refresh_gcal_calendars(self):
+        """Refresh list of calendars from Google Calendar API"""
+        if not self.gcal_service:
+            return
+        calendar_list = self.gcal_service.calendarList().list().execute()
+        self.gcal_calendar_list = [item['id'] for item in calendar_list.get('items', [])]
+        if self.gcal_calendar_list:
+            self.gcal_calendar_var.set(self.gcal_calendar_list[0])
+            self.gcal_calendar_combo['values'] = self.gcal_calendar_list
+    
 def main():
     """Main function to run the application"""
     root = tk.Tk()
