@@ -33,6 +33,11 @@ except ImportError:
     REPORTLAB_AVAILABLE = False
 import smtplib
 from email.mime.text import MIMEText
+try:
+    from twilio.rest import Client as TwilioClient
+    TWILIO_AVAILABLE = True
+except ImportError:
+    TWILIO_AVAILABLE = False
 
 class ScrollStoppingTool:
     def __init__(self, root):
@@ -160,6 +165,11 @@ class ScrollStoppingTool:
         self.smtp_username = self.settings.get('smtp_username', '')
         self.smtp_password = self.settings.get('smtp_password', '')
         self.smtp_tls = self.settings.get('smtp_tls', True)
+        
+        # Twilio settings for SMS reminders
+        self.twilio_sid = self.settings.get('twilio_sid', '')
+        self.twilio_token = self.settings.get('twilio_token', '')
+        self.twilio_from = self.settings.get('twilio_from', '')
         
         # Create GUI
         self.create_widgets()
@@ -297,7 +307,10 @@ class ScrollStoppingTool:
                     'smtp_port': 587,
                     'smtp_username': '',
                     'smtp_password': '',
-                    'smtp_tls': True
+                    'smtp_tls': True,
+                    'twilio_sid': '',
+                    'twilio_token': '',
+                    'twilio_from': ''
                 }
         except:
             self.settings = {
@@ -342,7 +355,10 @@ class ScrollStoppingTool:
                 'smtp_port': 587,
                 'smtp_username': '',
                 'smtp_password': '',
-                'smtp_tls': True
+                'smtp_tls': True,
+                'twilio_sid': '',
+                'twilio_token': '',
+                'twilio_from': ''
             }
     
     def save_settings(self):
@@ -1358,6 +1374,37 @@ class ScrollStoppingTool:
             messagebox.showinfo("SMTP Settings", "SMTP settings saved!")
         
         ttk.Button(smtp_frame, text="Save SMTP Settings", command=save_smtp_settings).grid(row=2, column=1, pady=10)
+        
+        # Twilio settings for SMS reminders
+        twilio_frame = ttk.LabelFrame(reminders_frame, text="Twilio Settings (for SMS)", padding="10")
+        twilio_frame.grid(row=4, column=0, columnspan=3, padx=10, pady=10, sticky=tk.W)
+        
+        ttk.Label(twilio_frame, text="Account SID:").grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+        twilio_sid_var = tk.StringVar(value=self.twilio_sid)
+        twilio_sid_entry = ttk.Entry(twilio_frame, textvariable=twilio_sid_var, width=30)
+        twilio_sid_entry.grid(row=0, column=1, padx=5, pady=5, sticky=tk.W)
+        
+        ttk.Label(twilio_frame, text="Auth Token:").grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
+        twilio_token_var = tk.StringVar(value=self.twilio_token)
+        twilio_token_entry = ttk.Entry(twilio_frame, textvariable=twilio_token_var, width=30, show='*')
+        twilio_token_entry.grid(row=1, column=1, padx=5, pady=5, sticky=tk.W)
+        
+        ttk.Label(twilio_frame, text="From Number:").grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+        twilio_from_var = tk.StringVar(value=self.twilio_from)
+        twilio_from_entry = ttk.Entry(twilio_frame, textvariable=twilio_from_var, width=20)
+        twilio_from_entry.grid(row=2, column=1, padx=5, pady=5, sticky=tk.W)
+        
+        def save_twilio_settings():
+            self.twilio_sid = twilio_sid_var.get()
+            self.twilio_token = twilio_token_var.get()
+            self.twilio_from = twilio_from_var.get()
+            self.settings['twilio_sid'] = self.twilio_sid
+            self.settings['twilio_token'] = self.twilio_token
+            self.settings['twilio_from'] = self.twilio_from
+            self.save_settings()
+            messagebox.showinfo("Twilio Settings", "Twilio settings saved!")
+        
+        ttk.Button(twilio_frame, text="Save Twilio Settings", command=save_twilio_settings).grid(row=3, column=1, pady=10)
     
     def update_display(self):
         """Update the display with current data"""
@@ -2248,11 +2295,26 @@ class ScrollStoppingTool:
             messagebox.showerror("Test Email Reminder", f"Failed to send test email: {e}")
 
     def test_sms_reminder(self):
-        """Stub: Send a test SMS reminder"""
+        """Send a test SMS reminder using Twilio"""
         if not self.reminder_sms_enabled or not self.reminder_phone:
             messagebox.showwarning("Test SMS Reminder", "Please enable SMS reminders and enter your phone number.")
             return
-        messagebox.showinfo("Test SMS Reminder", "(Stub) A test SMS reminder would be sent to your phone.")
+        if not TWILIO_AVAILABLE:
+            messagebox.showerror("Test SMS Reminder", "Twilio is not installed. Please install the twilio package.")
+            return
+        if not self.twilio_sid or not self.twilio_token or not self.twilio_from:
+            messagebox.showwarning("Test SMS Reminder", "Please enter your Twilio settings.")
+            return
+        try:
+            client = TwilioClient(self.twilio_sid, self.twilio_token)
+            message = client.messages.create(
+                body="This is a test SMS reminder from the Scroll Stopping Tool.",
+                from_=self.twilio_from,
+                to=self.reminder_phone
+            )
+            messagebox.showinfo("Test SMS Reminder", f"Test SMS sent to {self.reminder_phone}!")
+        except Exception as e:
+            messagebox.showerror("Test SMS Reminder", f"Failed to send test SMS: {e}")
 
     def customize_dashboard(self):
         """Stub: Customize dashboard layout (show/hide sections)"""
