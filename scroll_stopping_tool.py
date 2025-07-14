@@ -3003,12 +3003,18 @@ class ScrollStoppingTool:
             if idx:
                 self.track_var.set(self.track_names[idx[0]])
         self.track_listbox.bind('<<ListboxSelect>>', on_select)
+        # Drag-and-drop for user tracks
+        self.track_listbox.bind('<Button-1>', self.start_drag)
+        self.track_listbox.bind('<B1-Motion>', self.do_drag)
+        self.track_listbox.bind('<ButtonRelease-1>', self.end_drag)
+        self._drag_data = {'dragging': False, 'start_idx': None}
         # Playlist controls
         playlist_frame = ttk.Frame(win)
         playlist_frame.pack(pady=5)
         ttk.Button(playlist_frame, text="Add Local Track", command=self.add_local_track).pack(side=tk.LEFT, padx=5)
         ttk.Button(playlist_frame, text="Add Track by URL", command=self.add_url_track).pack(side=tk.LEFT, padx=5)
         ttk.Button(playlist_frame, text="Remove Track", command=self.remove_selected_track).pack(side=tk.LEFT, padx=5)
+        ttk.Label(playlist_frame, text="(Drag user tracks to reorder)").pack(side=tk.LEFT, padx=5)
         # Shuffle
         self.shuffle_var = tk.BooleanVar(value=self.shuffle_enabled)
         shuffle_check = ttk.Checkbutton(win, text="Shuffle Playlist", variable=self.shuffle_var, command=self.toggle_shuffle)
@@ -3027,6 +3033,30 @@ class ScrollStoppingTool:
         ttk.Button(win, text="Close", command=win.destroy).pack(pady=10)
         if not PYGAME_AVAILABLE:
             ttk.Label(win, text="(Install pygame for music playback)", foreground="red").pack(pady=5)
+
+    def start_drag(self, event):
+        idx = self.track_listbox.nearest(event.y)
+        if idx >= len(self.music_tracks):
+            self._drag_data['dragging'] = True
+            self._drag_data['start_idx'] = idx
+
+    def do_drag(self, event):
+        if not self._drag_data['dragging']:
+            return
+        idx = self.track_listbox.nearest(event.y)
+        start = self._drag_data['start_idx']
+        if idx != start and idx >= len(self.music_tracks):
+            # Swap user_tracks
+            user_idx_from = start - len(self.music_tracks)
+            user_idx_to = idx - len(self.music_tracks)
+            self.user_tracks[user_idx_from], self.user_tracks[user_idx_to] = self.user_tracks[user_idx_to], self.user_tracks[user_idx_from]
+            self.save_music_tracks()
+            self.open_music_player()
+            self._drag_data['start_idx'] = idx
+
+    def end_drag(self, event):
+        self._drag_data['dragging'] = False
+        self._drag_data['start_idx'] = None
 
     def add_local_track(self):
         file_path = tkfiledialog.askopenfilename(filetypes=[("MP3 files", "*.mp3"), ("All files", "*.*")])
