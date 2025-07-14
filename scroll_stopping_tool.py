@@ -59,6 +59,11 @@ try:
     VOICE_AVAILABLE = True
 except ImportError:
     VOICE_AVAILABLE = False
+try:
+    import pygame
+    PYGAME_AVAILABLE = True
+except ImportError:
+    PYGAME_AVAILABLE = False
 
 class ScrollStoppingTool:
     def __init__(self, root):
@@ -202,6 +207,20 @@ class ScrollStoppingTool:
         if self.calendar_enabled and GOOGLE_API_AVAILABLE:
             self.init_gcal_service()
         
+        # Music player settings
+        self.music_tracks = [
+            {"name": "Rain (Ambient)", "file": "https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5c2.mp3"},
+            {"name": "Cafe (Ambient)", "file": "https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5c2.mp3"},
+            {"name": "Focus Music", "file": "https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae5c2.mp3"}
+        ]
+        self.current_track = None
+        self.music_playing = False
+        self.music_volume = 0.5
+        self.music_auto_play = self.settings.get('music_auto_play', True)
+        self.music_enabled = self.settings.get('music_enabled', True)
+        if PYGAME_AVAILABLE:
+            pygame.mixer.init()
+        
         # Create GUI
         self.create_widgets()
         self.update_display()
@@ -342,7 +361,10 @@ class ScrollStoppingTool:
                     'twilio_sid': '',
                     'twilio_token': '',
                     'twilio_from': '',
-                    'gcal_selected_calendar': ''
+                    'gcal_selected_calendar': '',
+                    'music_enabled': True,
+                    'music_auto_play': True,
+                    'music_volume': 0.5
                 }
         except:
             self.settings = {
@@ -391,7 +413,10 @@ class ScrollStoppingTool:
                 'twilio_sid': '',
                 'twilio_token': '',
                 'twilio_from': '',
-                'gcal_selected_calendar': ''
+                'gcal_selected_calendar': '',
+                'music_enabled': True,
+                'music_auto_play': True,
+                'music_volume': 0.5
             }
     
     def save_settings(self):
@@ -621,6 +646,10 @@ class ScrollStoppingTool:
         timer_sound_combo = ttk.Combobox(general_frame, textvariable=timer_sound_var, 
                                         values=["notification", "chime", "bell", "ding"], state="readonly")
         timer_sound_combo.grid(row=11, column=1, padx=10, pady=5)
+        
+        # Add music player button
+        self.music_button = ttk.Button(self.root, text="🎵 Music Player", command=self.open_music_player)
+        self.music_button.place(x=10, y=10)
     
     def apply_theme(self):
         """Apply the selected theme to the app"""
@@ -694,6 +723,8 @@ class ScrollStoppingTool:
                 message='Enhanced blocking enabled. Stay focused!',
                 timeout=5
             )
+        if self.music_enabled and self.music_auto_play:
+            self.play_music(self.music_tracks[0]['file'])
     
     def stop_focus_mode(self):
         """Stop focus mode"""
@@ -711,6 +742,8 @@ class ScrollStoppingTool:
                 message='Great job staying focused!',
                 timeout=5
             )
+        if self.music_enabled and self.music_auto_play:
+            self.stop_music()
     
     def start_focus_session(self):
         """Start a new focus session"""
@@ -849,6 +882,8 @@ class ScrollStoppingTool:
         
         self.status_var.set("Break taken - good job!")
         self.show_motivational_quote()
+        if self.music_enabled and self.music_auto_play:
+            self.play_music(self.music_tracks[1]['file'])
     
     def suggest_activity(self, activity):
         """Suggest an alternative activity"""
@@ -1448,6 +1483,30 @@ class ScrollStoppingTool:
             ttk.Button(calendar_frame, text="Save Calendar", command=save_gcal_calendar).grid(row=6, column=0, pady=10)
         else:
             ttk.Label(calendar_frame, text="Google Calendar API not available. Please install google-api-python-client and google-auth-oauthlib.").grid(row=4, column=0, columnspan=2, pady=10)
+        
+        # Music tab
+        music_frame = ttk.Frame(notebook)
+        notebook.add(music_frame, text="Music & Sounds")
+        music_enabled_var = tk.BooleanVar(value=self.music_enabled)
+        music_enabled_check = ttk.Checkbutton(music_frame, text="Enable Focus Music & Ambient Sounds", variable=music_enabled_var)
+        music_enabled_check.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
+        auto_play_var = tk.BooleanVar(value=self.music_auto_play)
+        auto_play_check = ttk.Checkbutton(music_frame, text="Auto-play music during focus/break sessions", variable=auto_play_var)
+        auto_play_check.grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
+        ttk.Label(music_frame, text="Volume:").grid(row=2, column=0, padx=10, pady=10, sticky=tk.W)
+        music_volume_var = tk.DoubleVar(value=self.music_volume)
+        music_volume_slider = ttk.Scale(music_frame, from_=0, to=1, orient=tk.HORIZONTAL, variable=music_volume_var)
+        music_volume_slider.grid(row=2, column=1, padx=10, pady=10, sticky=tk.W)
+        def save_music_settings():
+            self.music_enabled = music_enabled_var.get()
+            self.music_auto_play = auto_play_var.get()
+            self.music_volume = music_volume_var.get()
+            self.settings['music_enabled'] = self.music_enabled
+            self.settings['music_auto_play'] = self.music_auto_play
+            self.settings['music_volume'] = self.music_volume
+            self.save_settings()
+            messagebox.showinfo("Music Settings", "Music settings saved!")
+        ttk.Button(music_frame, text="Save", command=save_music_settings).grid(row=3, column=0, pady=20)
     
     def update_display(self):
         """Update the display with current data"""
@@ -1927,6 +1986,11 @@ class ScrollStoppingTool:
                 ttk.Label(upcoming_frame, text=f"Error fetching events: {e}").pack(anchor=tk.W)
         else:
             ttk.Label(upcoming_frame, text="Calendar integration is disabled or not authenticated.").pack(anchor=tk.W)
+        
+        # Add a new tab for screen time heatmap/timeline
+        heatmap_frame = ttk.Frame(notebook)
+        notebook.add(heatmap_frame, text="Screen Time Heatmap")
+        self.create_heatmap_tab(heatmap_frame)
     
     def create_overview_tab(self, parent):
         """Create overview analytics tab"""
@@ -2867,6 +2931,30 @@ class ScrollStoppingTool:
             ttk.Button(calendar_frame, text="Save Calendar", command=save_gcal_calendar).grid(row=6, column=0, pady=10)
         else:
             ttk.Label(calendar_frame, text="Google Calendar API not available. Please install google-api-python-client and google-auth-oauthlib.").grid(row=4, column=0, columnspan=2, pady=10)
+        
+        # Music tab
+        music_frame = ttk.Frame(notebook)
+        notebook.add(music_frame, text="Music & Sounds")
+        music_enabled_var = tk.BooleanVar(value=self.music_enabled)
+        music_enabled_check = ttk.Checkbutton(music_frame, text="Enable Focus Music & Ambient Sounds", variable=music_enabled_var)
+        music_enabled_check.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
+        auto_play_var = tk.BooleanVar(value=self.music_auto_play)
+        auto_play_check = ttk.Checkbutton(music_frame, text="Auto-play music during focus/break sessions", variable=auto_play_var)
+        auto_play_check.grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
+        ttk.Label(music_frame, text="Volume:").grid(row=2, column=0, padx=10, pady=10, sticky=tk.W)
+        music_volume_var = tk.DoubleVar(value=self.music_volume)
+        music_volume_slider = ttk.Scale(music_frame, from_=0, to=1, orient=tk.HORIZONTAL, variable=music_volume_var)
+        music_volume_slider.grid(row=2, column=1, padx=10, pady=10, sticky=tk.W)
+        def save_music_settings():
+            self.music_enabled = music_enabled_var.get()
+            self.music_auto_play = auto_play_var.get()
+            self.music_volume = music_volume_var.get()
+            self.settings['music_enabled'] = self.music_enabled
+            self.settings['music_auto_play'] = self.music_auto_play
+            self.settings['music_volume'] = self.music_volume
+            self.save_settings()
+            messagebox.showinfo("Music Settings", "Music settings saved!")
+        ttk.Button(music_frame, text="Save", command=save_music_settings).grid(row=3, column=0, pady=20)
     
     def update_floating_widget(self):
         if hasattr(self, 'floating_widget') and self.floating_widget.winfo_exists():
@@ -2883,6 +2971,161 @@ class ScrollStoppingTool:
     def add_profile(self):
         # Stub: Add new user profile
         messagebox.showinfo("Add Profile", "Multi-user profile creation coming soon!")
+
+    def open_music_player(self):
+        win = tk.Toplevel(self.root)
+        win.title("Focus Music & Ambient Sounds")
+        win.geometry("400x300")
+        win.transient(self.root)
+        win.grab_set()
+        ttk.Label(win, text="Focus Music & Ambient Sounds", font=("Arial", 14, "bold")).pack(pady=10)
+        track_names = [t['name'] for t in self.music_tracks]
+        self.track_var = tk.StringVar(value=track_names[0])
+        track_combo = ttk.Combobox(win, textvariable=self.track_var, values=track_names, state="readonly")
+        track_combo.pack(pady=5)
+        ttk.Button(win, text="Play", command=self.play_selected_track).pack(pady=5)
+        ttk.Button(win, text="Pause", command=self.pause_music).pack(pady=5)
+        ttk.Button(win, text="Stop", command=self.stop_music).pack(pady=5)
+        ttk.Label(win, text="Volume:").pack(pady=5)
+        self.volume_var = tk.DoubleVar(value=self.music_volume)
+        volume_slider = ttk.Scale(win, from_=0, to=1, orient=tk.HORIZONTAL, variable=self.volume_var, command=self.set_music_volume)
+        volume_slider.pack(pady=5)
+        ttk.Button(win, text="Close", command=win.destroy).pack(pady=10)
+        if not PYGAME_AVAILABLE:
+            ttk.Label(win, text="(Install pygame for music playback)", foreground="red").pack(pady=5)
+
+    def play_selected_track(self):
+        if not PYGAME_AVAILABLE:
+            messagebox.showerror("Music Player", "pygame is not installed. Please install it to enable music playback.")
+            return
+        track_name = self.track_var.get()
+        track = next((t for t in self.music_tracks if t['name'] == track_name), None)
+        if track:
+            self.play_music(track['file'])
+
+    def play_music(self, file):
+        if not PYGAME_AVAILABLE:
+            return
+        try:
+            pygame.mixer.music.load(file)
+            pygame.mixer.music.set_volume(self.music_volume)
+            pygame.mixer.music.play(-1)
+            self.music_playing = True
+            self.current_track = file
+        except Exception as e:
+            messagebox.showerror("Music Player", f"Failed to play music: {e}")
+
+    def pause_music(self):
+        if not PYGAME_AVAILABLE:
+            return
+        pygame.mixer.music.pause()
+        self.music_playing = False
+
+    def stop_music(self):
+        if not PYGAME_AVAILABLE:
+            return
+        pygame.mixer.music.stop()
+        self.music_playing = False
+        self.current_track = None
+
+    def set_music_volume(self, val):
+        self.music_volume = float(val)
+        if PYGAME_AVAILABLE:
+            pygame.mixer.music.set_volume(self.music_volume)
+
+    def start_focus_mode(self):
+        # ... existing code ...
+        if self.music_enabled and self.music_auto_play:
+            self.play_music(self.music_tracks[0]['file'])
+        # ... existing code ...
+
+    def stop_focus_mode(self):
+        # ... existing code ...
+        if self.music_enabled and self.music_auto_play:
+            self.stop_music()
+        # ... existing code ...
+
+    def take_break(self):
+        # ... existing code ...
+        if self.music_enabled and self.music_auto_play:
+            self.play_music(self.music_tracks[1]['file'])
+        # ... existing code ...
+
+    def open_settings(self):
+        # ... existing code ...
+        # Music tab
+        music_frame = ttk.Frame(notebook)
+        notebook.add(music_frame, text="Music & Sounds")
+        music_enabled_var = tk.BooleanVar(value=self.music_enabled)
+        music_enabled_check = ttk.Checkbutton(music_frame, text="Enable Focus Music & Ambient Sounds", variable=music_enabled_var)
+        music_enabled_check.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
+        auto_play_var = tk.BooleanVar(value=self.music_auto_play)
+        auto_play_check = ttk.Checkbutton(music_frame, text="Auto-play music during focus/break sessions", variable=auto_play_var)
+        auto_play_check.grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
+        ttk.Label(music_frame, text="Volume:").grid(row=2, column=0, padx=10, pady=10, sticky=tk.W)
+        music_volume_var = tk.DoubleVar(value=self.music_volume)
+        music_volume_slider = ttk.Scale(music_frame, from_=0, to=1, orient=tk.HORIZONTAL, variable=music_volume_var)
+        music_volume_slider.grid(row=2, column=1, padx=10, pady=10, sticky=tk.W)
+        def save_music_settings():
+            self.music_enabled = music_enabled_var.get()
+            self.music_auto_play = auto_play_var.get()
+            self.music_volume = music_volume_var.get()
+            self.settings['music_enabled'] = self.music_enabled
+            self.settings['music_auto_play'] = self.music_auto_play
+            self.settings['music_volume'] = self.music_volume
+            self.save_settings()
+            messagebox.showinfo("Music Settings", "Music settings saved!")
+        ttk.Button(music_frame, text="Save", command=save_music_settings).grid(row=3, column=0, pady=20)
+        # ... existing code ...
+
+    def open_analytics_dashboard(self):
+        # ... existing code ...
+        # Add a new tab for screen time heatmap/timeline
+        heatmap_frame = ttk.Frame(notebook)
+        notebook.add(heatmap_frame, text="Screen Time Heatmap")
+        self.create_heatmap_tab(heatmap_frame)
+        # ... existing code ...
+
+    def create_heatmap_tab(self, parent):
+        # Create a heatmap of screen time by hour for the last 7 days
+        import numpy as np
+        import matplotlib.pyplot as plt
+        from matplotlib.colors import ListedColormap
+        heatmap_data = np.zeros((7, 24))
+        # Fill heatmap_data from usage_data['hourly_usage']
+        for i in range(7):
+            date = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+            for hour in range(24):
+                key = f"{date}-{hour:02d}"
+                heatmap_data[6-i, hour] = self.usage_data.get('hourly_usage', {}).get(key, 0) // 60
+        fig, ax = plt.subplots(figsize=(10, 4))
+        cmap = ListedColormap(['#e0f7fa', '#b2ebf2', '#4dd0e1', '#00bcd4', '#00838f'])
+        im = ax.imshow(heatmap_data, aspect='auto', cmap=cmap, origin='lower')
+        ax.set_yticks(range(7))
+        ax.set_yticklabels([(datetime.now() - timedelta(days=6-i)).strftime('%a') for i in range(7)])
+        ax.set_xticks(range(0, 24, 2))
+        ax.set_xticklabels([f"{h}:00" for h in range(0, 24, 2)])
+        ax.set_xlabel('Hour of Day')
+        ax.set_ylabel('Day')
+        ax.set_title('Screen Time Heatmap (minutes per hour)')
+        fig.colorbar(im, ax=ax, label='Minutes')
+        canvas = FigureCanvasTkAgg(fig, parent)
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        plt.close(fig)
+
+    def tracking_loop(self):
+        # ... existing code ...
+        while self.is_tracking:
+            # ... existing code ...
+            if self.is_social_media_active():
+                # ... existing code ...
+                today = datetime.now().strftime('%Y-%m-%d')
+                hour = datetime.now().hour
+                key = f"{today}-{hour:02d}"
+                if 'hourly_usage' not in self.usage_data:
+                    self.usage_data['hourly_usage'] = {}
+                self.usage_data['hourly_usage'][key] = self.usage_data['hourly_usage'].get(key, 0) + 1
+                # ... existing code ...
 
 def main():
     """Main function to run the application"""
