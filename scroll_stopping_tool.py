@@ -2994,7 +2994,7 @@ class ScrollStoppingTool:
         all_tracks = self.music_tracks + self.user_tracks
         self.track_names = [t['name'] for t in all_tracks]
         self.track_var = tk.StringVar(value=self.track_names[0] if self.track_names else "")
-        self.track_listbox = tk.Listbox(win, listvariable=tk.StringVar(value=self.track_names), height=8)
+        self.track_listbox = tk.Listbox(win, listvariable=tk.StringVar(value=self.track_names), height=8, selectmode=tk.EXTENDED)
         self.track_listbox.pack(pady=5, fill=tk.X, padx=20)
         if self.track_names:
             self.track_listbox.selection_set(0)
@@ -3013,7 +3013,7 @@ class ScrollStoppingTool:
         playlist_frame.pack(pady=5)
         ttk.Button(playlist_frame, text="Add Local Track", command=self.add_local_track).pack(side=tk.LEFT, padx=5)
         ttk.Button(playlist_frame, text="Add Track by URL", command=self.add_url_track).pack(side=tk.LEFT, padx=5)
-        ttk.Button(playlist_frame, text="Remove Track", command=self.remove_selected_track).pack(side=tk.LEFT, padx=5)
+        ttk.Button(playlist_frame, text="Remove Track(s)", command=self.remove_selected_tracks).pack(side=tk.LEFT, padx=5)
         ttk.Label(playlist_frame, text="(Drag user tracks to reorder)").pack(side=tk.LEFT, padx=5)
         # Shuffle
         self.shuffle_var = tk.BooleanVar(value=self.shuffle_enabled)
@@ -3033,6 +3033,16 @@ class ScrollStoppingTool:
         ttk.Button(win, text="Close", command=win.destroy).pack(pady=10)
         if not PYGAME_AVAILABLE:
             ttk.Label(win, text="(Install pygame for music playback)", foreground="red").pack(pady=5)
+
+    def remove_selected_tracks(self):
+        idxs = list(self.track_listbox.curselection())
+        # Only allow removing user tracks
+        idxs = [i for i in idxs if i >= len(self.music_tracks)]
+        if idxs:
+            for i in sorted(idxs, reverse=True):
+                del self.user_tracks[i - len(self.music_tracks)]
+            self.save_music_tracks()
+            self.open_music_player()
 
     def start_drag(self, event):
         idx = self.track_listbox.nearest(event.y)
@@ -3071,13 +3081,6 @@ class ScrollStoppingTool:
         if url:
             name = url.split('/')[-1]
             self.user_tracks.append({"name": name, "file": url})
-            self.save_music_tracks()
-            self.open_music_player()
-
-    def remove_selected_track(self):
-        idx = self.track_listbox.curselection()
-        if idx and idx[0] >= len(self.music_tracks):
-            del self.user_tracks[idx[0] - len(self.music_tracks)]
             self.save_music_tracks()
             self.open_music_player()
 
