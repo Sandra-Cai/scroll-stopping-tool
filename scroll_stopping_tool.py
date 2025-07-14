@@ -3049,24 +3049,36 @@ class ScrollStoppingTool:
         if idx >= len(self.music_tracks):
             self._drag_data['dragging'] = True
             self._drag_data['start_idx'] = idx
+            self._drag_data['selected_idxs'] = list(self.track_listbox.curselection())
 
     def do_drag(self, event):
         if not self._drag_data['dragging']:
             return
         idx = self.track_listbox.nearest(event.y)
         start = self._drag_data['start_idx']
-        if idx != start and idx >= len(self.music_tracks):
-            # Swap user_tracks
-            user_idx_from = start - len(self.music_tracks)
+        selected = [i for i in self._drag_data.get('selected_idxs', []) if i >= len(self.music_tracks)]
+        if idx != start and idx >= len(self.music_tracks) and selected:
             user_idx_to = idx - len(self.music_tracks)
-            self.user_tracks[user_idx_from], self.user_tracks[user_idx_to] = self.user_tracks[user_idx_to], self.user_tracks[user_idx_from]
+            user_idxs = [i - len(self.music_tracks) for i in selected]
+            # Remove selected tracks and insert at new position
+            moving_tracks = [self.user_tracks[i] for i in user_idxs]
+            # Remove from end to start to avoid index shift
+            for i in sorted(user_idxs, reverse=True):
+                del self.user_tracks[i]
+            # Insert at new position
+            for offset, track in enumerate(moving_tracks):
+                self.user_tracks.insert(user_idx_to + offset, track)
             self.save_music_tracks()
             self.open_music_player()
+            # Reselect moved tracks
+            for i in range(len(moving_tracks)):
+                self.track_listbox.selection_set(len(self.music_tracks) + user_idx_to + i)
             self._drag_data['start_idx'] = idx
 
     def end_drag(self, event):
         self._drag_data['dragging'] = False
         self._drag_data['start_idx'] = None
+        self._drag_data['selected_idxs'] = []
 
     def add_local_track(self):
         file_path = tkfiledialog.askopenfilename(filetypes=[("MP3 files", "*.mp3"), ("All files", "*.*")])
