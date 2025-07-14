@@ -46,6 +46,19 @@ try:
     GOOGLE_API_AVAILABLE = True
 except ImportError:
     GOOGLE_API_AVAILABLE = False
+import qrcode
+from PIL import Image, ImageTk
+try:
+    from flask import Flask, jsonify, request
+    FLASK_AVAILABLE = True
+except ImportError:
+    FLASK_AVAILABLE = False
+try:
+    import speech_recognition as sr
+    import pyttsx3
+    VOICE_AVAILABLE = True
+except ImportError:
+    VOICE_AVAILABLE = False
 
 class ScrollStoppingTool:
     def __init__(self, root):
@@ -612,26 +625,19 @@ class ScrollStoppingTool:
     def apply_theme(self):
         """Apply the selected theme to the app"""
         theme = self.settings.get('theme', 'default')
-        if theme == 'dark':
-            style = ttk.Style()
-            self.root.tk_setPalette(background='#222', foreground='#eee', activeBackground='#333', activeForeground='#fff')
+        font_size = self.settings.get('font_size', 11)
+        high_contrast = self.settings.get('high_contrast', False)
+        style = ttk.Style()
+        if theme == 'dark' or high_contrast:
             style.theme_use('clam')
-            style.configure('.', background='#222', foreground='#eee')
-            style.configure('TLabel', background='#222', foreground='#eee')
-            style.configure('TButton', background='#333', foreground='#eee')
+            style.configure('.', background='#222', foreground='#fff', font=('Arial', font_size))
+            style.configure('TLabel', background='#222', foreground='#fff', font=('Arial', font_size))
+            style.configure('TButton', background='#333', foreground='#fff', font=('Arial', font_size))
             style.configure('TFrame', background='#222')
-            style.configure('TNotebook', background='#222')
-            style.configure('TNotebook.Tab', background='#333', foreground='#eee')
         else:
-            style = ttk.Style()
-            self.root.tk_setPalette(background='#f0f0f0', foreground='#222', activeBackground='#e0e0e0', activeForeground='#222')
             style.theme_use('default')
-            style.configure('.', background='#f0f0f0', foreground='#222')
-            style.configure('TLabel', background='#f0f0f0', foreground='#222')
-            style.configure('TButton', background='#e0e0e0', foreground='#222')
-            style.configure('TFrame', background='#f0f0f0')
-            style.configure('TNotebook', background='#f0f0f0')
-            style.configure('TNotebook.Tab', background='#e0e0e0', foreground='#222')
+            style.configure('.', font=('Arial', font_size))
+        self.root.option_add('*Font', f'Arial {font_size}')
 
     def start_tracking(self):
         """Start tracking social media usage"""
@@ -2469,25 +2475,414 @@ class ScrollStoppingTool:
     def open_challenges(self):
         win = tk.Toplevel(self.root)
         win.title("Challenges")
-        win.geometry("500x350")
+        win.geometry("500x400")
         win.transient(self.root)
         win.grab_set()
         ttk.Label(win, text="Challenges", font=("Arial", 14, "bold")).pack(pady=10)
         ttk.Label(win, text="Daily & Weekly Challenges (Stub)").pack(pady=5)
         ttk.Label(win, text="Complete challenges to earn rewards and boost your streak!", wraplength=400).pack(pady=10)
-        ttk.Label(win, text="Example: 'No social media before noon'", wraplength=400).pack(pady=5)
+        # Show progress (stub)
+        ttk.Label(win, text="Your Progress:", font=("Arial", 11, "bold")).pack(pady=5)
+        ttk.Label(win, text="Current Challenge: No social media before noon\nProgress: 2/7 days", wraplength=400).pack(pady=5)
+        ttk.Label(win, text="Next Challenge: 3 days under daily limit\nProgress: 0/3 days", wraplength=400).pack(pady=5)
         ttk.Button(win, text="Close", command=win.destroy).pack(pady=10)
 
     def open_mobile_companion(self):
         win = tk.Toplevel(self.root)
         win.title("Mobile Companion")
-        win.geometry("400x250")
+        win.geometry("400x350")
         win.transient(self.root)
         win.grab_set()
         ttk.Label(win, text="Mobile Companion App", font=("Arial", 14, "bold")).pack(pady=10)
         ttk.Label(win, text="Pair with the upcoming mobile app for on-the-go tracking.").pack(pady=5)
-        ttk.Label(win, text="(Stub) Scan the QR code to link your device (coming soon)").pack(pady=10)
+        ttk.Label(win, text="Scan the QR code to link your device (stub)").pack(pady=10)
+        # Generate QR code (stub data)
+        qr = qrcode.make("https://scrollstoppingtool.app/pair?user=stub")
+        qr_img = ImageTk.PhotoImage(qr.resize((150, 150)))
+        qr_label = ttk.Label(win, image=qr_img)
+        qr_label.image = qr_img
+        qr_label.pack(pady=10)
         ttk.Button(win, text="Close", command=win.destroy).pack(pady=10)
+
+    def start_flask_server(self):
+        if not FLASK_AVAILABLE:
+            return
+        app = Flask(__name__)
+        @app.route('/status')
+        def status():
+            return jsonify({"status": "running", "user": self.settings.get('current_profile', 'Default')})
+        @app.route('/start_timer', methods=['POST'])
+        def start_timer():
+            # Stub: Start timer
+            return jsonify({"result": "Timer started (stub)"})
+        @app.route('/export_data')
+        def export_data():
+            return jsonify(self.usage_data)
+        threading.Thread(target=app.run, kwargs={'port': 5005}, daemon=True).start()
+
+    def open_settings(self):
+        """Open settings dialog"""
+        settings_window = tk.Toplevel(self.root)
+        settings_window.title("Advanced Settings")
+        settings_window.geometry("600x600")
+        settings_window.transient(self.root)
+        settings_window.grab_set()
+        
+        # Create notebook for tabs
+        notebook = ttk.Notebook(settings_window)
+        notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        # General settings tab
+        general_frame = ttk.Frame(notebook)
+        notebook.add(general_frame, text="General")
+        
+        # Daily limit
+        ttk.Label(general_frame, text="Daily Limit (minutes):").grid(row=0, column=0, padx=10, pady=10)
+        limit_var = tk.StringVar(value=str(self.settings['daily_limit']))
+        limit_entry = ttk.Entry(general_frame, textvariable=limit_var)
+        limit_entry.grid(row=0, column=1, padx=10, pady=10)
+        
+        # Break reminder
+        ttk.Label(general_frame, text="Break Reminder (minutes):").grid(row=1, column=0, padx=10, pady=10)
+        reminder_var = tk.StringVar(value=str(self.settings['break_reminder']))
+        reminder_entry = ttk.Entry(general_frame, textvariable=reminder_var)
+        reminder_entry.grid(row=1, column=1, padx=10, pady=10)
+        
+        # Notifications
+        notif_var = tk.BooleanVar(value=self.settings['notifications_enabled'])
+        notif_check = ttk.Checkbutton(general_frame, text="Enable Notifications", 
+                                     variable=notif_var)
+        notif_check.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+        
+        # Auto break
+        auto_break_var = tk.BooleanVar(value=self.settings['auto_break'])
+        auto_break_check = ttk.Checkbutton(general_frame, text="Auto Break Reminders", 
+                                          variable=auto_break_var)
+        auto_break_check.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+        
+        # Auto lock
+        auto_lock_var = tk.BooleanVar(value=self.settings.get('auto_lock', False))
+        auto_lock_check = ttk.Checkbutton(general_frame, text="Auto Lock Screen on Limit", 
+                                          variable=auto_lock_var)
+        auto_lock_check.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+        
+        # Focus mode
+        focus_var = tk.BooleanVar(value=self.settings.get('focus_mode_enabled', False))
+        focus_check = ttk.Checkbutton(general_frame, text="Enable Focus Mode", 
+                                     variable=focus_var)
+        focus_check.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+        
+        # Theme selector
+        ttk.Label(general_frame, text="Theme:").grid(row=6, column=0, padx=10, pady=10)
+        theme_var = tk.StringVar(value=self.settings.get('theme', 'default'))
+        theme_combo = ttk.Combobox(general_frame, textvariable=theme_var, values=["default", "dark"], state="readonly")
+        theme_combo.grid(row=6, column=1, padx=10, pady=10)
+        
+        # Scheduled breaks tab
+        breaks_frame = ttk.Frame(notebook)
+        notebook.add(breaks_frame, text="Scheduled Breaks")
+        
+        ttk.Label(breaks_frame, text="Scheduled Breaks:").grid(row=0, column=0, padx=10, pady=5, sticky=tk.W)
+        
+        breaks_listbox = tk.Listbox(breaks_frame, height=6)
+        breaks_listbox.grid(row=1, column=0, columnspan=2, padx=10, pady=5, sticky=(tk.W, tk.E))
+        
+        for break_time in self.scheduled_breaks:
+            breaks_listbox.insert(tk.END, break_time)
+        
+        ttk.Label(breaks_frame, text="Add break time (HH:MM):").grid(row=2, column=0, padx=10, pady=5, sticky=tk.W)
+        break_entry = ttk.Entry(breaks_frame, width=10)
+        break_entry.grid(row=2, column=1, padx=10, pady=5, sticky=tk.W)
+        
+        def add_break():
+            break_time = break_entry.get().strip()
+            if break_time and break_time not in self.scheduled_breaks:
+                self.scheduled_breaks.append(break_time)
+                breaks_listbox.insert(tk.END, break_time)
+                break_entry.delete(0, tk.END)
+        
+        def remove_break():
+            selection = breaks_listbox.curselection()
+            if selection:
+                break_time = breaks_listbox.get(selection[0])
+                self.scheduled_breaks.remove(break_time)
+                breaks_listbox.delete(selection[0])
+        
+        ttk.Button(breaks_frame, text="Add Break", command=add_break).grid(row=3, column=0, padx=5, pady=5)
+        ttk.Button(breaks_frame, text="Remove Break", command=remove_break).grid(row=3, column=1, padx=5, pady=5)
+        
+        # Goals tab
+        goals_frame = ttk.Frame(notebook)
+        notebook.add(goals_frame, text="Goals")
+        
+        ttk.Label(goals_frame, text="Daily Limit (minutes):").grid(row=0, column=0, padx=10, pady=10)
+        daily_goal_var = tk.StringVar(value=str(self.goals['daily_limit']))
+        daily_goal_entry = ttk.Entry(goals_frame, textvariable=daily_goal_var)
+        daily_goal_entry.grid(row=0, column=1, padx=10, pady=10)
+        
+        ttk.Label(goals_frame, text="Weekly Goal (days under limit):").grid(row=1, column=0, padx=10, pady=10)
+        weekly_goal_var = tk.StringVar(value=str(self.goals['weekly_goal']))
+        weekly_goal_entry = ttk.Entry(goals_frame, textvariable=weekly_goal_var)
+        weekly_goal_entry.grid(row=1, column=1, padx=10, pady=10)
+        
+        ttk.Label(goals_frame, text="Monthly Goal (days under limit):").grid(row=2, column=0, padx=10, pady=10)
+        monthly_goal_var = tk.StringVar(value=str(self.goals['monthly_goal']))
+        monthly_goal_entry = ttk.Entry(goals_frame, textvariable=monthly_goal_var)
+        monthly_goal_entry.grid(row=2, column=1, padx=10, pady=10)
+        
+        # Session History tab
+        history_frame = ttk.Frame(notebook)
+        notebook.add(history_frame, text="Session History")
+        ttk.Label(history_frame, text="Focus Session History:").pack(anchor=tk.W, padx=10, pady=5)
+        columns = ("Start", "End", "Duration (min)", "Score", "Notes")
+        tree = ttk.Treeview(history_frame, columns=columns, show="headings", height=12)
+        for col in columns:
+            tree.heading(col, text=col)
+            tree.column(col, width=110, anchor=tk.CENTER)
+        tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        # Load data from database
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+        cursor.execute("SELECT start_time, end_time, duration, focus_score, notes FROM productivity_sessions ORDER BY id DESC LIMIT 100")
+        for row in cursor.fetchall():
+            start, end, duration, score, notes = row
+            mins = int(duration) // 60
+            tree.insert("", tk.END, values=(start[:16], end[:16], mins, score, notes))
+        conn.close()
+        
+        # Calendar integration tab
+        calendar_frame = ttk.Frame(notebook)
+        notebook.add(calendar_frame, text="Calendar")
+        
+        cal_enabled_var = tk.BooleanVar(value=self.calendar_enabled)
+        cal_enabled_check = ttk.Checkbutton(calendar_frame, text="Enable Google Calendar Integration", variable=cal_enabled_var)
+        cal_enabled_check.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky=tk.W)
+        
+        ttk.Label(calendar_frame, text="API Key:").grid(row=1, column=0, padx=10, pady=5, sticky=tk.W)
+        cal_api_var = tk.StringVar(value=self.calendar_api_key)
+        cal_api_entry = ttk.Entry(calendar_frame, textvariable=cal_api_var, width=40)
+        cal_api_entry.grid(row=1, column=1, padx=10, pady=5, sticky=tk.W)
+        
+        ttk.Label(calendar_frame, text="Calendar ID:").grid(row=2, column=0, padx=10, pady=5, sticky=tk.W)
+        cal_id_var = tk.StringVar(value=self.calendar_id)
+        cal_id_entry = ttk.Entry(calendar_frame, textvariable=cal_id_var, width=40)
+        cal_id_entry.grid(row=2, column=1, padx=10, pady=5, sticky=tk.W)
+        
+        def save_calendar_settings():
+            self.calendar_enabled = cal_enabled_var.get()
+            self.calendar_api_key = cal_api_var.get()
+            self.calendar_id = cal_id_var.get()
+            self.settings['calendar_enabled'] = self.calendar_enabled
+            self.settings['calendar_api_key'] = self.calendar_api_key
+            self.settings['calendar_id'] = self.calendar_id
+            self.save_settings()
+            messagebox.showinfo("Calendar Settings", "Calendar integration settings saved!")
+        
+        ttk.Button(calendar_frame, text="Save", command=save_calendar_settings).grid(row=3, column=0, columnspan=2, pady=20)
+        
+        # Save button
+        def save_settings():
+            try:
+                self.settings['daily_limit'] = int(limit_var.get())
+                self.settings['break_reminder'] = int(reminder_var.get())
+                self.settings['notifications_enabled'] = notif_var.get()
+                self.settings['auto_break'] = auto_break_var.get()
+                self.settings['auto_lock'] = auto_lock_var.get()
+                self.settings['focus_mode_enabled'] = focus_var.get()
+                self.settings['scheduled_breaks'] = self.scheduled_breaks
+                self.settings['theme'] = theme_var.get()
+                
+                # Save sound settings
+                self.settings['sound_enabled'] = sound_var.get()
+                self.settings['sound_types'] = {
+                    'break': break_sound_var.get(),
+                    'achievement': achievement_sound_var.get(),
+                    'warning': warning_sound_var.get(),
+                    'timer': timer_sound_var.get()
+                }
+                
+                # Update goals
+                self.goals['daily_limit'] = int(daily_goal_var.get())
+                self.goals['weekly_goal'] = int(weekly_goal_var.get())
+                self.goals['monthly_goal'] = int(monthly_goal_var.get())
+                self.settings['goals'] = self.goals
+                
+                self.save_settings()
+                self.apply_theme()
+                settings_window.destroy()
+                self.update_display()
+                messagebox.showinfo("Settings", "Settings saved successfully!")
+            except ValueError:
+                messagebox.showerror("Error", "Please enter valid numbers for limits and goals.")
+        
+        ttk.Button(settings_window, text="Save", command=save_settings).pack(pady=20)
+        
+        # Backup & Sync buttons in settings
+        backup_frame = ttk.LabelFrame(settings_window, text="Backup & Sync", padding="10")
+        backup_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        export_backup_btn = ttk.Button(backup_frame, text="Export Backup", command=self.export_backup)
+        export_backup_btn.pack(side=tk.LEFT, padx=5)
+        self.add_tooltip(export_backup_btn, "Export all your data as a JSON backup")
+        
+        import_backup_btn = ttk.Button(backup_frame, text="Import Backup", command=self.import_backup)
+        import_backup_btn.pack(side=tk.LEFT, padx=5)
+        self.add_tooltip(import_backup_btn, "Import a JSON backup to restore your data")
+        
+        sync_btn = ttk.Button(backup_frame, text="Sync (Cloud)", command=self.sync_cloud)
+        sync_btn.pack(side=tk.LEFT, padx=5)
+        self.add_tooltip(sync_btn, "(Stub) Sync your data to the cloud")
+        
+        # Email/SMS Reminders section in settings
+        reminders_frame = ttk.LabelFrame(settings_window, text="Reminders (Email/SMS)", padding="10")
+        reminders_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        email_enabled_var = tk.BooleanVar(value=self.reminder_email_enabled)
+        email_check = ttk.Checkbutton(reminders_frame, text="Enable Email Reminders", variable=email_enabled_var)
+        email_check.grid(row=0, column=0, padx=10, pady=5, sticky=tk.W)
+        
+        ttk.Label(reminders_frame, text="Email:").grid(row=0, column=1, padx=10, pady=5, sticky=tk.W)
+        email_var = tk.StringVar(value=self.reminder_email)
+        email_entry = ttk.Entry(reminders_frame, textvariable=email_var, width=30)
+        email_entry.grid(row=0, column=2, padx=10, pady=5, sticky=tk.W)
+        
+        sms_enabled_var = tk.BooleanVar(value=self.reminder_sms_enabled)
+        sms_check = ttk.Checkbutton(reminders_frame, text="Enable SMS Reminders", variable=sms_enabled_var)
+        sms_check.grid(row=1, column=0, padx=10, pady=5, sticky=tk.W)
+        
+        ttk.Label(reminders_frame, text="Phone:").grid(row=1, column=1, padx=10, pady=5, sticky=tk.W)
+        phone_var = tk.StringVar(value=self.reminder_phone)
+        phone_entry = ttk.Entry(reminders_frame, textvariable=phone_var, width=20)
+        phone_entry.grid(row=1, column=2, padx=10, pady=5, sticky=tk.W)
+        
+        def save_reminder_settings():
+            self.reminder_email_enabled = email_enabled_var.get()
+            self.reminder_sms_enabled = sms_enabled_var.get()
+            self.reminder_email = email_var.get()
+            self.reminder_phone = phone_var.get()
+            self.settings['reminder_email_enabled'] = self.reminder_email_enabled
+            self.settings['reminder_sms_enabled'] = self.reminder_sms_enabled
+            self.settings['reminder_email'] = self.reminder_email
+            self.settings['reminder_phone'] = self.reminder_phone
+            self.save_settings()
+            messagebox.showinfo("Reminders", "Reminder settings saved!")
+        
+        ttk.Button(reminders_frame, text="Save", command=save_reminder_settings).grid(row=2, column=0, pady=10)
+        ttk.Button(reminders_frame, text="Test Email Reminder", command=self.test_email_reminder).grid(row=2, column=1, pady=10)
+        ttk.Button(reminders_frame, text="Test SMS Reminder", command=self.test_sms_reminder).grid(row=2, column=2, pady=10)
+        self.add_tooltip(email_check, "Enable/disable email reminders for breaks, limits, etc.")
+        self.add_tooltip(sms_check, "Enable/disable SMS reminders for breaks, limits, etc.")
+        self.add_tooltip(email_entry, "Enter your email address for reminders")
+        self.add_tooltip(phone_entry, "Enter your phone number for SMS reminders")
+        self.add_tooltip(reminders_frame, "Reminders are sent for breaks, limits, and scheduled events (stub)")
+        
+        # SMTP settings for email reminders
+        smtp_frame = ttk.LabelFrame(reminders_frame, text="SMTP Settings (for Email)", padding="10")
+        smtp_frame.grid(row=3, column=0, columnspan=3, padx=10, pady=10, sticky=tk.W)
+        
+        ttk.Label(smtp_frame, text="SMTP Server:").grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+        smtp_server_var = tk.StringVar(value=self.smtp_server)
+        smtp_server_entry = ttk.Entry(smtp_frame, textvariable=smtp_server_var, width=20)
+        smtp_server_entry.grid(row=0, column=1, padx=5, pady=5, sticky=tk.W)
+        
+        ttk.Label(smtp_frame, text="Port:").grid(row=0, column=2, padx=5, pady=5, sticky=tk.W)
+        smtp_port_var = tk.StringVar(value=str(self.smtp_port))
+        smtp_port_entry = ttk.Entry(smtp_frame, textvariable=smtp_port_var, width=6)
+        smtp_port_entry.grid(row=0, column=3, padx=5, pady=5, sticky=tk.W)
+        
+        ttk.Label(smtp_frame, text="Username:").grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
+        smtp_user_var = tk.StringVar(value=self.smtp_username)
+        smtp_user_entry = ttk.Entry(smtp_frame, textvariable=smtp_user_var, width=20)
+        smtp_user_entry.grid(row=1, column=1, padx=5, pady=5, sticky=tk.W)
+        
+        ttk.Label(smtp_frame, text="Password:").grid(row=1, column=2, padx=5, pady=5, sticky=tk.W)
+        smtp_pass_var = tk.StringVar(value=self.smtp_password)
+        smtp_pass_entry = ttk.Entry(smtp_frame, textvariable=smtp_pass_var, width=20, show='*')
+        smtp_pass_entry.grid(row=1, column=3, padx=5, pady=5, sticky=tk.W)
+        
+        smtp_tls_var = tk.BooleanVar(value=self.smtp_tls)
+        smtp_tls_check = ttk.Checkbutton(smtp_frame, text="Use TLS", variable=smtp_tls_var)
+        smtp_tls_check.grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+        
+        def save_smtp_settings():
+            self.smtp_server = smtp_server_var.get()
+            self.smtp_port = int(smtp_port_var.get())
+            self.smtp_username = smtp_user_var.get()
+            self.smtp_password = smtp_pass_var.get()
+            self.smtp_tls = smtp_tls_var.get()
+            self.settings['smtp_server'] = self.smtp_server
+            self.settings['smtp_port'] = self.smtp_port
+            self.settings['smtp_username'] = self.smtp_username
+            self.settings['smtp_password'] = self.smtp_password
+            self.settings['smtp_tls'] = self.smtp_tls
+            self.save_settings()
+            messagebox.showinfo("SMTP Settings", "SMTP settings saved!")
+        
+        ttk.Button(smtp_frame, text="Save SMTP Settings", command=save_smtp_settings).grid(row=2, column=1, pady=10)
+        
+        # Twilio settings for SMS reminders
+        twilio_frame = ttk.LabelFrame(reminders_frame, text="Twilio Settings (for SMS)", padding="10")
+        twilio_frame.grid(row=4, column=0, columnspan=3, padx=10, pady=10, sticky=tk.W)
+        
+        ttk.Label(twilio_frame, text="Account SID:").grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+        twilio_sid_var = tk.StringVar(value=self.twilio_sid)
+        twilio_sid_entry = ttk.Entry(twilio_frame, textvariable=twilio_sid_var, width=30)
+        twilio_sid_entry.grid(row=0, column=1, padx=5, pady=5, sticky=tk.W)
+        
+        ttk.Label(twilio_frame, text="Auth Token:").grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
+        twilio_token_var = tk.StringVar(value=self.twilio_token)
+        twilio_token_entry = ttk.Entry(twilio_frame, textvariable=twilio_token_var, width=30, show='*')
+        twilio_token_entry.grid(row=1, column=1, padx=5, pady=5, sticky=tk.W)
+        
+        ttk.Label(twilio_frame, text="From Number:").grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+        twilio_from_var = tk.StringVar(value=self.twilio_from)
+        twilio_from_entry = ttk.Entry(twilio_frame, textvariable=twilio_from_var, width=20)
+        twilio_from_entry.grid(row=2, column=1, padx=5, pady=5, sticky=tk.W)
+        
+        def save_twilio_settings():
+            self.twilio_sid = twilio_sid_var.get()
+            self.twilio_token = twilio_token_var.get()
+            self.twilio_from = twilio_from_var.get()
+            self.settings['twilio_sid'] = self.twilio_sid
+            self.settings['twilio_token'] = self.twilio_token
+            self.settings['twilio_from'] = self.twilio_from
+            self.save_settings()
+            messagebox.showinfo("Twilio Settings", "Twilio settings saved!")
+        
+        ttk.Button(twilio_frame, text="Save Twilio Settings", command=save_twilio_settings).grid(row=3, column=1, pady=10)
+        
+        # Google Calendar API integration
+        if GOOGLE_API_AVAILABLE:
+            ttk.Button(calendar_frame, text="Authenticate with Google", command=self.authenticate_gcal).grid(row=4, column=0, pady=10)
+            ttk.Button(calendar_frame, text="Refresh Calendars", command=self.refresh_gcal_calendars).grid(row=4, column=1, pady=10)
+            ttk.Label(calendar_frame, text="Select Calendar:").grid(row=5, column=0, padx=10, pady=5, sticky=tk.W)
+            self.gcal_calendar_var = tk.StringVar(value=self.gcal_selected_calendar)
+            self.gcal_calendar_combo = ttk.Combobox(calendar_frame, textvariable=self.gcal_calendar_var, values=self.gcal_calendar_list, state="readonly", width=40)
+            self.gcal_calendar_combo.grid(row=5, column=1, padx=10, pady=5, sticky=tk.W)
+            def save_gcal_calendar():
+                self.gcal_selected_calendar = self.gcal_calendar_var.get()
+                self.settings['gcal_selected_calendar'] = self.gcal_selected_calendar
+                self.save_settings()
+                messagebox.showinfo("Google Calendar", "Selected calendar saved!")
+            ttk.Button(calendar_frame, text="Save Calendar", command=save_gcal_calendar).grid(row=6, column=0, pady=10)
+        else:
+            ttk.Label(calendar_frame, text="Google Calendar API not available. Please install google-api-python-client and google-auth-oauthlib.").grid(row=4, column=0, columnspan=2, pady=10)
+    
+    def update_floating_widget(self):
+        if hasattr(self, 'floating_widget') and self.floating_widget.winfo_exists():
+            # Show current timer and stats
+            total_sec = self.usage_data.get('total_time', 0)
+            h, m, s = total_sec//3600, (total_sec%3600)//60, total_sec%60
+            self.widget_timer_var.set(f"{h:02}:{m:02}:{s:02}")
+            self.widget_stats_var.set(f"Focus: {self.usage_data.get('focus_sessions', 0)} | Breaks: {self.usage_data.get('breaks_taken', 0)}")
+            self.floating_widget.after(1000, self.update_floating_widget)
+
+    def switch_profile(self):
+        # Stub: Switch user profile
+        messagebox.showinfo("Profile Switch", "Profile switching coming soon!")
+    def add_profile(self):
+        # Stub: Add new user profile
+        messagebox.showinfo("Add Profile", "Multi-user profile creation coming soon!")
 
 def main():
     """Main function to run the application"""
