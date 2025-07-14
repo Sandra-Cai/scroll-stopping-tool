@@ -64,6 +64,7 @@ try:
     PYGAME_AVAILABLE = True
 except ImportError:
     PYGAME_AVAILABLE = False
+import tkinter.filedialog as tkfiledialog
 
 class ScrollStoppingTool:
     def __init__(self, root):
@@ -221,6 +222,10 @@ class ScrollStoppingTool:
         if PYGAME_AVAILABLE:
             pygame.mixer.init()
         
+        self.user_tracks = self.settings.get('user_tracks', [])
+        self.playlist = self.settings.get('playlist', [])
+        self.shuffle_enabled = self.settings.get('shuffle_enabled', False)
+        
         # Create GUI
         self.create_widgets()
         self.update_display()
@@ -364,7 +369,10 @@ class ScrollStoppingTool:
                     'gcal_selected_calendar': '',
                     'music_enabled': True,
                     'music_auto_play': True,
-                    'music_volume': 0.5
+                    'music_volume': 0.5,
+                    'user_tracks': [],
+                    'playlist': [],
+                    'shuffle_enabled': False
                 }
         except:
             self.settings = {
@@ -416,7 +424,10 @@ class ScrollStoppingTool:
                 'gcal_selected_calendar': '',
                 'music_enabled': True,
                 'music_auto_play': True,
-                'music_volume': 0.5
+                'music_volume': 0.5,
+                'user_tracks': [],
+                'playlist': [],
+                'shuffle_enabled': False
             }
     
     def save_settings(self):
@@ -2975,17 +2986,40 @@ class ScrollStoppingTool:
     def open_music_player(self):
         win = tk.Toplevel(self.root)
         win.title("Focus Music & Ambient Sounds")
-        win.geometry("400x300")
+        win.geometry("500x400")
         win.transient(self.root)
         win.grab_set()
         ttk.Label(win, text="Focus Music & Ambient Sounds", font=("Arial", 14, "bold")).pack(pady=10)
-        track_names = [t['name'] for t in self.music_tracks]
-        self.track_var = tk.StringVar(value=track_names[0])
-        track_combo = ttk.Combobox(win, textvariable=self.track_var, values=track_names, state="readonly")
-        track_combo.pack(pady=5)
-        ttk.Button(win, text="Play", command=self.play_selected_track).pack(pady=5)
-        ttk.Button(win, text="Pause", command=self.pause_music).pack(pady=5)
-        ttk.Button(win, text="Stop", command=self.stop_music).pack(pady=5)
+        # Track list
+        all_tracks = self.music_tracks + self.user_tracks
+        self.track_names = [t['name'] for t in all_tracks]
+        self.track_var = tk.StringVar(value=self.track_names[0] if self.track_names else "")
+        self.track_listbox = tk.Listbox(win, listvariable=tk.StringVar(value=self.track_names), height=8)
+        self.track_listbox.pack(pady=5, fill=tk.X, padx=20)
+        if self.track_names:
+            self.track_listbox.selection_set(0)
+        def on_select(event):
+            idx = self.track_listbox.curselection()
+            if idx:
+                self.track_var.set(self.track_names[idx[0]])
+        self.track_listbox.bind('<<ListboxSelect>>', on_select)
+        # Playlist controls
+        playlist_frame = ttk.Frame(win)
+        playlist_frame.pack(pady=5)
+        ttk.Button(playlist_frame, text="Add Local Track", command=self.add_local_track).pack(side=tk.LEFT, padx=5)
+        ttk.Button(playlist_frame, text="Add Track by URL", command=self.add_url_track).pack(side=tk.LEFT, padx=5)
+        ttk.Button(playlist_frame, text="Remove Track", command=self.remove_selected_track).pack(side=tk.LEFT, padx=5)
+        # Shuffle
+        self.shuffle_var = tk.BooleanVar(value=self.shuffle_enabled)
+        shuffle_check = ttk.Checkbutton(win, text="Shuffle Playlist", variable=self.shuffle_var, command=self.toggle_shuffle)
+        shuffle_check.pack(pady=5)
+        # Play controls
+        controls_frame = ttk.Frame(win)
+        controls_frame.pack(pady=5)
+        ttk.Button(controls_frame, text="Play", command=self.play_selected_track).pack(side=tk.LEFT, padx=5)
+        ttk.Button(controls_frame, text="Pause", command=self.pause_music).pack(side=tk.LEFT, padx=5)
+        ttk.Button(controls_frame, text="Stop", command=self.stop_music).pack(side=tk.LEFT, padx=5)
+        ttk.Button(controls_frame, text="Next", command=self.play_next_track).pack(side=tk.LEFT, padx=5)
         ttk.Label(win, text="Volume:").pack(pady=5)
         self.volume_var = tk.DoubleVar(value=self.music_volume)
         volume_slider = ttk.Scale(win, from_=0, to=1, orient=tk.HORIZONTAL, variable=self.volume_var, command=self.set_music_volume)
@@ -2994,14 +3028,70 @@ class ScrollStoppingTool:
         if not PYGAME_AVAILABLE:
             ttk.Label(win, text="(Install pygame for music playback)", foreground="red").pack(pady=5)
 
+    def add_local_track(self):
+        file_path = tkfiledialog.askopenfilename(filetypes=[("MP3 files", "*.mp3"), ("All files", "*.*")])
+        if file_path:
+            name = file_path.split('/')[-1]
+            self.user_tracks.append({"name": name, "file": file_path})
+            self.save_music_tracks()
+            self.open_music_player()
+
+    def add_url_track(self):
+        url = simpledialog.askstring("Add Track by URL", "Enter the MP3 URL:")
+        if url:
+            name = url.split('/')[-1]
+            self.user_tracks.append({"name": name, "file": url})
+            self.save_music_tracks()
+            self.open_music_player()
+
+    def remove_selected_track(self):
+        idx = self.track_listbox.curselection()
+        if idx and idx[0] >= len(self.music_tracks):
+            del self.user_tracks[idx[0] - len(self.music_tracks)]
+            self.save_music_tracks()
+            self.open_music_player()
+
+    def save_music_tracks(self):
+        self.settings['user_tracks'] = self.user_tracks
+        self.save_settings()
+
+    def toggle_shuffle(self):
+        self.shuffle_enabled = self.shuffle_var.get()
+        self.settings['shuffle_enabled'] = self.shuffle_enabled
+        self.save_settings()
+
     def play_selected_track(self):
         if not PYGAME_AVAILABLE:
             messagebox.showerror("Music Player", "pygame is not installed. Please install it to enable music playback.")
             return
-        track_name = self.track_var.get()
-        track = next((t for t in self.music_tracks if t['name'] == track_name), None)
-        if track:
+        idx = self.track_listbox.curselection()
+        if idx:
+            all_tracks = self.music_tracks + self.user_tracks
+            track = all_tracks[idx[0]]
             self.play_music(track['file'])
+            self.current_track_idx = idx[0]
+            self.playlist = list(range(len(all_tracks)))
+            if self.shuffle_enabled:
+                random.shuffle(self.playlist)
+        else:
+            messagebox.showinfo("Music Player", "Please select a track to play.")
+
+    def play_next_track(self):
+        if not PYGAME_AVAILABLE:
+            return
+        all_tracks = self.music_tracks + self.user_tracks
+        if not hasattr(self, 'current_track_idx'):
+            self.current_track_idx = 0
+        if self.shuffle_enabled:
+            if not hasattr(self, 'playlist') or not self.playlist:
+                self.playlist = list(range(len(all_tracks)))
+                random.shuffle(self.playlist)
+            next_idx = (self.playlist.index(self.current_track_idx) + 1) % len(self.playlist)
+            self.current_track_idx = self.playlist[next_idx]
+        else:
+            self.current_track_idx = (self.current_track_idx + 1) % len(all_tracks)
+        track = all_tracks[self.current_track_idx]
+        self.play_music(track['file'])
 
     def play_music(self, file):
         if not PYGAME_AVAILABLE:
@@ -3087,45 +3177,110 @@ class ScrollStoppingTool:
         # ... existing code ...
 
     def create_heatmap_tab(self, parent):
-        # Create a heatmap of screen time by hour for the last 7 days
         import numpy as np
         import matplotlib.pyplot as plt
         from matplotlib.colors import ListedColormap
-        heatmap_data = np.zeros((7, 24))
-        # Fill heatmap_data from usage_data['hourly_usage']
-        for i in range(7):
-            date = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+        from tkinter import filedialog as tkfiledialog
+        import io
+        # Date range selectors
+        range_frame = ttk.Frame(parent)
+        range_frame.pack(pady=5)
+        ttk.Label(range_frame, text="Start Date (YYYY-MM-DD):").pack(side=tk.LEFT, padx=5)
+        self.heatmap_start_var = tk.StringVar(value=(datetime.now() - timedelta(days=6)).strftime('%Y-%m-%d'))
+        start_entry = ttk.Entry(range_frame, textvariable=self.heatmap_start_var, width=12)
+        start_entry.pack(side=tk.LEFT, padx=5)
+        ttk.Label(range_frame, text="End Date (YYYY-MM-DD):").pack(side=tk.LEFT, padx=5)
+        self.heatmap_end_var = tk.StringVar(value=datetime.now().strftime('%Y-%m-%d'))
+        end_entry = ttk.Entry(range_frame, textvariable=self.heatmap_end_var, width=12)
+        end_entry.pack(side=tk.LEFT, padx=5)
+        ttk.Button(range_frame, text="Update", command=lambda: self.update_heatmap(parent)).pack(side=tk.LEFT, padx=5)
+        ttk.Button(range_frame, text="Export as Image", command=lambda: self.export_heatmap(parent, as_pdf=False)).pack(side=tk.LEFT, padx=5)
+        ttk.Button(range_frame, text="Export as PDF", command=lambda: self.export_heatmap(parent, as_pdf=True)).pack(side=tk.LEFT, padx=5)
+        self.heatmap_canvas = None
+        self.update_heatmap(parent)
+
+    def update_heatmap(self, parent):
+        import numpy as np
+        import matplotlib.pyplot as plt
+        from matplotlib.colors import ListedColormap
+        from datetime import datetime, timedelta
+        # Remove old canvas if exists
+        if self.heatmap_canvas:
+            self.heatmap_canvas.get_tk_widget().destroy()
+        # Parse date range
+        try:
+            start_date = datetime.strptime(self.heatmap_start_var.get(), '%Y-%m-%d')
+            end_date = datetime.strptime(self.heatmap_end_var.get(), '%Y-%m-%d')
+        except Exception:
+            messagebox.showerror("Date Error", "Invalid date format. Use YYYY-MM-DD.")
+            return
+        num_days = (end_date - start_date).days + 1
+        if num_days < 1 or num_days > 31:
+            messagebox.showerror("Date Error", "Select a range between 1 and 31 days.")
+            return
+        heatmap_data = np.zeros((num_days, 24))
+        for i in range(num_days):
+            date = (start_date + timedelta(days=i)).strftime('%Y-%m-%d')
             for hour in range(24):
                 key = f"{date}-{hour:02d}"
-                heatmap_data[6-i, hour] = self.usage_data.get('hourly_usage', {}).get(key, 0) // 60
+                heatmap_data[i, hour] = self.usage_data.get('hourly_usage', {}).get(key, 0) // 60
         fig, ax = plt.subplots(figsize=(10, 4))
         cmap = ListedColormap(['#e0f7fa', '#b2ebf2', '#4dd0e1', '#00bcd4', '#00838f'])
         im = ax.imshow(heatmap_data, aspect='auto', cmap=cmap, origin='lower')
-        ax.set_yticks(range(7))
-        ax.set_yticklabels([(datetime.now() - timedelta(days=6-i)).strftime('%a') for i in range(7)])
+        ax.set_yticks(range(num_days))
+        ax.set_yticklabels([(start_date + timedelta(days=i)).strftime('%a %m-%d') for i in range(num_days)])
         ax.set_xticks(range(0, 24, 2))
         ax.set_xticklabels([f"{h}:00" for h in range(0, 24, 2)])
         ax.set_xlabel('Hour of Day')
         ax.set_ylabel('Day')
         ax.set_title('Screen Time Heatmap (minutes per hour)')
         fig.colorbar(im, ax=ax, label='Minutes')
-        canvas = FigureCanvasTkAgg(fig, parent)
-        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        self.heatmap_canvas = FigureCanvasTkAgg(fig, parent)
+        self.heatmap_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
         plt.close(fig)
 
-    def tracking_loop(self):
-        # ... existing code ...
-        while self.is_tracking:
-            # ... existing code ...
-            if self.is_social_media_active():
-                # ... existing code ...
-                today = datetime.now().strftime('%Y-%m-%d')
-                hour = datetime.now().hour
-                key = f"{today}-{hour:02d}"
-                if 'hourly_usage' not in self.usage_data:
-                    self.usage_data['hourly_usage'] = {}
-                self.usage_data['hourly_usage'][key] = self.usage_data['hourly_usage'].get(key, 0) + 1
-                # ... existing code ...
+    def export_heatmap(self, parent, as_pdf=False):
+        import matplotlib.pyplot as plt
+        from datetime import datetime, timedelta
+        import numpy as np
+        from matplotlib.colors import ListedColormap
+        from tkinter import filedialog as tkfiledialog
+        # Recreate the heatmap for export
+        try:
+            start_date = datetime.strptime(self.heatmap_start_var.get(), '%Y-%m-%d')
+            end_date = datetime.strptime(self.heatmap_end_var.get(), '%Y-%m-%d')
+        except Exception:
+            messagebox.showerror("Date Error", "Invalid date format. Use YYYY-MM-DD.")
+            return
+        num_days = (end_date - start_date).days + 1
+        heatmap_data = np.zeros((num_days, 24))
+        for i in range(num_days):
+            date = (start_date + timedelta(days=i)).strftime('%Y-%m-%d')
+            for hour in range(24):
+                key = f"{date}-{hour:02d}"
+                heatmap_data[i, hour] = self.usage_data.get('hourly_usage', {}).get(key, 0) // 60
+        fig, ax = plt.subplots(figsize=(10, 4))
+        cmap = ListedColormap(['#e0f7fa', '#b2ebf2', '#4dd0e1', '#00bcd4', '#00838f'])
+        im = ax.imshow(heatmap_data, aspect='auto', cmap=cmap, origin='lower')
+        ax.set_yticks(range(num_days))
+        ax.set_yticklabels([(start_date + timedelta(days=i)).strftime('%a %m-%d') for i in range(num_days)])
+        ax.set_xticks(range(0, 24, 2))
+        ax.set_xticklabels([f"{h}:00" for h in range(0, 24, 2)])
+        ax.set_xlabel('Hour of Day')
+        ax.set_ylabel('Day')
+        ax.set_title('Screen Time Heatmap (minutes per hour)')
+        fig.colorbar(im, ax=ax, label='Minutes')
+        if as_pdf:
+            file_path = tkfiledialog.asksaveasfilename(defaultextension='.pdf', filetypes=[('PDF files', '*.pdf')])
+            if file_path:
+                fig.savefig(file_path, format='pdf')
+                messagebox.showinfo("Export", f"Heatmap exported as PDF to {file_path}")
+        else:
+            file_path = tkfiledialog.asksaveasfilename(defaultextension='.png', filetypes=[('PNG files', '*.png')])
+            if file_path:
+                fig.savefig(file_path, format='png')
+                messagebox.showinfo("Export", f"Heatmap exported as image to {file_path}")
+        plt.close(fig)
 
 def main():
     """Main function to run the application"""
