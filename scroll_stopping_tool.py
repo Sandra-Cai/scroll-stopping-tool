@@ -2442,6 +2442,53 @@ class ScrollStoppingTool:
             self.gcal_calendar_var.set(self.gcal_calendar_list[0])
             self.gcal_calendar_combo['values'] = self.gcal_calendar_list
     
+    def open_cloud_sync(self):
+        win = tk.Toplevel(self.root)
+        win.title("Cloud Sync")
+        win.geometry("400x300")
+        win.transient(self.root)
+        win.grab_set()
+        ttk.Label(win, text="Cloud Sync", font=("Arial", 14, "bold")).pack(pady=10)
+        ttk.Label(win, text="Sync your data to the cloud (Google Drive, Dropbox, etc.)").pack(pady=5)
+        ttk.Label(win, text="(Stub) This feature will allow you to backup and restore your data from the cloud.").pack(pady=10)
+        ttk.Button(win, text="Sync Now (Stub)", command=lambda: messagebox.showinfo("Cloud Sync", "Cloud sync coming soon!"), width=20).pack(pady=10)
+        ttk.Button(win, text="Close", command=win.destroy).pack(pady=10)
+
+    def open_ai_insights(self):
+        win = tk.Toplevel(self.root)
+        win.title("AI Insights")
+        win.geometry("600x400")
+        win.transient(self.root)
+        win.grab_set()
+        ttk.Label(win, text="AI Insights", font=("Arial", 14, "bold")).pack(pady=10)
+        ttk.Label(win, text="Personalized productivity insights powered by AI.").pack(pady=5)
+        ttk.Label(win, text="(Stub) Here you'll see smart recommendations, anomaly detection, and trend predictions based on your data.").pack(pady=10)
+        ttk.Label(win, text="Sample Insight: 'You are most productive on Tuesdays. Try scheduling deep work then!'", wraplength=500).pack(pady=10)
+        ttk.Button(win, text="Close", command=win.destroy).pack(pady=10)
+
+    def open_challenges(self):
+        win = tk.Toplevel(self.root)
+        win.title("Challenges")
+        win.geometry("500x350")
+        win.transient(self.root)
+        win.grab_set()
+        ttk.Label(win, text="Challenges", font=("Arial", 14, "bold")).pack(pady=10)
+        ttk.Label(win, text="Daily & Weekly Challenges (Stub)").pack(pady=5)
+        ttk.Label(win, text="Complete challenges to earn rewards and boost your streak!", wraplength=400).pack(pady=10)
+        ttk.Label(win, text="Example: 'No social media before noon'", wraplength=400).pack(pady=5)
+        ttk.Button(win, text="Close", command=win.destroy).pack(pady=10)
+
+    def open_mobile_companion(self):
+        win = tk.Toplevel(self.root)
+        win.title("Mobile Companion")
+        win.geometry("400x250")
+        win.transient(self.root)
+        win.grab_set()
+        ttk.Label(win, text="Mobile Companion App", font=("Arial", 14, "bold")).pack(pady=10)
+        ttk.Label(win, text="Pair with the upcoming mobile app for on-the-go tracking.").pack(pady=5)
+        ttk.Label(win, text="(Stub) Scan the QR code to link your device (coming soon)").pack(pady=10)
+        ttk.Button(win, text="Close", command=win.destroy).pack(pady=10)
+
 def main():
     """Main function to run the application"""
     root = tk.Tk()
