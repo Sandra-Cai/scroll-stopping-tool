@@ -2986,53 +2986,64 @@ class ScrollStoppingTool:
     def open_music_player(self):
         win = tk.Toplevel(self.root)
         win.title("Focus Music & Ambient Sounds")
-        win.geometry("500x400")
+        win.geometry("900x400")
         win.transient(self.root)
         win.grab_set()
         ttk.Label(win, text="Focus Music & Ambient Sounds", font=("Arial", 14, "bold")).pack(pady=10)
-        # Track list
-        all_tracks = self.music_tracks + self.user_tracks
-        self.track_names = [t['name'] for t in all_tracks]
-        self.track_var = tk.StringVar(value=self.track_names[0] if self.track_names else "")
-        self.track_listbox = tk.Listbox(win, listvariable=tk.StringVar(value=self.track_names), height=8, selectmode=tk.EXTENDED)
-        self.track_listbox.pack(pady=5, fill=tk.X, padx=20)
-        if self.track_names:
-            self.track_listbox.selection_set(0)
-        def on_select(event):
-            idx = self.track_listbox.curselection()
-            if idx:
-                self.track_var.set(self.track_names[idx[0]])
-        self.track_listbox.bind('<<ListboxSelect>>', on_select)
-        # Drag-and-drop for user tracks
-        self.track_listbox.bind('<Button-1>', self.start_drag)
-        self.track_listbox.bind('<B1-Motion>', self.do_drag)
-        self.track_listbox.bind('<ButtonRelease-1>', self.end_drag)
-        self._drag_data = {'dragging': False, 'start_idx': None}
-        # Playlist controls
-        playlist_frame = ttk.Frame(win)
-        playlist_frame.pack(pady=5)
-        ttk.Button(playlist_frame, text="Add Local Track", command=self.add_local_track).pack(side=tk.LEFT, padx=5)
-        ttk.Button(playlist_frame, text="Add Track by URL", command=self.add_url_track).pack(side=tk.LEFT, padx=5)
-        ttk.Button(playlist_frame, text="Remove Track(s)", command=self.remove_selected_tracks).pack(side=tk.LEFT, padx=5)
-        ttk.Label(playlist_frame, text="(Drag user tracks to reorder)").pack(side=tk.LEFT, padx=5)
-        # Shuffle
-        self.shuffle_var = tk.BooleanVar(value=self.shuffle_enabled)
-        shuffle_check = ttk.Checkbutton(win, text="Shuffle Playlist", variable=self.shuffle_var, command=self.toggle_shuffle)
-        shuffle_check.pack(pady=5)
-        # Play controls
-        controls_frame = ttk.Frame(win)
-        controls_frame.pack(pady=5)
-        ttk.Button(controls_frame, text="Play", command=self.play_selected_track).pack(side=tk.LEFT, padx=5)
-        ttk.Button(controls_frame, text="Pause", command=self.pause_music).pack(side=tk.LEFT, padx=5)
-        ttk.Button(controls_frame, text="Stop", command=self.stop_music).pack(side=tk.LEFT, padx=5)
-        ttk.Button(controls_frame, text="Next", command=self.play_next_track).pack(side=tk.LEFT, padx=5)
-        ttk.Label(win, text="Volume:").pack(pady=5)
-        self.volume_var = tk.DoubleVar(value=self.music_volume)
-        volume_slider = ttk.Scale(win, from_=0, to=1, orient=tk.HORIZONTAL, variable=self.volume_var, command=self.set_music_volume)
-        volume_slider.pack(pady=5)
-        ttk.Button(win, text="Close", command=win.destroy).pack(pady=10)
-        if not PYGAME_AVAILABLE:
-            ttk.Label(win, text="(Install pygame for music playback)", foreground="red").pack(pady=5)
+        # Playlist management frame
+        playlist_mgmt_frame = ttk.Frame(win)
+        playlist_mgmt_frame.pack(pady=5)
+        ttk.Label(playlist_mgmt_frame, text="Playlists:").pack(side=tk.LEFT, padx=5)
+        self.playlist_names = list(self.user_playlists.keys())
+        self.playlist_var = tk.StringVar(value=self.current_playlist_name)
+        playlist_combo = ttk.Combobox(playlist_mgmt_frame, textvariable=self.playlist_var, values=self.playlist_names, state="readonly", width=15)
+        playlist_combo.pack(side=tk.LEFT, padx=5)
+        ttk.Button(playlist_mgmt_frame, text="Switch", command=lambda: self.switch_playlist(self.playlist_var.get(), win)).pack(side=tk.LEFT, padx=5)
+        ttk.Button(playlist_mgmt_frame, text="New", command=lambda: self.create_playlist(win)).pack(side=tk.LEFT, padx=5)
+        ttk.Button(playlist_mgmt_frame, text="Rename", command=lambda: self.rename_playlist(win)).pack(side=tk.LEFT, padx=5)
+        ttk.Button(playlist_mgmt_frame, text="Delete", command=lambda: self.delete_playlist(win)).pack(side=tk.LEFT, padx=5)
+        ttk.Button(playlist_mgmt_frame, text="Export", command=self.export_current_playlist).pack(side=tk.LEFT, padx=5)
+        ttk.Button(playlist_mgmt_frame, text="Import", command=lambda: self.import_playlist(win)).pack(side=tk.LEFT, padx=5)
+        # ... existing code ...
+
+    def export_current_playlist(self):
+        from tkinter import filedialog as tkfiledialog
+        playlist = self.user_playlists.get(self.current_playlist_name, [])
+        if not playlist:
+            messagebox.showinfo("Export Playlist", "Current playlist is empty.")
+            return
+        file_path = tkfiledialog.asksaveasfilename(defaultextension='.json', filetypes=[('JSON files', '*.json')])
+        if file_path:
+            try:
+                with open(file_path, 'w') as f:
+                    json.dump(playlist, f, indent=2)
+                messagebox.showinfo("Export Playlist", f"Playlist exported to {file_path}")
+            except Exception as e:
+                messagebox.showerror("Export Playlist", f"Failed to export: {e}")
+
+    def import_playlist(self, win):
+        from tkinter import filedialog as tkfiledialog
+        file_path = tkfiledialog.askopenfilename(filetypes=[('JSON files', '*.json')])
+        if file_path:
+            try:
+                with open(file_path, 'r') as f:
+                    imported = json.load(f)
+                if not isinstance(imported, list) or not all(isinstance(t, dict) and 'name' in t and 'file' in t for t in imported):
+                    messagebox.showerror("Import Playlist", "Invalid playlist file format.")
+                    return
+                name = simpledialog.askstring("Import Playlist", "Enter a name for the imported playlist:")
+                if not name:
+                    return
+                if name in self.user_playlists:
+                    messagebox.showerror("Import Playlist", "A playlist with that name already exists.")
+                    return
+                self.user_playlists[name] = imported
+                self.save_playlists()
+                win.destroy()
+                self.open_music_player()
+                messagebox.showinfo("Import Playlist", f"Playlist '{name}' imported successfully!")
+            except Exception as e:
+                messagebox.showerror("Import Playlist", f"Failed to import: {e}")
 
     def remove_selected_tracks(self):
         idxs = list(self.track_listbox.curselection())
