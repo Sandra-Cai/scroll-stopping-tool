@@ -3004,6 +3004,7 @@ class ScrollStoppingTool:
         ttk.Button(playlist_mgmt_frame, text="Delete", command=lambda: self.delete_playlist(win)).pack(side=tk.LEFT, padx=5)
         ttk.Button(playlist_mgmt_frame, text="Export", command=self.export_current_playlist).pack(side=tk.LEFT, padx=5)
         ttk.Button(playlist_mgmt_frame, text="Import", command=lambda: self.import_playlist(win)).pack(side=tk.LEFT, padx=5)
+        ttk.Button(playlist_mgmt_frame, text="Import (Other Formats)", command=lambda: self.import_playlist_other_formats(win)).pack(side=tk.LEFT, padx=5)
         # ... existing code ...
 
     def export_current_playlist(self):
@@ -3044,6 +3045,80 @@ class ScrollStoppingTool:
                 messagebox.showinfo("Import Playlist", f"Playlist '{name}' imported successfully!")
             except Exception as e:
                 messagebox.showerror("Import Playlist", f"Failed to import: {e}")
+
+    def import_playlist_other_formats(self, win):
+        from tkinter import filedialog as tkfiledialog
+        import csv
+        filetypes = [('CSV, M3U, or TXT files', '*.csv *.m3u *.txt'), ('All files', '*.*')]
+        file_path = tkfiledialog.askopenfilename(filetypes=filetypes)
+        if not file_path:
+            return
+        fmt = None
+        if file_path.lower().endswith('.csv'):
+            fmt = 'csv'
+        elif file_path.lower().endswith('.m3u'):
+            fmt = 'm3u'
+        elif file_path.lower().endswith('.txt'):
+            fmt = 'txt'
+        else:
+            fmt = simpledialog.askstring("Import Format", "Enter format (csv, m3u, txt):")
+            if fmt:
+                fmt = fmt.strip().lower()
+        if not fmt:
+            return
+        try:
+            tracks = []
+            if fmt == 'csv':
+                with open(file_path, 'r', newline='') as f:
+                    reader = csv.reader(f)
+                    for row in reader:
+                        if len(row) >= 2:
+                            tracks.append({'name': row[0].strip(), 'file': row[1].strip()})
+            elif fmt == 'm3u':
+                with open(file_path, 'r') as f:
+                    name = None
+                    for line in f:
+                        line = line.strip()
+                        if not line or line.startswith('#EXTM3U'):
+                            continue
+                        if line.startswith('#EXTINF:'):
+                            # Format: #EXTINF:-1,Track Name
+                            parts = line.split(',', 1)
+                            if len(parts) == 2:
+                                name = parts[1].strip()
+                        elif line and not line.startswith('#'):
+                            tracks.append({'name': name or line.split('/')[-1], 'file': line})
+                            name = None
+            elif fmt == 'txt':
+                with open(file_path, 'r') as f:
+                    for line in f:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        if ',' in line:
+                            name, file = line.split(',', 1)
+                            tracks.append({'name': name.strip(), 'file': file.strip()})
+                        else:
+                            tracks.append({'name': line.split('/')[-1], 'file': line})
+            else:
+                messagebox.showerror("Import Playlist", "Unsupported format.")
+                return
+            if not tracks:
+                messagebox.showerror("Import Playlist", "No tracks found in file.")
+                return
+            name = simpledialog.askstring("Import Playlist", "Enter a name for the imported playlist:")
+            if not name:
+                return
+            if name in self.user_playlists:
+                messagebox.showerror("Import Playlist", "A playlist with that name already exists.")
+                return
+            self.user_playlists[name] = tracks
+            self.save_playlists()
+            win.destroy()
+            self.open_music_player()
+            messagebox.showinfo("Import Playlist", f"Playlist '{name}' imported successfully!")
+        except Exception as e:
+            messagebox.showerror("Import Playlist", f"Failed to import: {e}")
 
     def remove_selected_tracks(self):
         idxs = list(self.track_listbox.curselection())
