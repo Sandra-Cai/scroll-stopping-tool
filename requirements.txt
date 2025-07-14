@@ -3,3 +3,8 @@ plyer==2.1.0
 schedule==1.2.0
 matplotlib==3.7.2
 tkinter-tooltip==2.0.0 
+Flask==2.3.2
+qrcode==7.4.2
+SpeechRecognition==3.10.0
+pyttsx3==2.90
+Pillow==10.2.0 
