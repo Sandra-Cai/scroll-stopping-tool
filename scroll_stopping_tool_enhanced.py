@@ -504,6 +504,19 @@ class ProcessMonitor:
             logger.error(f"Error getting active processes: {e}")
             return []
 
+
+
+# Advanced Features Integration
+try:
+    from advanced_features import AdvancedFeatures
+    from ml_analytics import PredictiveAnalytics
+    from gamification import GamificationEngine
+    ADVANCED_FEATURES_AVAILABLE = True
+    logger.info("Advanced features loaded successfully")
+except ImportError as e:
+    ADVANCED_FEATURES_AVAILABLE = False
+    logger.warning(f"Advanced features not available: {e}")
+
 class EnhancedScrollStoppingTool:
     """Enhanced version of the Scroll Stopping Tool with improved architecture"""
     
@@ -538,6 +551,14 @@ class EnhancedScrollStoppingTool:
         self.notification_manager = NotificationManager(self.settings)
         self.process_monitor = ProcessMonitor(SOCIAL_MEDIA_PATTERNS)
     
+        # Advanced features integration
+        self.advanced_features = None
+        self.ml_analytics = None
+        self.gamification = None
+        
+        if ADVANCED_FEATURES_AVAILABLE:
+            self.setup_advanced_features()
+
     def setup_variables(self):
         """Initialize tracking variables"""
         self.is_tracking = False
@@ -654,6 +675,15 @@ class EnhancedScrollStoppingTool:
         secondary_frame.grid(row=1, column=0, sticky="ew")
         
         ttk.Button(
+        # Advanced Analytics button
+        self.advanced_button = ttk.Button(
+            secondary_frame,
+            text="🤖 Advanced Analytics",
+            command=self.show_advanced_dashboard,
+            width=15
+        )
+        self.advanced_button.grid(row=0, column=4, padx=(0, 10))
+
             secondary_frame,
             text="☕ Take Break",
             command=self.take_break,
@@ -1087,6 +1117,174 @@ def main():
     except Exception as e:
         logger.error(f"Application error: {e}")
         messagebox.showerror("Error", f"Application failed to start: {e}")
+    def setup_advanced_features(self):
+        """Setup advanced features if available"""
+        try:
+            if ADVANCED_FEATURES_AVAILABLE:
+                self.advanced_features = AdvancedFeatures()
+                self.ml_analytics = PredictiveAnalytics()
+                self.gamification = GamificationEngine()
+                
+                # Initialize with existing data
+                user_data = {
+                    'goals': [],
+                    'usage_history': []
+                }
+                self.advanced_features.initialize_advanced_features(user_data)
+                
+                logger.info("Advanced features initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to setup advanced features: {e}")
+    
+    def get_advanced_insights(self) -> Dict[str, Any]:
+        """Get advanced insights and recommendations"""
+        if not self.advanced_features:
+            return {'error': 'Advanced features not available'}
+        
+        try:
+            # Get current data
+            current_data = {
+                'daily_usage': self.today_usage,
+                'productivity_score': self.productivity_score,
+                'focus_sessions': self.focus_sessions,
+                'breaks_taken': self.breaks_taken,
+                'daily_limit_met': self.today_usage <= self.settings.get('daily_limit', 120)
+            }
+            
+            # Get ML predictions
+            predictions = {}
+            if self.ml_analytics:
+                predictions = self.ml_analytics.get_predictions(current_data)
+            
+            # Get gamification updates
+            gamification_results = {}
+            if self.gamification:
+                gamification_results = self.gamification.process_daily_update(current_data)
+            
+            # Get advanced insights
+            insights = []
+            if self.advanced_features:
+                insights = self.advanced_features.get_daily_insights(current_data)
+            
+            return {
+                'predictions': predictions,
+                'gamification': gamification_results,
+                'insights': [vars(insight) for insight in insights],
+                'advanced_summary': self.advanced_features.get_gamification_summary() if self.gamification else {}
+            }
+        except Exception as e:
+            logger.error(f"Failed to get advanced insights: {e}")
+            return {'error': str(e)}
+    
+    def show_advanced_dashboard(self):
+        """Show advanced analytics dashboard"""
+        if not self.advanced_features:
+            messagebox.showinfo("Advanced Features", "Advanced features are not available. Please install additional dependencies.")
+            return
+        
+        try:
+            insights = self.get_advanced_insights()
+            
+            # Create advanced dashboard window
+            dashboard_window = tk.Toplevel(self.root)
+            dashboard_window.title("Advanced Analytics Dashboard")
+            dashboard_window.geometry("800x600")
+            
+            # Create notebook for tabs
+            notebook = ttk.Notebook(dashboard_window)
+            notebook.pack(fill='both', expand=True, padx=10, pady=10)
+            
+            # ML Predictions tab
+            predictions_frame = ttk.Frame(notebook)
+            notebook.add(predictions_frame, text="🤖 ML Predictions")
+            self.create_predictions_tab(predictions_frame, insights.get('predictions', {}))
+            
+            # Gamification tab
+            gamification_frame = ttk.Frame(notebook)
+            notebook.add(gamification_frame, text="🏆 Gamification")
+            self.create_gamification_tab(gamification_frame, insights.get('gamification', {}))
+            
+            # Insights tab
+            insights_frame = ttk.Frame(notebook)
+            notebook.add(insights_frame, text="💡 Insights")
+            self.create_insights_tab(insights_frame, insights.get('insights', []))
+            
+        except Exception as e:
+            logger.error(f"Failed to show advanced dashboard: {e}")
+            messagebox.showerror("Error", f"Failed to show advanced dashboard: {e}")
+    
+    def create_predictions_tab(self, parent, predictions):
+        """Create ML predictions tab"""
+        # Title
+        title_label = ttk.Label(parent, text="Machine Learning Predictions", font=('Arial', 16, 'bold'))
+        title_label.pack(pady=10)
+        
+        # Predictions display
+        if predictions:
+            for pred_type, prediction in predictions.items():
+                if hasattr(prediction, 'value'):
+                    frame = ttk.LabelFrame(parent, text=pred_type.replace('_', ' ').title())
+                    frame.pack(fill='x', padx=10, pady=5)
+                    
+                    ttk.Label(frame, text=f"Predicted Value: {prediction.value:.1f}").pack(anchor='w', padx=5)
+                    ttk.Label(frame, text=f"Confidence: {prediction.confidence:.1%}").pack(anchor='w', padx=5)
+                    ttk.Label(frame, text=f"Factors: {', '.join(prediction.factors)}").pack(anchor='w', padx=5)
+        else:
+            ttk.Label(parent, text="No predictions available yet. More data needed.").pack(pady=20)
+    
+    def create_gamification_tab(self, parent, gamification_data):
+        """Create gamification tab"""
+        # Title
+        title_label = ttk.Label(parent, text="Gamification & Achievements", font=('Arial', 16, 'bold'))
+        title_label.pack(pady=10)
+        
+        if gamification_data:
+            # Level and points
+            level_frame = ttk.LabelFrame(parent, text="Progress")
+            level_frame.pack(fill='x', padx=10, pady=5)
+            
+            if self.gamification:
+                summary = self.gamification.get_gamification_summary()
+                ttk.Label(level_frame, text=f"Level: {summary.get('level', 1)}").pack(anchor='w', padx=5)
+                ttk.Label(level_frame, text=f"Experience: {summary.get('experience', 0)}").pack(anchor='w', padx=5)
+                ttk.Label(level_frame, text=f"Points: {summary.get('points', 0)}").pack(anchor='w', padx=5)
+            
+            # Recent achievements
+            achievements_frame = ttk.LabelFrame(parent, text="Recent Achievements")
+            achievements_frame.pack(fill='x', padx=10, pady=5)
+            
+            new_achievements = gamification_data.get('achievements_unlocked', [])
+            if new_achievements:
+                for achievement in new_achievements:
+                    ttk.Label(achievements_frame, text=f"🏆 {achievement.name}").pack(anchor='w', padx=5)
+            else:
+                ttk.Label(achievements_frame, text="No new achievements yet").pack(padx=5)
+        else:
+            ttk.Label(parent, text="Gamification data not available").pack(pady=20)
+    
+    def create_insights_tab(self, parent, insights):
+        """Create insights tab"""
+        # Title
+        title_label = ttk.Label(parent, text="Smart Insights", font=('Arial', 16, 'bold'))
+        title_label.pack(pady=10)
+        
+        if insights:
+            for insight in insights:
+                frame = ttk.LabelFrame(parent, text=insight.get('type', 'Insight').title())
+                frame.pack(fill='x', padx=10, pady=5)
+                
+                ttk.Label(frame, text=insight.get('message', 'No message')).pack(anchor='w', padx=5)
+                ttk.Label(frame, text=f"Confidence: {insight.get('confidence', 0):.1%}").pack(anchor='w', padx=5)
+                
+                action_items = insight.get('action_items', [])
+                if action_items:
+                    ttk.Label(frame, text="Action Items:").pack(anchor='w', padx=5)
+                    for item in action_items:
+                        ttk.Label(frame, text=f"• {item}").pack(anchor='w', padx=15)
+        else:
+            ttk.Label(parent, text="No insights available yet").pack(pady=20)
+
+
 
 if __name__ == "__main__":
     main() 
