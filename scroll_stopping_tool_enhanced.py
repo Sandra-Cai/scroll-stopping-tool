@@ -550,6 +550,14 @@ class EnhancedScrollStoppingTool:
         self.settings = self.data_manager.load_settings()
         self.notification_manager = NotificationManager(self.settings)
         self.process_monitor = ProcessMonitor(SOCIAL_MEDIA_PATTERNS)
+        
+        # Advanced features integration
+        self.advanced_features = None
+        self.ml_analytics = None
+        self.gamification = None
+        
+        if ADVANCED_FEATURES_AVAILABLE:
+            self.setup_advanced_features()
     
         # Advanced features integration
         self.advanced_features = None
@@ -674,7 +682,6 @@ class EnhancedScrollStoppingTool:
         secondary_frame = ttk.Frame(control_frame)
         secondary_frame.grid(row=1, column=0, sticky="ew")
         
-        ttk.Button(
         # Advanced Analytics button
         self.advanced_button = ttk.Button(
             secondary_frame,
@@ -683,7 +690,8 @@ class EnhancedScrollStoppingTool:
             width=15
         )
         self.advanced_button.grid(row=0, column=4, padx=(0, 10))
-
+        
+        ttk.Button(
             secondary_frame,
             text="☕ Take Break",
             command=self.take_break,
