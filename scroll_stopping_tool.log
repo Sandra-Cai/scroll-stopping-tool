@@ -73,3 +73,19 @@
 2025-07-26 01:53:21,287 - advanced_features - INFO - Advanced features initialized successfully
 2025-07-26 01:53:21,287 - scroll_stopping_tool_enhanced - INFO - Advanced features initialized successfully
 2025-07-26 01:53:21,303 - scroll_stopping_tool_enhanced - INFO - Enhanced Scroll Stopping Tool initialized
+2025-07-26 01:56:54,697 - scroll_stopping_tool_enhanced - WARNING - Twilio not available - SMS notifications will be disabled
+2025-07-26 01:56:54,697 - scroll_stopping_tool_enhanced - WARNING - Google API not available - calendar integration will be disabled
+2025-07-26 01:56:54,697 - scroll_stopping_tool_enhanced - WARNING - QRCode/PIL not available - QR code features will be disabled
+2025-07-26 01:56:55,033 - scroll_stopping_tool_enhanced - WARNING - Speech recognition not available - voice features will be disabled
+2025-07-26 01:56:55,033 - scroll_stopping_tool_enhanced - WARNING - ttkbootstrap not available - using default tkinter theme
+2025-07-26 01:56:55,079 - scroll_stopping_tool_enhanced - INFO - Advanced features loaded successfully
+2025-07-26 01:56:55,553 - scroll_stopping_tool_enhanced - INFO - Database initialized successfully
+2025-07-26 01:56:55,553 - scroll_stopping_tool_enhanced - INFO - No settings file found, using defaults
+2025-07-26 01:56:55,554 - scroll_stopping_tool_enhanced - INFO - No settings file found, using defaults
+2025-07-26 01:56:55,554 - advanced_features - INFO - Usage patterns analyzed successfully
+2025-07-26 01:56:55,554 - advanced_features - INFO - Advanced features initialized successfully
+2025-07-26 01:56:55,554 - scroll_stopping_tool_enhanced - INFO - Advanced features initialized successfully
+2025-07-26 01:56:55,554 - advanced_features - INFO - Usage patterns analyzed successfully
+2025-07-26 01:56:55,554 - advanced_features - INFO - Advanced features initialized successfully
+2025-07-26 01:56:55,554 - scroll_stopping_tool_enhanced - INFO - Advanced features initialized successfully
+2025-07-26 01:56:55,566 - scroll_stopping_tool_enhanced - INFO - Enhanced Scroll Stopping Tool initialized
