@@ -21,7 +21,7 @@ class FinalDemo:
         self.root.title("🚀 Enhanced Scroll Stopping Tool - Final Demo")
         self.root.geometry("1200x800")
         self.root.configure(bg='#f8f9fa')
-        
+    
         # Demo state
         self.demo_step = 0
         self.demo_running = False
