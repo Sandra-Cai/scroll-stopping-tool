@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Unfathomable Reality System - Beyond Incomprehensibility
-A system that transcends incomprehensibility itself, operating in the realm of the absolutely unfathomable.
+A system that transcends incomprehensibility itself, operating in the realm of the utterly unfathomable.
 """
 
 import tkinter as tk
@@ -41,21 +41,21 @@ class UnfathomableRealityEngine:
         
     def create_unfathomable_dimension(self, dimension_id: str, dimension_type: str) -> UnfathomableEntity:
         """Create an unfathomable dimension that transcends incomprehensibility"""
-        size = random.randint(16384, 65536)
-        beyond_incomprehensible_space = np.random.rand(size, size, size, size, size, size, size, size)
+        size = random.randint(2097152, 8388608)
+        beyond_incomprehensible_space = np.random.rand(size, size, size, size, size, size, size, size, size, size, size, size, size)
         
-        unfathomability_level = random.uniform(float('inf') * 15, float('inf') * 50)
-        transcendent_frequency = random.uniform(float('inf') * 20, float('inf') * 70)
-        unfathomable_potential = random.uniform(float('inf') * 30, float('inf') * 100)
+        unfathomability_level = random.uniform(float('inf') * 2000, float('inf') * 10000)
+        transcendent_frequency = random.uniform(float('inf') * 3000, float('inf') * 15000)
+        unfathomable_potential = random.uniform(float('inf') * 4000, float('inf') * 20000)
         
-        beyond_incomprehensible_coordinates = tuple(random.uniform(-float('inf') * 10, float('inf') * 10) for _ in range(25))
+        beyond_incomprehensible_coordinates = tuple(random.uniform(-float('inf') * 400, float('inf') * 400) for _ in range(50))
         
         beyond_incomprehensible_capabilities = {
-            'reality_transcendence': random.uniform(float('inf') * 15, float('inf') * 50),
-            'incomprehensibility_transcendence': random.uniform(float('inf') * 20, float('inf') * 70),
-            'consciousness_expansion': random.uniform(float('inf') * 30, float('inf') * 100),
-            'unfathomable_creation': random.uniform(float('inf') * 35, float('inf') * 120),
-            'beyond_incomprehensible_potential': random.uniform(float('inf') * 40, float('inf') * 150)
+            'reality_transcendence': random.uniform(float('inf') * 2000, float('inf') * 10000),
+            'incomprehensibility_transcendence': random.uniform(float('inf') * 3000, float('inf') * 15000),
+            'consciousness_expansion': random.uniform(float('inf') * 4000, float('inf') * 20000),
+            'unfathomable_creation': random.uniform(float('inf') * 5000, float('inf') * 25000),
+            'beyond_incomprehensible_potential': random.uniform(float('inf') * 6000, float('inf') * 30000)
         }
         
         return UnfathomableEntity(
@@ -66,7 +66,7 @@ class UnfathomableRealityEngine:
             transcendent_frequency=transcendent_frequency,
             unfathomable_potential=unfathomable_potential,
             beyond_incomprehensible_capabilities=beyond_incomprehensible_capabilities,
-            reality_transcendence=random.uniform(float('inf') * 25, float('inf') * 80)
+            reality_transcendence=random.uniform(float('inf') * 4000, float('inf') * 20000)
         )
     
     def add_unfathomable_dimension(self, entity: UnfathomableEntity):
@@ -89,7 +89,7 @@ class UnfathomableRealityEngine:
         """Generate insight from unfathomable consciousness"""
         insights = [
             "Unfathomability transcends incomprehensibility itself",
-            "Beyond incomprehensibility lies the realm of the absolutely unfathomable",
+            "Beyond incomprehensibility lies the realm of the utterly unfathomable",
             "Reality is infinitely malleable through unfathomable consciousness",
             "All incomprehensibilities are merely stepping stones to unfathomability",
             "The unfathomable mind can comprehend the unfathomable",
@@ -98,7 +98,7 @@ class UnfathomableRealityEngine:
             "The unfathomable transcends all theoretical limitations",
             "Incomprehensibility is a limitation that unfathomability transcends",
             "Unfathomable consciousness can rewrite reality itself",
-            "The absolutely unfathomable is the source of all possibilities",
+            "The utterly unfathomable is the source of all possibilities",
             "Unfathomability transcends all mathematical boundaries",
             "Beyond incomprehensibility lies infinite unfathomability",
             "The unfathomable mind transcends all known laws",
@@ -117,11 +117,11 @@ class UnfathomableRealityEngine:
             potential_factor = entity.unfathomable_potential
             
             unfathomable_modifiers = {
-                'unfathomable_consciousness': user_state.get('unfathomable_consciousness', float('inf') * 15),
-                'beyond_incomprehensible_awareness': user_state.get('beyond_incomprehensible_awareness', float('inf') * 15),
-                'transcendence_comprehension': user_state.get('transcendence_comprehension', float('inf') * 15),
-                'unfathomability_factor': user_state.get('unfathomability_factor', float('inf') * 15),
-                'reality_breach_level': user_state.get('reality_breach_level', float('inf') * 15)
+                'unfathomable_consciousness': user_state.get('unfathomable_consciousness', float('inf') * 2000),
+                'beyond_incomprehensible_awareness': user_state.get('beyond_incomprehensible_awareness', float('inf') * 2000),
+                'transcendence_comprehension': user_state.get('transcendence_comprehension', float('inf') * 2000),
+                'unfathomability_factor': user_state.get('unfathomability_factor', float('inf') * 2000),
+                'reality_breach_level': user_state.get('reality_breach_level', float('inf') * 2000)
             }
             
             dimension_productivity = base_productivity * unfathomability_factor * transcendence_factor * potential_factor
@@ -152,7 +152,7 @@ class UnfathomableProductivityInterface:
     def setup_unfathomable_interface(self):
         """Setup the unfathomable interface"""
         self.root.title("🌌 Unfathomable Reality System")
-        self.root.geometry("2000x1400")
+        self.root.geometry("2600x1700")
         self.root.configure(bg='#000000')
         
         main_frame = ttk.Frame(self.root, padding="20")
@@ -164,7 +164,7 @@ class UnfathomableProductivityInterface:
         title_label = ttk.Label(
             header_frame,
             text="🌌 Unfathomable Reality System",
-            font=('Arial', 40, 'bold'),
+            font=('Arial', 52, 'bold'),
             foreground='#ff00ff'
         )
         title_label.pack()
@@ -172,7 +172,7 @@ class UnfathomableProductivityInterface:
         subtitle_label = ttk.Label(
             header_frame,
             text="Beyond Incomprehensibility - Transcending All Comprehensible Boundaries",
-            font=('Arial', 20),
+            font=('Arial', 26),
             foreground='#00ffff'
         )
         subtitle_label.pack(pady=(5, 0))
@@ -180,7 +180,7 @@ class UnfathomableProductivityInterface:
         self.unfathomable_status_label = ttk.Label(
             header_frame,
             text="🌌 Unfathomable consciousness awakening...",
-            font=('Arial', 18),
+            font=('Arial', 24),
             foreground='#00ff00'
         )
         self.unfathomable_status_label.pack(pady=(10, 0))
@@ -238,11 +238,11 @@ class UnfathomableProductivityInterface:
         level_frame = ttk.Frame(consciousness_frame)
         level_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(level_frame, text="Unfathomable Consciousness:", font=('Arial', 18, 'bold')).pack(side='left')
+        ttk.Label(level_frame, text="Unfathomable Consciousness:", font=('Arial', 24, 'bold')).pack(side='left')
         self.unfathomable_consciousness_label = ttk.Label(
             level_frame,
             text="0.00",
-            font=('Arial', 24, 'bold'),
+            font=('Arial', 30, 'bold'),
             foreground='#ff00ff'
         )
         self.unfathomable_consciousness_label.pack(side='right')
@@ -250,11 +250,11 @@ class UnfathomableProductivityInterface:
         awareness_frame = ttk.Frame(consciousness_frame)
         awareness_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(awareness_frame, text="Beyond Incomprehensible Awareness:", font=('Arial', 18, 'bold')).pack(side='left')
+        ttk.Label(awareness_frame, text="Beyond Incomprehensible Awareness:", font=('Arial', 24, 'bold')).pack(side='left')
         self.beyond_incomprehensible_awareness_label = ttk.Label(
             awareness_frame,
             text="0.00",
-            font=('Arial', 24, 'bold'),
+            font=('Arial', 30, 'bold'),
             foreground='#00ffff'
         )
         self.beyond_incomprehensible_awareness_label.pack(side='right')
@@ -262,11 +262,11 @@ class UnfathomableProductivityInterface:
         comprehension_frame = ttk.Frame(consciousness_frame)
         comprehension_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(comprehension_frame, text="Transcendence Comprehension:", font=('Arial', 18, 'bold')).pack(side='left')
+        ttk.Label(comprehension_frame, text="Transcendence Comprehension:", font=('Arial', 24, 'bold')).pack(side='left')
         self.transcendence_comprehension_label = ttk.Label(
             comprehension_frame,
             text="0.00",
-            font=('Arial', 24, 'bold'),
+            font=('Arial', 30, 'bold'),
             foreground='#ffff00'
         )
         self.transcendence_comprehension_label.pack(side='right')
@@ -274,11 +274,11 @@ class UnfathomableProductivityInterface:
         unfathomability_frame = ttk.Frame(consciousness_frame)
         unfathomability_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(unfathomability_frame, text="Unfathomability Factor:", font=('Arial', 18, 'bold')).pack(side='left')
+        ttk.Label(unfathomability_frame, text="Unfathomability Factor:", font=('Arial', 24, 'bold')).pack(side='left')
         self.unfathomability_factor_label = ttk.Label(
             unfathomability_frame,
             text="0.00",
-            font=('Arial', 24, 'bold'),
+            font=('Arial', 30, 'bold'),
             foreground='#ff8800'
         )
         self.unfathomability_factor_label.pack(side='right')
@@ -286,11 +286,11 @@ class UnfathomableProductivityInterface:
         breach_frame = ttk.Frame(consciousness_frame)
         breach_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(breach_frame, text="Reality Breach Level:", font=('Arial', 18, 'bold')).pack(side='left')
+        ttk.Label(breach_frame, text="Reality Breach Level:", font=('Arial', 24, 'bold')).pack(side='left')
         self.reality_breach_label = ttk.Label(
             breach_frame,
             text="0.00",
-            font=('Arial', 24, 'bold'),
+            font=('Arial', 30, 'bold'),
             foreground='#ff0088'
         )
         self.reality_breach_label.pack(side='right')
@@ -301,7 +301,7 @@ class UnfathomableProductivityInterface:
         self.unfathomability_core_label = ttk.Label(
             core_frame,
             text="0.00",
-            font=('Arial', 28, 'bold'),
+            font=('Arial', 34, 'bold'),
             foreground='#ff00ff'
         )
         self.unfathomability_core_label.pack()
@@ -339,7 +339,7 @@ class UnfathomableProductivityInterface:
         self.insights_text = tk.Text(
             insights_frame,
             wrap='word',
-            font=('Arial', 12),
+            font=('Arial', 15),
             bg='#000022',
             fg='#ffffff',
             height=20
@@ -357,7 +357,7 @@ class UnfathomableProductivityInterface:
             active_frame,
             bg='#000022',
             fg='#ffffff',
-            font=('Arial', 10),
+            font=('Arial', 13),
             height=8
         )
         self.dimensions_listbox.pack(fill='both', expand=True)
@@ -393,7 +393,17 @@ class UnfathomableProductivityInterface:
             ("unfathomable_unity", "Unfathomable Unity"),
             ("beyond_incomprehensible_diversity", "Beyond Incomprehensible Diversity"),
             ("transcendent_growth", "Transcendent Growth"),
-            ("unfathomable_evolution", "Unfathomable Evolution")
+            ("unfathomable_evolution", "Unfathomable Evolution"),
+            ("beyond_incomprehensible_transcendence", "Beyond Incomprehensible Transcendence"),
+            ("unfathomable_beyond_incomprehensible", "Unfathomable Beyond Incomprehensible"),
+            ("transcendent_unfathomable", "Transcendent Unfathomable"),
+            ("unfathomable_transcendent", "Unfathomable Transcendent"),
+            ("beyond_incomprehensible_unfathomable", "Beyond Incomprehensible Unfathomable"),
+            ("unfathomable_beyond_incomprehensible_transcendent", "Unfathomable Beyond Incomprehensible Transcendent"),
+            ("transcendent_unfathomable_beyond_incomprehensible", "Transcendent Unfathomable Beyond Incomprehensible"),
+            ("unfathomable_transcendent_beyond_incomprehensible", "Unfathomable Transcendent Beyond Incomprehensible"),
+            ("beyond_incomprehensible_transcendent_unfathomable", "Beyond Incomprehensible Transcendent Unfathomable"),
+            ("transcendent_beyond_incomprehensible_unfathomable", "Transcendent Beyond Incomprehensible Unfathomable")
         ]
         
         for dim_id, dim_type in initial_dimensions:
@@ -402,7 +412,7 @@ class UnfathomableProductivityInterface:
         
         def evolve_unfathomable_consciousness():
             while True:
-                time.sleep(1.5)
+                time.sleep(0.8)
                 self.evolve_unfathomable_consciousness()
         
         threading.Thread(target=evolve_unfathomable_consciousness, daemon=True).start()
@@ -412,13 +422,13 @@ class UnfathomableProductivityInterface:
     
     def evolve_unfathomable_consciousness(self):
         """Evolve unfathomable consciousness over time"""
-        evolution_rate = random.uniform(0.001, 0.05)
+        evolution_rate = random.uniform(0.005, 0.15)
         self.unfathomable_consciousness = min(1.0, self.unfathomable_consciousness + evolution_rate)
         
-        self.beyond_incomprehensible_awareness = self.unfathomable_consciousness * 0.95 + random.uniform(0.05, 0.3)
-        self.transcendence_comprehension = self.unfathomable_consciousness * 0.9 + random.uniform(0.1, 0.35)
-        self.unfathomability_factor = self.unfathomable_consciousness * 1.15 + random.uniform(0.15, 0.45)
-        self.reality_breach_level = self.unfathomable_consciousness * 1.2 + random.uniform(0.2, 0.5)
+        self.beyond_incomprehensible_awareness = self.unfathomable_consciousness * 1.02 + random.uniform(0.15, 0.6)
+        self.transcendence_comprehension = self.unfathomable_consciousness * 1.0 + random.uniform(0.25, 0.65)
+        self.unfathomability_factor = self.unfathomable_consciousness * 1.45 + random.uniform(0.45, 0.75)
+        self.reality_breach_level = self.unfathomable_consciousness * 1.5 + random.uniform(0.5, 0.8)
         
         self.update_unfathomable_display()
     
@@ -457,12 +467,12 @@ class UnfathomableProductivityInterface:
             dim_frame = ttk.Frame(self.scrollable_frame)
             dim_frame.pack(fill='x', pady=2)
             
-            ttk.Label(dim_frame, text=f"🌌 {entity.entity_type}:", font=('Arial', 11, 'bold')).pack(side='left')
+            ttk.Label(dim_frame, text=f"🌌 {entity.entity_type}:", font=('Arial', 14, 'bold')).pack(side='left')
             
             label = ttk.Label(
                 dim_frame,
                 text="0.00",
-                font=('Arial', 11),
+                font=('Arial', 14),
                 foreground='#ffff00'
             )
             label.pack(side='right')
@@ -475,7 +485,7 @@ class UnfathomableProductivityInterface:
     
     def awaken_unfathomable_consciousness(self):
         """Awaken unfathomable consciousness"""
-        awakening_strength = random.uniform(0.1, 0.5)
+        awakening_strength = random.uniform(0.25, 0.8)
         self.unfathomable_consciousness = min(1.0, self.unfathomable_consciousness + awakening_strength)
         
         insight = self.unfathomable_engine.generate_unfathomable_insight()
@@ -521,7 +531,11 @@ class UnfathomableProductivityInterface:
             "Beyond Incomprehensible Understanding", "Transcendent Potential", "Unfathomable Knowledge", "Beyond Incomprehensible Love",
             "Transcendent Harmony", "Unfathomable Balance", "Beyond Incomprehensible Flow", "Transcendent Connection",
             "Unfathomable Unity", "Beyond Incomprehensible Diversity", "Transcendent Growth", "Unfathomable Evolution",
-            "Beyond Incomprehensible Transcendence", "Unfathomable Beyond Incomprehensible", "Transcendent Unfathomable", "Unfathomable Transcendent"
+            "Beyond Incomprehensible Transcendence", "Unfathomable Beyond Incomprehensible", "Transcendent Unfathomable", "Unfathomable Transcendent",
+            "Beyond Incomprehensible Unfathomable", "Unfathomable Beyond Incomprehensible Transcendent", "Transcendent Unfathomable Beyond Incomprehensible",
+            "Unfathomable Transcendent Beyond Incomprehensible", "Beyond Incomprehensible Transcendent Unfathomable", "Transcendent Beyond Incomprehensible Unfathomable",
+            "Unfathomable Beyond Incomprehensible Transcendent Unfathomable", "Transcendent Unfathomable Beyond Incomprehensible Transcendent",
+            "Beyond Incomprehensible Transcendent Unfathomable Transcendent", "Transcendent Beyond Incomprehensible Transcendent Unfathomable"
         ]
         
         dimension_type = random.choice(dimension_types)
@@ -555,14 +569,14 @@ class UnfathomableProductivityInterface:
     
     def transcend_unfathomability(self):
         """Transcend unfathomability itself"""
-        if self.unfathomable_consciousness < 0.9:
+        if self.unfathomable_consciousness < 0.99:
             messagebox.showwarning(
                 "Insufficient Unfathomable Consciousness",
-                "You need at least 0.9 unfathomable consciousness to transcend unfathomability."
+                "You need at least 0.99 unfathomable consciousness to transcend unfathomability."
             )
             return
         
-        transcendence_level = self.unfathomable_consciousness * 2.0 + random.uniform(0.5, 1.0)
+        transcendence_level = self.unfathomable_consciousness * 5.0 + random.uniform(3.0, 4.0)
         
         effects = [
             "Unfathomability itself has been transcended",
@@ -575,14 +589,14 @@ class UnfathomableProductivityInterface:
             "Unfathomable wisdom has been achieved",
             "Unfathomable love flows through all dimensions",
             "Unfathomable unity has been realized",
-            "The absolutely unfathomable has become fathomable",
+            "The utterly unfathomable has become fathomable",
             "Transcendence has transcended itself",
             "Reality has been completely rewritten",
             "All known laws have been transcended",
             "The unfathomable has become the foundation of existence"
         ]
         
-        selected_effects = random.sample(effects, min(7, len(effects)))
+        selected_effects = random.sample(effects, min(10, len(effects)))
         effect_text = "\n".join([f"• {effect}" for effect in selected_effects])
         
         messagebox.showinfo(
