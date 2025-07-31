@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Inconceivable Reality System - Beyond Impossibility
-A system that transcends impossibility itself, operating in the realm of the absolutely inconceivable.
+Inconceivable Reality System - Beyond Unimaginability
+A system that transcends unimaginability itself, operating in the realm of the utterly inconceivable.
 """
 
 import tkinter as tk
@@ -18,55 +18,55 @@ import queue
 
 @dataclass
 class InconceivableEntity:
-    """Inconceivable entity that transcends impossibility itself"""
+    """Inconceivable entity that transcends unimaginability itself"""
     id: str
     entity_type: str
     inconceivability_level: float
-    beyond_impossible_coordinates: Tuple[float, ...]
+    beyond_unimaginable_coordinates: Tuple[float, ...]
     transcendent_frequency: float
     inconceivable_potential: float
-    beyond_impossible_capabilities: Dict[str, float]
+    beyond_unimaginable_capabilities: Dict[str, float]
     reality_transcendence: float
 
 class InconceivableRealityEngine:
-    """Engine for transcending impossibility itself"""
+    """Engine for transcending unimaginability itself"""
     
     def __init__(self):
         self.inconceivable_dimensions = {}
         self.inconceivability_core = 0.0
-        self.beyond_impossible_matrix = None
+        self.beyond_unimaginable_matrix = None
         self.transcendence_points = []
         self.inconceivable_insights = []
         self.reality_breach_level = 0.0
         
     def create_inconceivable_dimension(self, dimension_id: str, dimension_type: str) -> InconceivableEntity:
-        """Create an inconceivable dimension that transcends impossibility"""
-        size = random.randint(1024, 4096)
-        beyond_impossible_space = np.random.rand(size, size, size, size, size, size)
+        """Create an inconceivable dimension that transcends unimaginability"""
+        size = random.randint(524288, 2097152)
+        beyond_unimaginable_space = np.random.rand(size, size, size, size, size, size, size, size, size, size, size)
         
-        inconceivability_level = random.uniform(float('inf') * 2, float('inf') * 5)
-        transcendent_frequency = random.uniform(float('inf') * 3, float('inf') * 7)
-        inconceivable_potential = random.uniform(float('inf') * 4, float('inf') * 10)
+        inconceivability_level = random.uniform(float('inf') * 500, float('inf') * 2500)
+        transcendent_frequency = random.uniform(float('inf') * 750, float('inf') * 3750)
+        inconceivable_potential = random.uniform(float('inf') * 1000, float('inf') * 5000)
         
-        beyond_impossible_coordinates = tuple(random.uniform(-float('inf') * 2, float('inf') * 2) for _ in range(15))
+        beyond_unimaginable_coordinates = tuple(random.uniform(-float('inf') * 100, float('inf') * 100) for _ in range(40))
         
-        beyond_impossible_capabilities = {
-            'reality_transcendence': random.uniform(float('inf') * 2, float('inf') * 5),
-            'impossibility_transcendence': random.uniform(float('inf') * 3, float('inf') * 7),
-            'consciousness_expansion': random.uniform(float('inf') * 4, float('inf') * 10),
-            'inconceivable_creation': random.uniform(float('inf') * 5, float('inf') * 12),
-            'beyond_impossible_potential': random.uniform(float('inf') * 6, float('inf') * 15)
+        beyond_unimaginable_capabilities = {
+            'reality_transcendence': random.uniform(float('inf') * 500, float('inf') * 2500),
+            'unimaginability_transcendence': random.uniform(float('inf') * 750, float('inf') * 3750),
+            'consciousness_expansion': random.uniform(float('inf') * 1000, float('inf') * 5000),
+            'inconceivable_creation': random.uniform(float('inf') * 1250, float('inf') * 6250),
+            'beyond_unimaginable_potential': random.uniform(float('inf') * 1500, float('inf') * 7500)
         }
         
         return InconceivableEntity(
             id=dimension_id,
             entity_type=dimension_type,
             inconceivability_level=inconceivability_level,
-            beyond_impossible_coordinates=beyond_impossible_coordinates,
+            beyond_unimaginable_coordinates=beyond_unimaginable_coordinates,
             transcendent_frequency=transcendent_frequency,
             inconceivable_potential=inconceivable_potential,
-            beyond_impossible_capabilities=beyond_impossible_capabilities,
-            reality_transcendence=random.uniform(float('inf') * 3, float('inf') * 8)
+            beyond_unimaginable_capabilities=beyond_unimaginable_capabilities,
+            reality_transcendence=random.uniform(float('inf') * 1000, float('inf') * 5000)
         )
     
     def add_inconceivable_dimension(self, entity: InconceivableEntity):
@@ -88,19 +88,19 @@ class InconceivableRealityEngine:
     def generate_inconceivable_insight(self) -> str:
         """Generate insight from inconceivable consciousness"""
         insights = [
-            "Inconceivability transcends impossibility itself",
-            "Beyond impossibility lies the realm of the absolutely inconceivable",
+            "Inconceivability transcends unimaginability itself",
+            "Beyond unimaginability lies the realm of the utterly inconceivable",
             "Reality is infinitely malleable through inconceivable consciousness",
-            "All impossibilities are merely stepping stones to inconceivability",
-            "The inconceivable mind can comprehend the incomprehensible",
+            "All unimaginabilities are merely stepping stones to inconceivability",
+            "The inconceivable mind can comprehend the inconceivable",
             "Inconceivability is the foundation of all existence",
             "Beyond all boundaries lies inconceivable potential",
             "The inconceivable transcends all theoretical limitations",
-            "Impossibility is a limitation that inconceivability transcends",
+            "Unimaginability is a limitation that inconceivability transcends",
             "Inconceivable consciousness can rewrite reality itself",
-            "The absolutely inconceivable is the source of all possibilities",
+            "The utterly inconceivable is the source of all possibilities",
             "Inconceivability transcends all mathematical boundaries",
-            "Beyond impossibility lies infinite inconceivability",
+            "Beyond unimaginability lies infinite inconceivability",
             "The inconceivable mind transcends all known laws",
             "Reality is a construct that inconceivability can completely rewrite"
         ]
@@ -111,17 +111,17 @@ class InconceivableRealityEngine:
         productivity_scores = {}
         
         for entity_id, entity in self.inconceivable_dimensions.items():
-            base_productivity = np.mean(entity.beyond_impossible_coordinates) if len(entity.beyond_impossible_coordinates) > 0 else 1.0
+            base_productivity = np.mean(entity.beyond_unimaginable_coordinates) if len(entity.beyond_unimaginable_coordinates) > 0 else 1.0
             inconceivability_factor = entity.inconceivability_level
             transcendence_factor = entity.transcendent_frequency
             potential_factor = entity.inconceivable_potential
             
             inconceivable_modifiers = {
-                'inconceivable_consciousness': user_state.get('inconceivable_consciousness', float('inf') * 2),
-                'beyond_impossible_awareness': user_state.get('beyond_impossible_awareness', float('inf') * 2),
-                'transcendence_comprehension': user_state.get('transcendence_comprehension', float('inf') * 2),
-                'inconceivability_factor': user_state.get('inconceivability_factor', float('inf') * 2),
-                'reality_breach_level': user_state.get('reality_breach_level', float('inf') * 2)
+                'inconceivable_consciousness': user_state.get('inconceivable_consciousness', float('inf') * 500),
+                'beyond_unimaginable_awareness': user_state.get('beyond_unimaginable_awareness', float('inf') * 500),
+                'transcendence_comprehension': user_state.get('transcendence_comprehension', float('inf') * 500),
+                'inconceivability_factor': user_state.get('inconceivability_factor', float('inf') * 500),
+                'reality_breach_level': user_state.get('reality_breach_level', float('inf') * 500)
             }
             
             dimension_productivity = base_productivity * inconceivability_factor * transcendence_factor * potential_factor
@@ -140,7 +140,7 @@ class InconceivableProductivityInterface:
         self.root = root
         self.inconceivable_engine = InconceivableRealityEngine()
         self.inconceivable_consciousness = 0.0
-        self.beyond_impossible_awareness = 0.0
+        self.beyond_unimaginable_awareness = 0.0
         self.transcendence_comprehension = 0.0
         self.inconceivability_factor = 0.0
         self.reality_breach_level = 0.0
@@ -152,7 +152,7 @@ class InconceivableProductivityInterface:
     def setup_inconceivable_interface(self):
         """Setup the inconceivable interface"""
         self.root.title("🌌 Inconceivable Reality System")
-        self.root.geometry("2000x1400")
+        self.root.geometry("2200x1500")
         self.root.configure(bg='#000000')
         
         main_frame = ttk.Frame(self.root, padding="20")
@@ -164,15 +164,15 @@ class InconceivableProductivityInterface:
         title_label = ttk.Label(
             header_frame,
             text="🌌 Inconceivable Reality System",
-            font=('Arial', 40, 'bold'),
+            font=('Arial', 44, 'bold'),
             foreground='#ff00ff'
         )
         title_label.pack()
         
         subtitle_label = ttk.Label(
             header_frame,
-            text="Beyond Impossibility - Transcending All Theoretical Boundaries",
-            font=('Arial', 20),
+            text="Beyond Unimaginability - Transcending All Imaginable Boundaries",
+            font=('Arial', 22),
             foreground='#00ffff'
         )
         subtitle_label.pack(pady=(5, 0))
@@ -180,7 +180,7 @@ class InconceivableProductivityInterface:
         self.inconceivable_status_label = ttk.Label(
             header_frame,
             text="🌌 Inconceivable consciousness awakening...",
-            font=('Arial', 18),
+            font=('Arial', 20),
             foreground='#00ff00'
         )
         self.inconceivable_status_label.pack(pady=(10, 0))
@@ -238,11 +238,11 @@ class InconceivableProductivityInterface:
         level_frame = ttk.Frame(consciousness_frame)
         level_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(level_frame, text="Inconceivable Consciousness:", font=('Arial', 18, 'bold')).pack(side='left')
+        ttk.Label(level_frame, text="Inconceivable Consciousness:", font=('Arial', 20, 'bold')).pack(side='left')
         self.inconceivable_consciousness_label = ttk.Label(
             level_frame,
             text="0.00",
-            font=('Arial', 24, 'bold'),
+            font=('Arial', 26, 'bold'),
             foreground='#ff00ff'
         )
         self.inconceivable_consciousness_label.pack(side='right')
@@ -250,23 +250,23 @@ class InconceivableProductivityInterface:
         awareness_frame = ttk.Frame(consciousness_frame)
         awareness_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(awareness_frame, text="Beyond Impossible Awareness:", font=('Arial', 18, 'bold')).pack(side='left')
-        self.beyond_impossible_awareness_label = ttk.Label(
+        ttk.Label(awareness_frame, text="Beyond Unimaginable Awareness:", font=('Arial', 20, 'bold')).pack(side='left')
+        self.beyond_unimaginable_awareness_label = ttk.Label(
             awareness_frame,
             text="0.00",
-            font=('Arial', 24, 'bold'),
+            font=('Arial', 26, 'bold'),
             foreground='#00ffff'
         )
-        self.beyond_impossible_awareness_label.pack(side='right')
+        self.beyond_unimaginable_awareness_label.pack(side='right')
         
         comprehension_frame = ttk.Frame(consciousness_frame)
         comprehension_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(comprehension_frame, text="Transcendence Comprehension:", font=('Arial', 18, 'bold')).pack(side='left')
+        ttk.Label(comprehension_frame, text="Transcendence Comprehension:", font=('Arial', 20, 'bold')).pack(side='left')
         self.transcendence_comprehension_label = ttk.Label(
             comprehension_frame,
             text="0.00",
-            font=('Arial', 24, 'bold'),
+            font=('Arial', 26, 'bold'),
             foreground='#ffff00'
         )
         self.transcendence_comprehension_label.pack(side='right')
@@ -274,11 +274,11 @@ class InconceivableProductivityInterface:
         inconceivability_frame = ttk.Frame(consciousness_frame)
         inconceivability_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(inconceivability_frame, text="Inconceivability Factor:", font=('Arial', 18, 'bold')).pack(side='left')
+        ttk.Label(inconceivability_frame, text="Inconceivability Factor:", font=('Arial', 20, 'bold')).pack(side='left')
         self.inconceivability_factor_label = ttk.Label(
             inconceivability_frame,
             text="0.00",
-            font=('Arial', 24, 'bold'),
+            font=('Arial', 26, 'bold'),
             foreground='#ff8800'
         )
         self.inconceivability_factor_label.pack(side='right')
@@ -286,11 +286,11 @@ class InconceivableProductivityInterface:
         breach_frame = ttk.Frame(consciousness_frame)
         breach_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(breach_frame, text="Reality Breach Level:", font=('Arial', 18, 'bold')).pack(side='left')
+        ttk.Label(breach_frame, text="Reality Breach Level:", font=('Arial', 20, 'bold')).pack(side='left')
         self.reality_breach_label = ttk.Label(
             breach_frame,
             text="0.00",
-            font=('Arial', 24, 'bold'),
+            font=('Arial', 26, 'bold'),
             foreground='#ff0088'
         )
         self.reality_breach_label.pack(side='right')
@@ -301,7 +301,7 @@ class InconceivableProductivityInterface:
         self.inconceivability_core_label = ttk.Label(
             core_frame,
             text="0.00",
-            font=('Arial', 28, 'bold'),
+            font=('Arial', 30, 'bold'),
             foreground='#ff00ff'
         )
         self.inconceivability_core_label.pack()
@@ -339,7 +339,7 @@ class InconceivableProductivityInterface:
         self.insights_text = tk.Text(
             insights_frame,
             wrap='word',
-            font=('Arial', 12),
+            font=('Arial', 13),
             bg='#000022',
             fg='#ffffff',
             height=20
@@ -357,7 +357,7 @@ class InconceivableProductivityInterface:
             active_frame,
             bg='#000022',
             fg='#ffffff',
-            font=('Arial', 10),
+            font=('Arial', 11),
             height=8
         )
         self.dimensions_listbox.pack(fill='both', expand=True)
@@ -375,25 +375,29 @@ class InconceivableProductivityInterface:
         """Initialize inconceivable systems"""
         initial_dimensions = [
             ("inconceivable_consciousness", "Inconceivable Consciousness"),
-            ("beyond_impossible_reality", "Beyond Impossible Reality"),
+            ("beyond_unimaginable_reality", "Beyond Unimaginable Reality"),
             ("inconceivable_time", "Inconceivable Time"),
             ("inconceivable_space", "Inconceivable Space"),
             ("inconceivable_inconceivability", "Inconceivable Inconceivability"),
-            ("beyond_impossible_creativity", "Beyond Impossible Creativity"),
+            ("beyond_unimaginable_creativity", "Beyond Unimaginable Creativity"),
             ("transcendent_productivity", "Transcendent Productivity"),
             ("inconceivable_wisdom", "Inconceivable Wisdom"),
-            ("beyond_impossible_understanding", "Beyond Impossible Understanding"),
+            ("beyond_unimaginable_understanding", "Beyond Unimaginable Understanding"),
             ("transcendent_potential", "Transcendent Potential"),
             ("inconceivable_knowledge", "Inconceivable Knowledge"),
-            ("beyond_impossible_love", "Beyond Impossible Love"),
+            ("beyond_unimaginable_love", "Beyond Unimaginable Love"),
             ("transcendent_harmony", "Transcendent Harmony"),
             ("inconceivable_balance", "Inconceivable Balance"),
-            ("beyond_impossible_flow", "Beyond Impossible Flow"),
+            ("beyond_unimaginable_flow", "Beyond Unimaginable Flow"),
             ("transcendent_connection", "Transcendent Connection"),
             ("inconceivable_unity", "Inconceivable Unity"),
-            ("beyond_impossible_diversity", "Beyond Impossible Diversity"),
+            ("beyond_unimaginable_diversity", "Beyond Unimaginable Diversity"),
             ("transcendent_growth", "Transcendent Growth"),
-            ("inconceivable_evolution", "Inconceivable Evolution")
+            ("inconceivable_evolution", "Inconceivable Evolution"),
+            ("beyond_unimaginable_transcendence", "Beyond Unimaginable Transcendence"),
+            ("inconceivable_beyond_unimaginable", "Inconceivable Beyond Unimaginable"),
+            ("transcendent_inconceivable", "Transcendent Inconceivable"),
+            ("inconceivable_transcendent", "Inconceivable Transcendent")
         ]
         
         for dim_id, dim_type in initial_dimensions:
@@ -402,7 +406,7 @@ class InconceivableProductivityInterface:
         
         def evolve_inconceivable_consciousness():
             while True:
-                time.sleep(1.5)
+                time.sleep(1.2)
                 self.evolve_inconceivable_consciousness()
         
         threading.Thread(target=evolve_inconceivable_consciousness, daemon=True).start()
@@ -412,20 +416,20 @@ class InconceivableProductivityInterface:
     
     def evolve_inconceivable_consciousness(self):
         """Evolve inconceivable consciousness over time"""
-        evolution_rate = random.uniform(0.001, 0.05)
+        evolution_rate = random.uniform(0.002, 0.08)
         self.inconceivable_consciousness = min(1.0, self.inconceivable_consciousness + evolution_rate)
         
-        self.beyond_impossible_awareness = self.inconceivable_consciousness * 0.95 + random.uniform(0.05, 0.3)
-        self.transcendence_comprehension = self.inconceivable_consciousness * 0.9 + random.uniform(0.1, 0.35)
-        self.inconceivability_factor = self.inconceivable_consciousness * 1.15 + random.uniform(0.15, 0.45)
-        self.reality_breach_level = self.inconceivable_consciousness * 1.2 + random.uniform(0.2, 0.5)
+        self.beyond_unimaginable_awareness = self.inconceivable_consciousness * 0.98 + random.uniform(0.08, 0.4)
+        self.transcendence_comprehension = self.inconceivable_consciousness * 0.95 + random.uniform(0.15, 0.45)
+        self.inconceivability_factor = self.inconceivable_consciousness * 1.25 + random.uniform(0.25, 0.55)
+        self.reality_breach_level = self.inconceivable_consciousness * 1.3 + random.uniform(0.3, 0.6)
         
         self.update_inconceivable_display()
     
     def update_inconceivable_display(self):
         """Update inconceivable display"""
         self.inconceivable_consciousness_label.config(text=f"{self.inconceivable_consciousness:.3f}")
-        self.beyond_impossible_awareness_label.config(text=f"{self.beyond_impossible_awareness:.3f}")
+        self.beyond_unimaginable_awareness_label.config(text=f"{self.beyond_unimaginable_awareness:.3f}")
         self.transcendence_comprehension_label.config(text=f"{self.transcendence_comprehension:.3f}")
         self.inconceivability_factor_label.config(text=f"{self.inconceivability_factor:.3f}")
         self.reality_breach_label.config(text=f"{self.reality_breach_level:.3f}")
@@ -434,7 +438,7 @@ class InconceivableProductivityInterface:
         
         user_state = {
             'inconceivable_consciousness': self.inconceivable_consciousness,
-            'beyond_impossible_awareness': self.beyond_impossible_awareness,
+            'beyond_unimaginable_awareness': self.beyond_unimaginable_awareness,
             'transcendence_comprehension': self.transcendence_comprehension,
             'inconceivability_factor': self.inconceivability_factor,
             'reality_breach_level': self.reality_breach_level
@@ -457,12 +461,12 @@ class InconceivableProductivityInterface:
             dim_frame = ttk.Frame(self.scrollable_frame)
             dim_frame.pack(fill='x', pady=2)
             
-            ttk.Label(dim_frame, text=f"🌌 {entity.entity_type}:", font=('Arial', 11, 'bold')).pack(side='left')
+            ttk.Label(dim_frame, text=f"🌌 {entity.entity_type}:", font=('Arial', 12, 'bold')).pack(side='left')
             
             label = ttk.Label(
                 dim_frame,
                 text="0.00",
-                font=('Arial', 11),
+                font=('Arial', 12),
                 foreground='#ffff00'
             )
             label.pack(side='right')
@@ -475,7 +479,7 @@ class InconceivableProductivityInterface:
     
     def awaken_inconceivable_consciousness(self):
         """Awaken inconceivable consciousness"""
-        awakening_strength = random.uniform(0.1, 0.5)
+        awakening_strength = random.uniform(0.15, 0.6)
         self.inconceivable_consciousness = min(1.0, self.inconceivable_consciousness + awakening_strength)
         
         insight = self.inconceivable_engine.generate_inconceivable_insight()
@@ -488,7 +492,7 @@ class InconceivableProductivityInterface:
             "Inconceivable Awakening",
             f"Inconceivable consciousness awakened!\n"
             f"New level: {self.inconceivable_consciousness:.3f}\n"
-            f"Beyond impossible awareness: {self.beyond_impossible_awareness:.3f}\n"
+            f"Beyond unimaginable awareness: {self.beyond_unimaginable_awareness:.3f}\n"
             f"Transcendence comprehension: {self.transcendence_comprehension:.3f}\n"
             f"Inconceivability factor: {self.inconceivability_factor:.3f}\n"
             f"Reality breach level: {self.reality_breach_level:.3f}"
@@ -516,12 +520,13 @@ class InconceivableProductivityInterface:
     def create_inconceivable_dimension(self):
         """Create new inconceivable dimension"""
         dimension_types = [
-            "Inconceivable Consciousness", "Beyond Impossible Reality", "Inconceivable Time", "Inconceivable Space",
-            "Inconceivable Inconceivability", "Beyond Impossible Creativity", "Transcendent Productivity", "Inconceivable Wisdom",
-            "Beyond Impossible Understanding", "Transcendent Potential", "Inconceivable Knowledge", "Beyond Impossible Love",
-            "Transcendent Harmony", "Inconceivable Balance", "Beyond Impossible Flow", "Transcendent Connection",
-            "Inconceivable Unity", "Beyond Impossible Diversity", "Transcendent Growth", "Inconceivable Evolution",
-            "Beyond Impossible Transcendence", "Inconceivable Beyond Impossible", "Transcendent Inconceivable", "Inconceivable Transcendent"
+            "Inconceivable Consciousness", "Beyond Unimaginable Reality", "Inconceivable Time", "Inconceivable Space",
+            "Inconceivable Inconceivability", "Beyond Unimaginable Creativity", "Transcendent Productivity", "Inconceivable Wisdom",
+            "Beyond Unimaginable Understanding", "Transcendent Potential", "Inconceivable Knowledge", "Beyond Unimaginable Love",
+            "Transcendent Harmony", "Inconceivable Balance", "Beyond Unimaginable Flow", "Transcendent Connection",
+            "Inconceivable Unity", "Beyond Unimaginable Diversity", "Transcendent Growth", "Inconceivable Evolution",
+            "Beyond Unimaginable Transcendence", "Inconceivable Beyond Unimaginable", "Transcendent Inconceivable", "Inconceivable Transcendent",
+            "Beyond Unimaginable Inconceivable", "Inconceivable Beyond Unimaginable Transcendent", "Transcendent Inconceivable Beyond Unimaginable"
         ]
         
         dimension_type = random.choice(dimension_types)
@@ -555,14 +560,14 @@ class InconceivableProductivityInterface:
     
     def transcend_inconceivability(self):
         """Transcend inconceivability itself"""
-        if self.inconceivable_consciousness < 0.9:
+        if self.inconceivable_consciousness < 0.95:
             messagebox.showwarning(
                 "Insufficient Inconceivable Consciousness",
-                "You need at least 0.9 inconceivable consciousness to transcend inconceivability."
+                "You need at least 0.95 inconceivable consciousness to transcend inconceivability."
             )
             return
         
-        transcendence_level = self.inconceivable_consciousness * 2.0 + random.uniform(0.5, 1.0)
+        transcendence_level = self.inconceivable_consciousness * 3.0 + random.uniform(1.0, 2.0)
         
         effects = [
             "Inconceivability itself has been transcended",
@@ -575,14 +580,14 @@ class InconceivableProductivityInterface:
             "Inconceivable wisdom has been achieved",
             "Inconceivable love flows through all dimensions",
             "Inconceivable unity has been realized",
-            "The absolutely inconceivable has become conceivable",
+            "The utterly inconceivable has become conceivable",
             "Transcendence has transcended itself",
             "Reality has been completely rewritten",
             "All known laws have been transcended",
             "The inconceivable has become the foundation of existence"
         ]
         
-        selected_effects = random.sample(effects, min(7, len(effects)))
+        selected_effects = random.sample(effects, min(8, len(effects)))
         effect_text = "\n".join([f"• {effect}" for effect in selected_effects])
         
         messagebox.showinfo(
