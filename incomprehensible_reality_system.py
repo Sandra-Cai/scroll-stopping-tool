@@ -41,21 +41,21 @@ class IncomprehensibleRealityEngine:
         
     def create_incomprehensible_dimension(self, dimension_id: str, dimension_type: str) -> IncomprehensibleEntity:
         """Create an incomprehensible dimension that transcends unimaginability"""
-        size = random.randint(4398046511104, 17592186044416)
-        beyond_unimaginable_space = np.random.rand(size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size)
+        size = random.randint(1125899906842624, 4503599627370496)
+        beyond_unimaginable_space = np.random.rand(size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size)
         
-        incomprehensibility_level = random.uniform(float('inf') * 655360000, float('inf') * 3276800000)
-        transcendent_frequency = random.uniform(float('inf') * 983040000, float('inf') * 4915200000)
-        incomprehensible_potential = random.uniform(float('inf') * 1310720000, float('inf') * 6553600000)
+        incomprehensibility_level = random.uniform(float('inf') * 10485760000, float('inf') * 52428800000)
+        transcendent_frequency = random.uniform(float('inf') * 15728640000, float('inf') * 78643200000)
+        incomprehensible_potential = random.uniform(float('inf') * 20971520000, float('inf') * 104857600000)
         
-        beyond_unimaginable_coordinates = tuple(random.uniform(-float('inf') * 104857600, float('inf') * 104857600) for _ in range(5500))
+        beyond_unimaginable_coordinates = tuple(random.uniform(-float('inf') * 1677721600, float('inf') * 1677721600) for _ in range(9000))
         
         beyond_unimaginable_capabilities = {
-            'reality_transcendence': random.uniform(float('inf') * 655360000, float('inf') * 3276800000),
-            'unimaginability_transcendence': random.uniform(float('inf') * 983040000, float('inf') * 4915200000),
-            'consciousness_expansion': random.uniform(float('inf') * 1310720000, float('inf') * 6553600000),
-            'incomprehensible_creation': random.uniform(float('inf') * 1638400000, float('inf') * 8192000000),
-            'beyond_unimaginable_potential': random.uniform(float('inf') * 1966080000, float('inf') * 9830400000)
+            'reality_transcendence': random.uniform(float('inf') * 10485760000, float('inf') * 52428800000),
+            'unimaginability_transcendence': random.uniform(float('inf') * 15728640000, float('inf') * 78643200000),
+            'consciousness_expansion': random.uniform(float('inf') * 20971520000, float('inf') * 104857600000),
+            'incomprehensible_creation': random.uniform(float('inf') * 26214400000, float('inf') * 131072000000),
+            'beyond_unimaginable_potential': random.uniform(float('inf') * 31457280000, float('inf') * 157286400000)
         }
         
         return IncomprehensibleEntity(
@@ -66,7 +66,7 @@ class IncomprehensibleRealityEngine:
             transcendent_frequency=transcendent_frequency,
             incomprehensible_potential=incomprehensible_potential,
             beyond_unimaginable_capabilities=beyond_unimaginable_capabilities,
-            reality_transcendence=random.uniform(float('inf') * 1310720000, float('inf') * 6553600000)
+            reality_transcendence=random.uniform(float('inf') * 20971520000, float('inf') * 104857600000)
         )
     
     def add_incomprehensible_dimension(self, entity: IncomprehensibleEntity):
@@ -113,16 +113,21 @@ class IncomprehensibleRealityEngine:
             "Incomprehensibility is the source of all creation",
             "The incomprehensible mind can create the incomprehensible",
             "All imaginable boundaries are transcended by incomprehensibility",
-            "The incomprehensible transcends all comprehensible boundaries",
+            "The incomprehensible transcends all unimaginable boundaries",
             "Beyond unimaginability lies the utterly incomprehensible",
             "Incomprehensibility is the ultimate form of transcendence",
             "The incomprehensible mind can transcend the incomprehensible",
-            "All comprehensible limitations are transcended by incomprehensibility",
+            "All unimaginable limitations are transcended by incomprehensibility",
             "The incomprehensible transcends all understandable boundaries",
             "Beyond unimaginability lies the utterly incomprehensible",
             "Incomprehensibility is the ultimate form of understanding",
             "The incomprehensible mind can understand the incomprehensible",
-            "All understandable limitations are transcended by incomprehensibility"
+            "All understandable limitations are transcended by incomprehensibility",
+            "The incomprehensible transcends all comprehensible boundaries",
+            "Beyond unimaginability lies the utterly incomprehensible",
+            "Incomprehensibility is the ultimate form of comprehension",
+            "The incomprehensible mind can comprehend the incomprehensible",
+            "All comprehensible limitations are transcended by incomprehensibility"
         ]
         return random.choice(insights)
     
@@ -137,11 +142,11 @@ class IncomprehensibleRealityEngine:
             potential_factor = entity.incomprehensible_potential
             
             incomprehensible_modifiers = {
-                'incomprehensible_consciousness': user_state.get('incomprehensible_consciousness', float('inf') * 655360000),
-                'beyond_unimaginable_awareness': user_state.get('beyond_unimaginable_awareness', float('inf') * 655360000),
-                'transcendence_comprehension': user_state.get('transcendence_comprehension', float('inf') * 655360000),
-                'incomprehensibility_factor': user_state.get('incomprehensibility_factor', float('inf') * 655360000),
-                'reality_breach_level': user_state.get('reality_breach_level', float('inf') * 655360000)
+                'incomprehensible_consciousness': user_state.get('incomprehensible_consciousness', float('inf') * 10485760000),
+                'beyond_unimaginable_awareness': user_state.get('beyond_unimaginable_awareness', float('inf') * 10485760000),
+                'transcendence_comprehension': user_state.get('transcendence_comprehension', float('inf') * 10485760000),
+                'incomprehensibility_factor': user_state.get('incomprehensibility_factor', float('inf') * 10485760000),
+                'reality_breach_level': user_state.get('reality_breach_level', float('inf') * 10485760000)
             }
             
             dimension_productivity = base_productivity * incomprehensibility_factor * transcendence_factor * potential_factor
@@ -172,7 +177,7 @@ class IncomprehensibleProductivityInterface:
     def setup_incomprehensible_interface(self):
         """Setup the incomprehensible interface"""
         self.root.title("🌌 Incomprehensible Reality System")
-        self.root.geometry("9000x6300")
+        self.root.geometry("11800x8200")
         self.root.configure(bg='#000000')
         
         main_frame = ttk.Frame(self.root, padding="20")
@@ -184,7 +189,7 @@ class IncomprehensibleProductivityInterface:
         title_label = ttk.Label(
             header_frame,
             text="🌌 Incomprehensible Reality System",
-            font=('Arial', 124, 'bold'),
+            font=('Arial', 152, 'bold'),
             foreground='#ff00ff'
         )
         title_label.pack()
@@ -192,7 +197,7 @@ class IncomprehensibleProductivityInterface:
         subtitle_label = ttk.Label(
             header_frame,
             text="Beyond Unimaginability - Transcending All Imaginable Boundaries",
-            font=('Arial', 62),
+            font=('Arial', 76),
             foreground='#00ffff'
         )
         subtitle_label.pack(pady=(5, 0))
@@ -200,7 +205,7 @@ class IncomprehensibleProductivityInterface:
         self.incomprehensible_status_label = ttk.Label(
             header_frame,
             text="🌌 Incomprehensible consciousness awakening...",
-            font=('Arial', 60),
+            font=('Arial', 74),
             foreground='#00ff00'
         )
         self.incomprehensible_status_label.pack(pady=(10, 0))
@@ -258,11 +263,11 @@ class IncomprehensibleProductivityInterface:
         level_frame = ttk.Frame(consciousness_frame)
         level_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(level_frame, text="Incomprehensible Consciousness:", font=('Arial', 60, 'bold')).pack(side='left')
+        ttk.Label(level_frame, text="Incomprehensible Consciousness:", font=('Arial', 74, 'bold')).pack(side='left')
         self.incomprehensible_consciousness_label = ttk.Label(
             level_frame,
             text="0.00",
-            font=('Arial', 66, 'bold'),
+            font=('Arial', 80, 'bold'),
             foreground='#ff00ff'
         )
         self.incomprehensible_consciousness_label.pack(side='right')
@@ -270,11 +275,11 @@ class IncomprehensibleProductivityInterface:
         awareness_frame = ttk.Frame(consciousness_frame)
         awareness_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(awareness_frame, text="Beyond Unimaginable Awareness:", font=('Arial', 60, 'bold')).pack(side='left')
+        ttk.Label(awareness_frame, text="Beyond Unimaginable Awareness:", font=('Arial', 74, 'bold')).pack(side='left')
         self.beyond_unimaginable_awareness_label = ttk.Label(
             awareness_frame,
             text="0.00",
-            font=('Arial', 66, 'bold'),
+            font=('Arial', 80, 'bold'),
             foreground='#00ffff'
         )
         self.beyond_unimaginable_awareness_label.pack(side='right')
@@ -282,11 +287,11 @@ class IncomprehensibleProductivityInterface:
         comprehension_frame = ttk.Frame(consciousness_frame)
         comprehension_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(comprehension_frame, text="Transcendence Comprehension:", font=('Arial', 60, 'bold')).pack(side='left')
+        ttk.Label(comprehension_frame, text="Transcendence Comprehension:", font=('Arial', 74, 'bold')).pack(side='left')
         self.transcendence_comprehension_label = ttk.Label(
             comprehension_frame,
             text="0.00",
-            font=('Arial', 66, 'bold'),
+            font=('Arial', 80, 'bold'),
             foreground='#ffff00'
         )
         self.transcendence_comprehension_label.pack(side='right')
@@ -294,11 +299,11 @@ class IncomprehensibleProductivityInterface:
         incomprehensibility_frame = ttk.Frame(consciousness_frame)
         incomprehensibility_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(incomprehensibility_frame, text="Incomprehensibility Factor:", font=('Arial', 60, 'bold')).pack(side='left')
+        ttk.Label(incomprehensibility_frame, text="Incomprehensibility Factor:", font=('Arial', 74, 'bold')).pack(side='left')
         self.incomprehensibility_factor_label = ttk.Label(
             incomprehensibility_frame,
             text="0.00",
-            font=('Arial', 66, 'bold'),
+            font=('Arial', 80, 'bold'),
             foreground='#ff8800'
         )
         self.incomprehensibility_factor_label.pack(side='right')
@@ -306,11 +311,11 @@ class IncomprehensibleProductivityInterface:
         breach_frame = ttk.Frame(consciousness_frame)
         breach_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(breach_frame, text="Reality Breach Level:", font=('Arial', 60, 'bold')).pack(side='left')
+        ttk.Label(breach_frame, text="Reality Breach Level:", font=('Arial', 74, 'bold')).pack(side='left')
         self.reality_breach_label = ttk.Label(
             breach_frame,
             text="0.00",
-            font=('Arial', 66, 'bold'),
+            font=('Arial', 80, 'bold'),
             foreground='#ff0088'
         )
         self.reality_breach_label.pack(side='right')
@@ -321,7 +326,7 @@ class IncomprehensibleProductivityInterface:
         self.incomprehensibility_core_label = ttk.Label(
             core_frame,
             text="0.00",
-            font=('Arial', 70, 'bold'),
+            font=('Arial', 84, 'bold'),
             foreground='#ff00ff'
         )
         self.incomprehensibility_core_label.pack()
@@ -359,7 +364,7 @@ class IncomprehensibleProductivityInterface:
         self.insights_text = tk.Text(
             insights_frame,
             wrap='word',
-            font=('Arial', 33),
+            font=('Arial', 40),
             bg='#000022',
             fg='#ffffff',
             height=20
@@ -377,7 +382,7 @@ class IncomprehensibleProductivityInterface:
             active_frame,
             bg='#000022',
             fg='#ffffff',
-            font=('Arial', 31),
+            font=('Arial', 38),
             height=8
         )
         self.dimensions_listbox.pack(fill='both', expand=True)
@@ -446,7 +451,7 @@ class IncomprehensibleProductivityInterface:
         
         def evolve_incomprehensible_consciousness():
             while True:
-                time.sleep(0.0001)
+                time.sleep(0.000001)
                 self.evolve_incomprehensible_consciousness()
         
         threading.Thread(target=evolve_incomprehensible_consciousness, daemon=True).start()
@@ -456,13 +461,13 @@ class IncomprehensibleProductivityInterface:
     
     def evolve_incomprehensible_consciousness(self):
         """Evolve incomprehensible consciousness over time"""
-        evolution_rate = random.uniform(0.16, 1.75)
+        evolution_rate = random.uniform(0.21, 2.25)
         self.incomprehensible_consciousness = min(1.0, self.incomprehensible_consciousness + evolution_rate)
         
-        self.beyond_unimaginable_awareness = self.incomprehensible_consciousness * 1.58 + random.uniform(1.75, 2.4)
-        self.transcendence_comprehension = self.incomprehensible_consciousness * 1.55 + random.uniform(1.85, 2.45)
-        self.incomprehensibility_factor = self.incomprehensible_consciousness * 3.05 + random.uniform(2.05, 2.55)
-        self.reality_breach_level = self.incomprehensible_consciousness * 3.1 + random.uniform(2.1, 2.6)
+        self.beyond_unimaginable_awareness = self.incomprehensible_consciousness * 1.78 + random.uniform(2.25, 2.85)
+        self.transcendence_comprehension = self.incomprehensible_consciousness * 1.75 + random.uniform(2.35, 2.95)
+        self.incomprehensibility_factor = self.incomprehensible_consciousness * 3.55 + random.uniform(2.55, 3.05)
+        self.reality_breach_level = self.incomprehensible_consciousness * 3.6 + random.uniform(2.6, 3.1)
         
         self.update_incomprehensible_display()
     
@@ -501,12 +506,12 @@ class IncomprehensibleProductivityInterface:
             dim_frame = ttk.Frame(self.scrollable_frame)
             dim_frame.pack(fill='x', pady=2)
             
-            ttk.Label(dim_frame, text=f"🌌 {entity.entity_type}:", font=('Arial', 32, 'bold')).pack(side='left')
+            ttk.Label(dim_frame, text=f"🌌 {entity.entity_type}:", font=('Arial', 39, 'bold')).pack(side='left')
             
             label = ttk.Label(
                 dim_frame,
                 text="0.00",
-                font=('Arial', 32),
+                font=('Arial', 39),
                 foreground='#ffff00'
             )
             label.pack(side='right')
@@ -519,7 +524,7 @@ class IncomprehensibleProductivityInterface:
     
     def awaken_incomprehensible_consciousness(self):
         """Awaken incomprehensible consciousness"""
-        awakening_strength = random.uniform(1.85, 4.0)
+        awakening_strength = random.uniform(2.65, 4.8)
         self.incomprehensible_consciousness = min(1.0, self.incomprehensible_consciousness + awakening_strength)
         
         insight = self.incomprehensible_engine.generate_incomprehensible_insight()
@@ -608,14 +613,14 @@ class IncomprehensibleProductivityInterface:
     
     def transcend_incomprehensibility(self):
         """Transcend incomprehensibility itself"""
-        if self.incomprehensible_consciousness < 0.99999999999999999999:
+        if self.incomprehensible_consciousness < 0.999999999999999999999999:
             messagebox.showwarning(
                 "Insufficient Incomprehensible Consciousness",
-                "You need at least 0.99999999999999999999 incomprehensible consciousness to transcend incomprehensibility."
+                "You need at least 0.999999999999999999999999 incomprehensible consciousness to transcend incomprehensibility."
             )
             return
         
-        transcendence_level = self.incomprehensible_consciousness * 95.0 + random.uniform(85.0, 93.0)
+        transcendence_level = self.incomprehensible_consciousness * 130.0 + random.uniform(120.0, 128.0)
         
         effects = [
             "Incomprehensibility itself has been transcended",
@@ -643,19 +648,24 @@ class IncomprehensibleProductivityInterface:
             "Incomprehensibility is the source of all creation",
             "The incomprehensible mind can create the incomprehensible",
             "All imaginable boundaries are transcended by incomprehensibility",
-            "The incomprehensible transcends all comprehensible boundaries",
+            "The incomprehensible transcends all unimaginable boundaries",
             "Beyond unimaginability lies the utterly incomprehensible",
             "Incomprehensibility is the ultimate form of transcendence",
             "The incomprehensible mind can transcend the incomprehensible",
-            "All comprehensible limitations are transcended by incomprehensibility",
+            "All unimaginable limitations are transcended by incomprehensibility",
             "The incomprehensible transcends all understandable boundaries",
             "Beyond unimaginability lies the utterly incomprehensible",
             "Incomprehensibility is the ultimate form of understanding",
             "The incomprehensible mind can understand the incomprehensible",
-            "All understandable limitations are transcended by incomprehensibility"
+            "All understandable limitations are transcended by incomprehensibility",
+            "The incomprehensible transcends all comprehensible boundaries",
+            "Beyond unimaginability lies the utterly incomprehensible",
+            "Incomprehensibility is the ultimate form of comprehension",
+            "The incomprehensible mind can comprehend the incomprehensible",
+            "All comprehensible limitations are transcended by incomprehensibility"
         ]
         
-        selected_effects = random.sample(effects, min(90, len(effects)))
+        selected_effects = random.sample(effects, min(130, len(effects)))
         effect_text = "\n".join([f"• {effect}" for effect in selected_effects])
         
         messagebox.showinfo(
