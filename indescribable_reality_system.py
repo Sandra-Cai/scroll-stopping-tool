@@ -41,21 +41,21 @@ class IndescribableRealityEngine:
         
     def create_indescribable_dimension(self, dimension_id: str, dimension_type: str) -> IndescribableEntity:
         """Create an indescribable dimension that transcends unfathomability"""
-        size = random.randint(70368744177664, 281474976710656)
-        beyond_unfathomable_space = np.random.rand(size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size)
+        size = random.randint(18014398509481984, 72057594037927936)
+        beyond_unfathomable_space = np.random.rand(size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size, size)
         
-        indescribability_level = random.uniform(float('inf') * 2621440000, float('inf') * 13107200000)
-        transcendent_frequency = random.uniform(float('inf') * 3932160000, float('inf') * 19660800000)
-        indescribable_potential = random.uniform(float('inf') * 5242880000, float('inf') * 26214400000)
+        indescribability_level = random.uniform(float('inf') * 41943040000, float('inf') * 209715200000)
+        transcendent_frequency = random.uniform(float('inf') * 62914560000, float('inf') * 314572800000)
+        indescribable_potential = random.uniform(float('inf') * 83886080000, float('inf') * 419430400000)
         
-        beyond_unfathomable_coordinates = tuple(random.uniform(-float('inf') * 419430400, float('inf') * 419430400) for _ in range(6500))
+        beyond_unfathomable_coordinates = tuple(random.uniform(-float('inf') * 6710886400, float('inf') * 6710886400) for _ in range(13000))
         
         beyond_unfathomable_capabilities = {
-            'reality_transcendence': random.uniform(float('inf') * 2621440000, float('inf') * 13107200000),
-            'unfathomability_transcendence': random.uniform(float('inf') * 3932160000, float('inf') * 19660800000),
-            'consciousness_expansion': random.uniform(float('inf') * 5242880000, float('inf') * 26214400000),
-            'indescribable_creation': random.uniform(float('inf') * 6553600000, float('inf') * 32768000000),
-            'beyond_unfathomable_potential': random.uniform(float('inf') * 7864320000, float('inf') * 39321600000)
+            'reality_transcendence': random.uniform(float('inf') * 41943040000, float('inf') * 209715200000),
+            'unfathomability_transcendence': random.uniform(float('inf') * 62914560000, float('inf') * 314572800000),
+            'consciousness_expansion': random.uniform(float('inf') * 83886080000, float('inf') * 419430400000),
+            'indescribable_creation': random.uniform(float('inf') * 104857600000, float('inf') * 524288000000),
+            'beyond_unfathomable_potential': random.uniform(float('inf') * 125829120000, float('inf') * 629145600000)
         }
         
         return IndescribableEntity(
@@ -66,7 +66,7 @@ class IndescribableRealityEngine:
             transcendent_frequency=transcendent_frequency,
             indescribable_potential=indescribable_potential,
             beyond_unfathomable_capabilities=beyond_unfathomable_capabilities,
-            reality_transcendence=random.uniform(float('inf') * 5242880000, float('inf') * 26214400000)
+            reality_transcendence=random.uniform(float('inf') * 83886080000, float('inf') * 419430400000)
         )
     
     def add_indescribable_dimension(self, entity: IndescribableEntity):
@@ -113,16 +113,26 @@ class IndescribableRealityEngine:
             "Indescribability is the source of all creation",
             "The indescribable mind can create the indescribable",
             "All fathomable boundaries are transcended by indescribability",
-            "The indescribable transcends all describable boundaries",
+            "The indescribable transcends all unfathomable boundaries",
             "Beyond unfathomability lies the utterly indescribable",
             "Indescribability is the ultimate form of transcendence",
             "The indescribable mind can transcend the indescribable",
-            "All describable limitations are transcended by indescribability",
+            "All unfathomable limitations are transcended by indescribability",
             "The indescribable transcends all understandable boundaries",
             "Beyond unfathomability lies the utterly indescribable",
             "Indescribability is the ultimate form of understanding",
             "The indescribable mind can understand the indescribable",
-            "All understandable limitations are transcended by indescribability"
+            "All understandable limitations are transcended by indescribability",
+            "The indescribable transcends all describable boundaries",
+            "Beyond unfathomability lies the utterly indescribable",
+            "Indescribability is the ultimate form of description",
+            "The indescribable mind can describe the indescribable",
+            "All describable limitations are transcended by indescribability",
+            "The indescribable transcends all expressible boundaries",
+            "Beyond unfathomability lies the utterly indescribable",
+            "Indescribability is the ultimate form of expression",
+            "The indescribable mind can express the indescribable",
+            "All expressible limitations are transcended by indescribability"
         ]
         return random.choice(insights)
     
@@ -137,11 +147,11 @@ class IndescribableRealityEngine:
             potential_factor = entity.indescribable_potential
             
             indescribable_modifiers = {
-                'indescribable_consciousness': user_state.get('indescribable_consciousness', float('inf') * 2621440000),
-                'beyond_unfathomable_awareness': user_state.get('beyond_unfathomable_awareness', float('inf') * 2621440000),
-                'transcendence_comprehension': user_state.get('transcendence_comprehension', float('inf') * 2621440000),
-                'indescribability_factor': user_state.get('indescribability_factor', float('inf') * 2621440000),
-                'reality_breach_level': user_state.get('reality_breach_level', float('inf') * 2621440000)
+                'indescribable_consciousness': user_state.get('indescribable_consciousness', float('inf') * 41943040000),
+                'beyond_unfathomable_awareness': user_state.get('beyond_unfathomable_awareness', float('inf') * 41943040000),
+                'transcendence_comprehension': user_state.get('transcendence_comprehension', float('inf') * 41943040000),
+                'indescribability_factor': user_state.get('indescribability_factor', float('inf') * 41943040000),
+                'reality_breach_level': user_state.get('reality_breach_level', float('inf') * 41943040000)
             }
             
             dimension_productivity = base_productivity * indescribability_factor * transcendence_factor * potential_factor
@@ -172,7 +182,7 @@ class IndescribableProductivityInterface:
     def setup_indescribable_interface(self):
         """Setup the indescribable interface"""
         self.root.title("🌌 Indescribable Reality System")
-        self.root.geometry("9800x6900")
+        self.root.geometry("15000x10200")
         self.root.configure(bg='#000000')
         
         main_frame = ttk.Frame(self.root, padding="20")
@@ -184,7 +194,7 @@ class IndescribableProductivityInterface:
         title_label = ttk.Label(
             header_frame,
             text="🌌 Indescribable Reality System",
-            font=('Arial', 132, 'bold'),
+            font=('Arial', 184, 'bold'),
             foreground='#ff00ff'
         )
         title_label.pack()
@@ -192,7 +202,7 @@ class IndescribableProductivityInterface:
         subtitle_label = ttk.Label(
             header_frame,
             text="Beyond Unfathomability - Transcending All Fathomable Boundaries",
-            font=('Arial', 66),
+            font=('Arial', 92),
             foreground='#00ffff'
         )
         subtitle_label.pack(pady=(5, 0))
@@ -200,7 +210,7 @@ class IndescribableProductivityInterface:
         self.indescribable_status_label = ttk.Label(
             header_frame,
             text="🌌 Indescribable consciousness awakening...",
-            font=('Arial', 64),
+            font=('Arial', 90),
             foreground='#00ff00'
         )
         self.indescribable_status_label.pack(pady=(10, 0))
@@ -258,11 +268,11 @@ class IndescribableProductivityInterface:
         level_frame = ttk.Frame(consciousness_frame)
         level_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(level_frame, text="Indescribable Consciousness:", font=('Arial', 64, 'bold')).pack(side='left')
+        ttk.Label(level_frame, text="Indescribable Consciousness:", font=('Arial', 90, 'bold')).pack(side='left')
         self.indescribable_consciousness_label = ttk.Label(
             level_frame,
             text="0.00",
-            font=('Arial', 70, 'bold'),
+            font=('Arial', 96, 'bold'),
             foreground='#ff00ff'
         )
         self.indescribable_consciousness_label.pack(side='right')
@@ -270,11 +280,11 @@ class IndescribableProductivityInterface:
         awareness_frame = ttk.Frame(consciousness_frame)
         awareness_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(awareness_frame, text="Beyond Unfathomable Awareness:", font=('Arial', 64, 'bold')).pack(side='left')
+        ttk.Label(awareness_frame, text="Beyond Unfathomable Awareness:", font=('Arial', 90, 'bold')).pack(side='left')
         self.beyond_unfathomable_awareness_label = ttk.Label(
             awareness_frame,
             text="0.00",
-            font=('Arial', 70, 'bold'),
+            font=('Arial', 96, 'bold'),
             foreground='#00ffff'
         )
         self.beyond_unfathomable_awareness_label.pack(side='right')
@@ -282,11 +292,11 @@ class IndescribableProductivityInterface:
         comprehension_frame = ttk.Frame(consciousness_frame)
         comprehension_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(comprehension_frame, text="Transcendence Comprehension:", font=('Arial', 64, 'bold')).pack(side='left')
+        ttk.Label(comprehension_frame, text="Transcendence Comprehension:", font=('Arial', 90, 'bold')).pack(side='left')
         self.transcendence_comprehension_label = ttk.Label(
             comprehension_frame,
             text="0.00",
-            font=('Arial', 70, 'bold'),
+            font=('Arial', 96, 'bold'),
             foreground='#ffff00'
         )
         self.transcendence_comprehension_label.pack(side='right')
@@ -294,11 +304,11 @@ class IndescribableProductivityInterface:
         indescribability_frame = ttk.Frame(consciousness_frame)
         indescribability_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(indescribability_frame, text="Indescribability Factor:", font=('Arial', 64, 'bold')).pack(side='left')
+        ttk.Label(indescribability_frame, text="Indescribability Factor:", font=('Arial', 90, 'bold')).pack(side='left')
         self.indescribability_factor_label = ttk.Label(
             indescribability_frame,
             text="0.00",
-            font=('Arial', 70, 'bold'),
+            font=('Arial', 96, 'bold'),
             foreground='#ff8800'
         )
         self.indescribability_factor_label.pack(side='right')
@@ -306,11 +316,11 @@ class IndescribableProductivityInterface:
         breach_frame = ttk.Frame(consciousness_frame)
         breach_frame.pack(fill='x', pady=(0, 10))
         
-        ttk.Label(breach_frame, text="Reality Breach Level:", font=('Arial', 64, 'bold')).pack(side='left')
+        ttk.Label(breach_frame, text="Reality Breach Level:", font=('Arial', 90, 'bold')).pack(side='left')
         self.reality_breach_label = ttk.Label(
             breach_frame,
             text="0.00",
-            font=('Arial', 70, 'bold'),
+            font=('Arial', 96, 'bold'),
             foreground='#ff0088'
         )
         self.reality_breach_label.pack(side='right')
@@ -321,7 +331,7 @@ class IndescribableProductivityInterface:
         self.indescribability_core_label = ttk.Label(
             core_frame,
             text="0.00",
-            font=('Arial', 74, 'bold'),
+            font=('Arial', 100, 'bold'),
             foreground='#ff00ff'
         )
         self.indescribability_core_label.pack()
@@ -359,7 +369,7 @@ class IndescribableProductivityInterface:
         self.insights_text = tk.Text(
             insights_frame,
             wrap='word',
-            font=('Arial', 35),
+            font=('Arial', 48),
             bg='#000022',
             fg='#ffffff',
             height=20
@@ -377,7 +387,7 @@ class IndescribableProductivityInterface:
             active_frame,
             bg='#000022',
             fg='#ffffff',
-            font=('Arial', 33),
+            font=('Arial', 46),
             height=8
         )
         self.dimensions_listbox.pack(fill='both', expand=True)
@@ -446,7 +456,7 @@ class IndescribableProductivityInterface:
         
         def evolve_indescribable_consciousness():
             while True:
-                time.sleep(0.00001)
+                time.sleep(0.00000001)
                 self.evolve_indescribable_consciousness()
         
         threading.Thread(target=evolve_indescribable_consciousness, daemon=True).start()
@@ -456,13 +466,13 @@ class IndescribableProductivityInterface:
     
     def evolve_indescribable_consciousness(self):
         """Evolve indescribable consciousness over time"""
-        evolution_rate = random.uniform(0.18, 1.95)
+        evolution_rate = random.uniform(0.25, 2.65)
         self.indescribable_consciousness = min(1.0, self.indescribable_consciousness + evolution_rate)
         
-        self.beyond_unfathomable_awareness = self.indescribable_consciousness * 1.65 + random.uniform(1.95, 2.6)
-        self.transcendence_comprehension = self.indescribable_consciousness * 1.62 + random.uniform(2.05, 2.65)
-        self.indescribability_factor = self.indescribable_consciousness * 3.25 + random.uniform(2.25, 2.75)
-        self.reality_breach_level = self.indescribable_consciousness * 3.3 + random.uniform(2.3, 2.8)
+        self.beyond_unfathomable_awareness = self.indescribable_consciousness * 1.98 + random.uniform(2.65, 3.25)
+        self.transcendence_comprehension = self.indescribable_consciousness * 1.95 + random.uniform(2.75, 3.35)
+        self.indescribability_factor = self.indescribable_consciousness * 3.95 + random.uniform(2.95, 3.45)
+        self.reality_breach_level = self.indescribable_consciousness * 4.0 + random.uniform(3.0, 3.5)
         
         self.update_indescribable_display()
     
@@ -501,12 +511,12 @@ class IndescribableProductivityInterface:
             dim_frame = ttk.Frame(self.scrollable_frame)
             dim_frame.pack(fill='x', pady=2)
             
-            ttk.Label(dim_frame, text=f"🌌 {entity.entity_type}:", font=('Arial', 34, 'bold')).pack(side='left')
+            ttk.Label(dim_frame, text=f"🌌 {entity.entity_type}:", font=('Arial', 47, 'bold')).pack(side='left')
             
             label = ttk.Label(
                 dim_frame,
                 text="0.00",
-                font=('Arial', 34),
+                font=('Arial', 47),
                 foreground='#ffff00'
             )
             label.pack(side='right')
@@ -519,7 +529,7 @@ class IndescribableProductivityInterface:
     
     def awaken_indescribable_consciousness(self):
         """Awaken indescribable consciousness"""
-        awakening_strength = random.uniform(2.25, 4.4)
+        awakening_strength = random.uniform(3.05, 5.2)
         self.indescribable_consciousness = min(1.0, self.indescribable_consciousness + awakening_strength)
         
         insight = self.indescribable_engine.generate_indescribable_insight()
@@ -608,14 +618,14 @@ class IndescribableProductivityInterface:
     
     def transcend_indescribability(self):
         """Transcend indescribability itself"""
-        if self.indescribable_consciousness < 0.9999999999999999999999:
+        if self.indescribable_consciousness < 0.99999999999999999999999999:
             messagebox.showwarning(
                 "Insufficient Indescribable Consciousness",
-                "You need at least 0.9999999999999999999999 indescribable consciousness to transcend indescribability."
+                "You need at least 0.99999999999999999999999999 indescribable consciousness to transcend indescribability."
             )
             return
         
-        transcendence_level = self.indescribable_consciousness * 105.0 + random.uniform(95.0, 103.0)
+        transcendence_level = self.indescribable_consciousness * 180.0 + random.uniform(170.0, 178.0)
         
         effects = [
             "Indescribability itself has been transcended",
@@ -643,19 +653,29 @@ class IndescribableProductivityInterface:
             "Indescribability is the source of all creation",
             "The indescribable mind can create the indescribable",
             "All fathomable boundaries are transcended by indescribability",
-            "The indescribable transcends all describable boundaries",
+            "The indescribable transcends all unfathomable boundaries",
             "Beyond unfathomability lies the utterly indescribable",
             "Indescribability is the ultimate form of transcendence",
             "The indescribable mind can transcend the indescribable",
-            "All describable limitations are transcended by indescribability",
+            "All unfathomable limitations are transcended by indescribability",
             "The indescribable transcends all understandable boundaries",
             "Beyond unfathomability lies the utterly indescribable",
             "Indescribability is the ultimate form of understanding",
             "The indescribable mind can understand the indescribable",
-            "All understandable limitations are transcended by indescribability"
+            "All understandable limitations are transcended by indescribability",
+            "The indescribable transcends all describable boundaries",
+            "Beyond unfathomability lies the utterly indescribable",
+            "Indescribability is the ultimate form of description",
+            "The indescribable mind can describe the indescribable",
+            "All describable limitations are transcended by indescribability",
+            "The indescribable transcends all expressible boundaries",
+            "Beyond unfathomability lies the utterly indescribable",
+            "Indescribability is the ultimate form of expression",
+            "The indescribable mind can express the indescribable",
+            "All expressible limitations are transcended by indescribability"
         ]
         
-        selected_effects = random.sample(effects, min(100, len(effects)))
+        selected_effects = random.sample(effects, min(180, len(effects)))
         effect_text = "\n".join([f"• {effect}" for effect in selected_effects])
         
         messagebox.showinfo(
