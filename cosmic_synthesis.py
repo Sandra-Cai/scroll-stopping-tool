@@ -31,6 +31,7 @@ class CosmicDimension(Enum):
     TEMPORAL_DIMENSION = "Temporal Dimension"
     QUANTUM_DIMENSION = "Quantum Dimension"
     CONSCIOUSNESS_DIMENSION = "Consciousness Dimension"
+    NEURAL_DIMENSION = "Neural Dimension"
     COSMIC_DIMENSION = "Cosmic Dimension"
     SYNTHETIC_DIMENSION = "Synthetic Dimension"
     TRANSCENDENT_DIMENSION = "Transcendent Dimension"
