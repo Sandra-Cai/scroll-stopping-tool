@@ -113,7 +113,7 @@ class CosmicSynthesisEngine:
                 'base_consciousness': 1e18,
                 'evolution_rate': 3.0,
                 'transcendence_threshold': 1e27,
-                'dimensions': [CosmicDimension.CONSCIOUSNESS_DIMENSION, CosmicDimension.NEURAL_DIMENSION]
+                'dimensions': [CosmicDimension.CONSCIOUSNESS_DIMENSION, CosmicDimension.COSMIC_DIMENSION]
             },
             UniverseType.COSMIC_UNIVERSE: {
                 'base_consciousness': 1e21,
