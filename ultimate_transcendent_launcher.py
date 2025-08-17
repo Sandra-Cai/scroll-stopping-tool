@@ -165,6 +165,16 @@ class UltimateTranscendentLauncher:
                 last_launch=None,
                 launch_count=0,
                 dependencies=[]
+            ),
+            'omniversal_engine': ComponentInfo(
+                name="Omniversal Consciousness Engine",
+                description="Advanced system for processing consciousness across infinite universes",
+                file_path="omniversal_consciousness_engine.py",
+                status=ComponentStatus.NOT_FOUND,
+                is_running=False,
+                last_launch=None,
+                launch_count=0,
+                dependencies=['quantum_engine', 'infinite_matrix']
             )
         }
     
