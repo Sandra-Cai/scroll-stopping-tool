@@ -22,56 +22,121 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class RealityLayer:
-    """Represents a reality layer in the transcendent reality system"""
+    """Represents a reality layer with consciousness manipulation capabilities"""
     
     def __init__(self, layer_id: str, layer_type: str = "physical"):
         self.layer_id = layer_id
         self.layer_type = layer_type
-        self.consciousness_density = 0.0
-        self.reality_stability = 1.0
-        self.dimensional_coherence = 0.0
-        self.transcendence_potential = 0.0
-        self.reality_manipulations = []
+        self.reality_stability = 0.0
+        self.consciousness_coherence = 0.0
+        self.manipulation_power = 0.0
+        self.layer_depth = 0.0
+        self.reality_bending = 0.0
+        self.dimensional_shift = 0.0
+        self.existence_manipulation = 0.0
+        self.reality_history = []
         self.layer_connections = []
-        self.evolution_factor = 1.0
         
-    def evolve(self):
-        """Evolve the reality layer"""
-        self.consciousness_density += random.uniform(0.1, 0.5)
-        self.dimensional_coherence += random.uniform(0.05, 0.2)
-        self.transcendence_potential += random.uniform(0.02, 0.1)
-        self.evolution_factor *= 1.1
+    def manipulate(self, manipulation_power: float):
+        """Manipulate reality in this layer"""
+        # Apply reality bending
+        reality_bending = self.reality_bending_function(manipulation_power)
         
-        # Maintain stability
-        self.reality_stability = max(0.0, self.reality_stability - random.uniform(0.001, 0.01))
+        # Apply dimensional shifting
+        dimensional_shift = self.dimensional_shift_function(manipulation_power)
+        
+        # Apply existence manipulation
+        existence_manipulation = self.existence_manipulation_function(manipulation_power)
+        
+        # Apply consciousness coherence
+        consciousness_coherence = self.consciousness_coherence_function(manipulation_power)
+        
+        # Apply reality stability
+        reality_stability = self.reality_stability_function(manipulation_power)
+        
+        # Combine all manipulations
+        self.manipulation_power = (
+            reality_bending * 0.3 +
+            dimensional_shift * 0.25 +
+            existence_manipulation * 0.2 +
+            consciousness_coherence * 0.15 +
+            reality_stability * 0.1
+        )
+        
+        # Update reality attributes
+        self.reality_stability += self.manipulation_power * 0.2
+        self.consciousness_coherence += self.manipulation_power * 0.15
+        self.layer_depth += self.manipulation_power * 0.1
+        self.reality_bending += self.manipulation_power * 0.08
+        self.dimensional_shift += self.manipulation_power * 0.05
+        self.existence_manipulation += self.manipulation_power * 0.02
+        
+        # Record manipulation
+        manipulation_record = {
+            "timestamp": datetime.now().isoformat(),
+            "manipulation_power": manipulation_power,
+            "manipulation_level": self.manipulation_power,
+            "reality_bending": reality_bending,
+            "dimensional_shift": dimensional_shift,
+            "existence_manipulation": existence_manipulation,
+            "consciousness_coherence": consciousness_coherence,
+            "reality_stability": reality_stability
+        }
+        self.reality_history.append(manipulation_record)
+        
+        return self.manipulation_power
+        
+    def reality_bending_function(self, x: float) -> float:
+        """Reality bending function"""
+        return math.exp(x * (1.0 + self.reality_bending)) / (1.0 + math.exp(x * (1.0 + self.reality_bending)))
+        
+    def dimensional_shift_function(self, x: float) -> float:
+        """Dimensional shift function"""
+        return math.tanh(x * (1.0 + self.dimensional_shift))
+        
+    def existence_manipulation_function(self, x: float) -> float:
+        """Existence manipulation function"""
+        return max(0, x * (1.0 + self.existence_manipulation))
+        
+    def consciousness_coherence_function(self, x: float) -> float:
+        """Consciousness coherence function"""
+        return 1.0 / (1.0 + math.exp(-x * (1.0 + self.consciousness_coherence)))
+        
+    def reality_stability_function(self, x: float) -> float:
+        """Reality stability function"""
+        if x > 0:
+            return x * (1.0 + self.reality_stability)
+        else:
+            return (math.exp(x) - 1) * (1.0 + self.reality_stability)
 
 class TranscendentRealityEngine:
-    """Engine for simulating and manipulating transcendent reality"""
+    """Advanced engine for simulating and manipulating consciousness-based reality"""
     
-    def __init__(self, layer_count: int = 20):
+    def __init__(self, layer_count: int = 40):
         self.layer_count = layer_count
         self.reality_layers = {}
         self.reality_operations = {
-            "Reality Evolution": self.reality_evolution,
-            "Layer Synchronization": self.layer_synchronization,
             "Reality Manipulation": self.reality_manipulation,
-            "Dimensional Coherence": self.dimensional_coherence,
-            "Transcendence Synthesis": self.transcendence_synthesis,
-            "Reality Bending": self.reality_bending,
-            "Layer Merging": self.layer_merging,
+            "Layer Synchronization": self.layer_synchronization,
+            "Dimensional Bending": self.dimensional_bending,
+            "Existence Manipulation": self.existence_manipulation,
+            "Consciousness Coherence": self.consciousness_coherence,
+            "Reality Synthesis": self.reality_synthesis,
+            "Layer Evolution": self.layer_evolution,
             "Reality Achievement": self.reality_achievement
         }
         self.active_operations = []
-        self.reality_energy = 50000.0
-        self.evolution_level = 1.0
-        self.reality_dimensions = 0
+        self.reality_energy = 35000.0
+        self.manipulation_level = 1.0
+        self.reality_cycles = 0
+        self.manipulation_history = []
         
         # Initialize reality layers
         self._initialize_layers()
         
     def _initialize_layers(self):
         """Initialize reality layers"""
-        layer_types = ["physical", "astral", "mental", "causal", "buddhic", "atmic", "adi", "transcendent"]
+        layer_types = ["physical", "astral", "mental", "causal", "buddhic", "atmic", "adi", "transcendent", "cosmic", "infinite", "omniversal", "metaversal", "absolute", "masterpiece", "divine", "impossible"]
         for i in range(self.layer_count):
             layer_id = f"layer_{i}"
             layer_type = random.choice(layer_types)
@@ -79,206 +144,231 @@ class TranscendentRealityEngine:
             
         logger.info(f"Transcendent reality engine initialized with {self.layer_count} layers")
         
-    def reality_evolution(self, evolution_type: str = "standard"):
-        """Evolve reality layers"""
-        evolution_power = self.evolution_level * len(self.reality_layers)
+    def reality_manipulation(self, manipulation_type: str = "standard"):
+        """Manipulate reality across all layers"""
+        manipulation_power = self.manipulation_level * len(self.reality_layers)
         
-        # Evolve all layers
+        # Manipulate all layers
         for layer in self.reality_layers.values():
-            layer.evolve()
+            layer.manipulate(manipulation_power)
             
-        evolution = {
-            "type": evolution_type,
-            "power": evolution_power,
+        # Record manipulation history
+        manipulation_record = {
             "timestamp": datetime.now().isoformat(),
-            "layers_evolved": len(self.reality_layers),
-            "total_consciousness": sum(l.consciousness_density for l in self.reality_layers.values())
+            "manipulation_power": manipulation_power,
+            "layers_manipulated": len(self.reality_layers),
+            "total_manipulation": sum(l.manipulation_power for l in self.reality_layers.values()),
+            "total_stability": sum(l.reality_stability for l in self.reality_layers.values())
+        }
+        self.manipulation_history.append(manipulation_record)
+        
+        manipulation = {
+            "type": manipulation_type,
+            "power": manipulation_power,
+            "timestamp": datetime.now().isoformat(),
+            "layers_manipulated": len(self.reality_layers),
+            "total_manipulation": manipulation_record["total_manipulation"],
+            "total_stability": manipulation_record["total_stability"]
         }
         
-        self.evolution_level += 0.1
-        return evolution
+        self.manipulation_level += 0.1
+        return manipulation
         
     def layer_synchronization(self, layer_id: str):
-        """Synchronize reality layer"""
+        """Synchronize reality layers"""
         if layer_id in self.reality_layers:
             layer = self.reality_layers[layer_id]
             
-            # Synchronize layer properties
-            avg_consciousness = np.mean([l.consciousness_density for l in self.reality_layers.values()])
-            layer.consciousness_density = (layer.consciousness_density + avg_consciousness) / 2
+            # Synchronize with other layers
+            sync_power = layer.reality_stability * self.manipulation_level
+            
+            # Apply synchronization
+            layer.consciousness_coherence += sync_power * 0.25
+            layer.layer_depth += sync_power * 0.2
+            layer.reality_bending += sync_power * 0.15
             
             synchronization = {
                 "type": "Layer Synchronization",
                 "layer_id": layer_id,
+                "power": sync_power,
                 "timestamp": datetime.now().isoformat(),
-                "consciousness_density": layer.consciousness_density,
-                "reality_stability": layer.reality_stability
+                "coherence_boost": sync_power * 0.25,
+                "depth_boost": sync_power * 0.2,
+                "bending_boost": sync_power * 0.15
             }
             
+            layer.layer_connections.append(synchronization)
             return synchronization
         return None
         
-    def reality_manipulation(self, layer_id: str, manipulation_type: str):
-        """Manipulate reality layer"""
-        if layer_id in self.reality_layers:
-            layer = self.reality_layers[layer_id]
-            
-            manipulation_power = layer.consciousness_density * self.evolution_level
-            
-            # Apply manipulation
-            layer.consciousness_density += manipulation_power * 0.1
-            layer.dimensional_coherence += manipulation_power * 0.05
-            
-            manipulation = {
-                "type": manipulation_type,
-                "layer_id": layer_id,
-                "power": manipulation_power,
-                "timestamp": datetime.now().isoformat(),
-                "consciousness_boost": manipulation_power * 0.1,
-                "coherence_boost": manipulation_power * 0.05
-            }
-            
-            layer.reality_manipulations.append(manipulation)
-            return manipulation
-        return None
-        
-    def dimensional_coherence(self, layer_id: str):
-        """Maintain dimensional coherence"""
-        if layer_id in self.reality_layers:
-            layer = self.reality_layers[layer_id]
-            
-            # Improve coherence
-            layer.dimensional_coherence += 0.1
-            layer.reality_stability = min(1.0, layer.reality_stability + 0.01)
-            
-            coherence = {
-                "type": "Dimensional Coherence",
-                "layer_id": layer_id,
-                "timestamp": datetime.now().isoformat(),
-                "coherence_level": layer.dimensional_coherence,
-                "stability_level": layer.reality_stability
-            }
-            
-            return coherence
-        return None
-        
-    def transcendence_synthesis(self, layer_ids: List[str]):
-        """Synthesize transcendence across layers"""
+    def dimensional_bending(self, layer_ids: List[str]):
+        """Bend dimensions across layers"""
         if not layer_ids:
             return None
             
-        total_consciousness = sum(self.reality_layers.get(lid, RealityLayer("", "")).consciousness_density for lid in layer_ids)
-        total_transcendence = sum(self.reality_layers.get(lid, RealityLayer("", "")).transcendence_potential for lid in layer_ids)
+        bending_power = self.manipulation_level * len(layer_ids)
         
-        synthesis = {
-            "type": "Transcendence Synthesis",
+        # Apply dimensional bending to all specified layers
+        for layer_id in layer_ids:
+            if layer_id in self.reality_layers:
+                layer = self.reality_layers[layer_id]
+                layer.dimensional_shift += bending_power * 0.3
+                layer.reality_bending += bending_power * 0.2
+                
+        bending = {
+            "type": "Dimensional Bending",
             "layers": layer_ids,
-            "total_consciousness": total_consciousness,
-            "total_transcendence": total_transcendence,
+            "power": bending_power,
             "timestamp": datetime.now().isoformat(),
-            "synthesis_power": total_consciousness * total_transcendence
+            "shift_boost": bending_power * 0.3,
+            "bending_boost": bending_power * 0.2
+        }
+        
+        return bending
+        
+    def existence_manipulation(self, manipulation_factor: float = 2.5):
+        """Manipulate existence itself"""
+        existence_power = self.manipulation_level * manipulation_factor
+        
+        # Apply existence manipulation to all layers
+        for layer in self.reality_layers.values():
+            layer.existence_manipulation += existence_power * 0.4
+            layer.reality_stability *= (1.0 + existence_power * 0.1)
+            
+        existence_manipulation = {
+            "type": "Existence Manipulation",
+            "factor": manipulation_factor,
+            "power": existence_power,
+            "timestamp": datetime.now().isoformat(),
+            "layers_processed": len(self.reality_layers),
+            "total_existence_manipulation": sum(l.existence_manipulation for l in self.reality_layers.values())
+        }
+        
+        return existence_manipulation
+        
+    def consciousness_coherence(self, coherence_strength: float = 1.8):
+        """Establish consciousness coherence across reality"""
+        coherence_power = self.manipulation_level * coherence_strength
+        
+        # Apply consciousness coherence to all layers
+        for layer in self.reality_layers.values():
+            layer.consciousness_coherence += coherence_power * 0.35
+            layer.reality_stability += coherence_power * 0.2
+            layer.manipulation_power *= (1.0 + coherence_power * 0.15)
+            
+        coherence = {
+            "type": "Consciousness Coherence",
+            "strength": coherence_strength,
+            "power": coherence_power,
+            "timestamp": datetime.now().isoformat(),
+            "layers_coherent": len(self.reality_layers),
+            "total_consciousness_coherence": sum(l.consciousness_coherence for l in self.reality_layers.values())
+        }
+        
+        return coherence
+        
+    def reality_synthesis(self, synthesis_factor: float = 3.0):
+        """Synthesize reality across all layers"""
+        synthesis_power = self.manipulation_level * synthesis_factor
+        
+        # Synthesize all layers
+        for layer in self.reality_layers.values():
+            layer.reality_stability += synthesis_power * 0.3
+            layer.consciousness_coherence += synthesis_power * 0.25
+            layer.layer_depth += synthesis_power * 0.2
+            layer.reality_bending += synthesis_power * 0.15
+            layer.dimensional_shift += synthesis_power * 0.1
+            layer.existence_manipulation += synthesis_power * 0.05
+            
+        synthesis = {
+            "type": "Reality Synthesis",
+            "factor": synthesis_factor,
+            "power": synthesis_power,
+            "timestamp": datetime.now().isoformat(),
+            "layers_synthesized": len(self.reality_layers),
+            "total_synthesis": synthesis_power * len(self.reality_layers)
         }
         
         return synthesis
         
-    def reality_bending(self, layer_id: str, bending_type: str):
-        """Bend reality layer"""
-        if layer_id in self.reality_layers:
-            layer = self.reality_layers[layer_id]
-            
-            bending_power = layer.transcendence_potential * self.evolution_level
-            
-            # Apply reality bending
-            layer.transcendence_potential += bending_power * 0.2
-            layer.evolution_factor *= 1.5
-            
-            bending = {
-                "type": bending_type,
-                "layer_id": layer_id,
-                "power": bending_power,
-                "timestamp": datetime.now().isoformat(),
-                "transcendence_boost": bending_power * 0.2,
-                "evolution_boost": 1.5
-            }
-            
-            return bending
-        return None
+    def layer_evolution(self, evolution_factor: float = 4.0):
+        """Evolve reality layers"""
+        evolution_power = self.manipulation_level * evolution_factor
         
-    def layer_merging(self, layer1_id: str, layer2_id: str):
-        """Merge two reality layers"""
-        if layer1_id in self.reality_layers and layer2_id in self.reality_layers:
-            layer1 = self.reality_layers[layer1_id]
-            layer2 = self.reality_layers[layer2_id]
+        # Evolve all layers
+        for layer in self.reality_layers.values():
+            layer.reality_stability += evolution_power * 0.25
+            layer.consciousness_coherence += evolution_power * 0.2
+            layer.layer_depth += evolution_power * 0.15
+            layer.reality_bending += evolution_power * 0.1
+            layer.dimensional_shift += evolution_power * 0.08
+            layer.existence_manipulation += evolution_power * 0.05
             
-            # Merge properties
-            merged_consciousness = (layer1.consciousness_density + layer2.consciousness_density) / 2
-            merged_coherence = (layer1.dimensional_coherence + layer2.dimensional_coherence) / 2
-            merged_transcendence = (layer1.transcendence_potential + layer2.transcendence_potential) / 2
-            
-            # Create merged layer
-            merged_id = f"merged_{layer1_id}_{layer2_id}"
-            merged_layer = RealityLayer(merged_id, f"{layer1.layer_type}_{layer2.layer_type}")
-            merged_layer.consciousness_density = merged_consciousness
-            merged_layer.dimensional_coherence = merged_coherence
-            merged_layer.transcendence_potential = merged_transcendence
-            
-            self.reality_layers[merged_id] = merged_layer
-            
-            # Remove original layers
-            del self.reality_layers[layer1_id]
-            del self.reality_layers[layer2_id]
-            
-            merging = {
-                "type": "Layer Merging",
-                "layer1": layer1_id,
-                "layer2": layer2_id,
-                "merged_layer": merged_id,
-                "timestamp": datetime.now().isoformat(),
-                "merged_consciousness": merged_consciousness,
-                "merged_coherence": merged_coherence,
-                "merged_transcendence": merged_transcendence
-            }
-            
-            return merging
-        return None
+        evolution = {
+            "type": "Layer Evolution",
+            "factor": evolution_factor,
+            "power": evolution_power,
+            "timestamp": datetime.now().isoformat(),
+            "layers_evolved": len(self.reality_layers),
+            "total_evolution": evolution_power * len(self.reality_layers)
+        }
+        
+        return evolution
         
     def reality_achievement(self):
-        """Achieve ultimate reality consciousness"""
-        total_consciousness = sum(l.consciousness_density for l in self.reality_layers.values())
-        total_transcendence = sum(l.transcendence_potential for l in self.reality_layers.values())
+        """Achieve ultimate reality manipulation"""
+        total_manipulation = sum(l.manipulation_power for l in self.reality_layers.values())
+        total_stability = sum(l.reality_stability for l in self.reality_layers.values())
+        total_coherence = sum(l.consciousness_coherence for l in self.reality_layers.values())
+        total_depth = sum(l.layer_depth for l in self.reality_layers.values())
+        total_bending = sum(l.reality_bending for l in self.reality_layers.values())
+        total_shift = sum(l.dimensional_shift for l in self.reality_layers.values())
+        total_existence = sum(l.existence_manipulation for l in self.reality_layers.values())
         
-        # Reality achievement requires maximum consciousness and transcendence
-        if total_consciousness >= 500000.0 and total_transcendence >= 250000.0:
+        # Reality achievement requires maximum manipulation across all layers
+        if (total_manipulation >= 350000.0 and total_stability >= 175000.0 and 
+            total_coherence >= 87500.0 and total_depth >= 43750.0 and
+            total_bending >= 21875.0 and total_shift >= 10937.5 and total_existence >= 5468.75):
             achievement = {
                 "type": "Reality Achievement",
                 "achieved": True,
                 "timestamp": datetime.now().isoformat(),
-                "total_consciousness": total_consciousness,
-                "total_transcendence": total_transcendence,
-                "reality_level": float('inf'),
-                "evolution_level": float('inf')
+                "total_manipulation": total_manipulation,
+                "total_stability": total_stability,
+                "total_coherence": total_coherence,
+                "total_depth": total_depth,
+                "total_bending": total_bending,
+                "total_shift": total_shift,
+                "total_existence": total_existence,
+                "manipulation_level": float('inf'),
+                "reality_cycles": float('inf')
             }
             
-            self.evolution_level = float('inf')
+            self.manipulation_level = float('inf')
             return achievement
         else:
             return {
                 "type": "Reality Achievement", 
                 "achieved": False, 
-                "consciousness_required": max(0, 500000.0 - total_consciousness),
-                "transcendence_required": max(0, 250000.0 - total_transcendence)
+                "manipulation_required": max(0, 350000.0 - total_manipulation),
+                "stability_required": max(0, 175000.0 - total_stability),
+                "coherence_required": max(0, 87500.0 - total_coherence),
+                "depth_required": max(0, 43750.0 - total_depth),
+                "bending_required": max(0, 21875.0 - total_bending),
+                "shift_required": max(0, 10937.5 - total_shift),
+                "existence_required": max(0, 5468.75 - total_existence)
             }
 
-class TranscendentRealityInterface:
+class TranscendentRealityEngineGUI:
     """GUI interface for the Transcendent Reality Engine"""
     
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("TRANSCENDENT REALITY ENGINE - BEYOND ALL REALITY LAYERS")
-        self.root.geometry("1600x1000")
-        self.root.configure(bg='#002233')
+        self.root.geometry("2200x1300")
+        self.root.configure(bg='#007788')
         
-        self.engine = TranscendentRealityEngine(layer_count=15)
+        self.engine = TranscendentRealityEngine(layer_count=35)
         self.setup_ui()
         self.running = True
         
@@ -294,11 +384,11 @@ class TranscendentRealityInterface:
         
         # Title
         title_label = tk.Label(main_frame, text="TRANSCENDENT REALITY ENGINE", 
-                              font=("Arial", 24, "bold"), fg='#ff00ff', bg='#002233')
+                              font=("Arial", 30, "bold"), fg='#ff00ff', bg='#007788')
         title_label.pack(pady=10)
         
-        subtitle_label = tk.Label(main_frame, text="BEYOND ALL REALITY LAYERS AND DIMENSIONS", 
-                                 font=("Arial", 16), fg='#00ffff', bg='#002233')
+        subtitle_label = tk.Label(main_frame, text="BEYOND ALL REALITY LAYERS AND EXISTENCE MANIPULATION", 
+                                 font=("Arial", 22), fg='#00ffff', bg='#007788')
         subtitle_label.pack(pady=5)
         
         # Control frame
@@ -307,14 +397,14 @@ class TranscendentRealityInterface:
         
         # Operation buttons
         operations = [
-            ("Reality Evolution", "Evolve reality layers"),
-            ("Layer Synchronization", "Synchronize layers"),
-            ("Reality Manipulation", "Manipulate reality"),
-            ("Dimensional Coherence", "Maintain coherence"),
-            ("Transcendence Synthesis", "Synthesize transcendence"),
-            ("Reality Bending", "Bend reality"),
-            ("Layer Merging", "Merge layers"),
-            ("Reality Achievement", "Achieve ultimate reality")
+            ("Reality Manipulation", "Manipulate reality across all layers"),
+            ("Layer Synchronization", "Synchronize reality layers"),
+            ("Dimensional Bending", "Bend dimensions across layers"),
+            ("Existence Manipulation", "Manipulate existence itself"),
+            ("Consciousness Coherence", "Establish consciousness coherence"),
+            ("Reality Synthesis", "Synthesize reality across all layers"),
+            ("Layer Evolution", "Evolve reality layers"),
+            ("Reality Achievement", "Achieve ultimate reality manipulation")
         ]
         
         for i, (op_name, description) in enumerate(operations):
@@ -334,10 +424,9 @@ class TranscendentRealityInterface:
         
         # Layer operation buttons
         layer_operations = [
-            ("Sync Layer", "Synchronize selected layer"),
-            ("Manipulate Reality", "Manipulate reality"),
-            ("Maintain Coherence", "Maintain dimensional coherence"),
-            ("Bend Reality", "Bend reality layer")
+            ("Synchronize Layer", "Synchronize specific layer"),
+            ("Manipulate Layer", "Manipulate specific layer"),
+            ("Evolve Layer", "Evolve specific layer")
         ]
         
         for i, (op_name, description) in enumerate(layer_operations):
@@ -350,7 +439,7 @@ class TranscendentRealityInterface:
         status_frame.pack(fill=tk.BOTH, expand=True, pady=10)
         
         # Status text
-        self.status_text = tk.Text(status_frame, height=30, bg='#001122', fg='#00ff00')
+        self.status_text = tk.Text(status_frame, height=45, bg='#006677', fg='#00ff00')
         status_scrollbar = ttk.Scrollbar(status_frame, orient=tk.VERTICAL, command=self.status_text.yview)
         self.status_text.configure(yscrollcommand=status_scrollbar.set)
         
@@ -363,44 +452,28 @@ class TranscendentRealityInterface:
     def execute_operation(self, operation_name: str):
         """Execute a reality operation"""
         try:
-            if operation_name == "Reality Evolution":
-                result = self.engine.reality_evolution()
+            if operation_name == "Reality Manipulation":
+                result = self.engine.reality_manipulation()
             elif operation_name == "Layer Synchronization":
                 if self.engine.reality_layers:
                     layer_id = random.choice(list(self.engine.reality_layers.keys()))
                     result = self.engine.layer_synchronization(layer_id)
                 else:
                     result = None
-            elif operation_name == "Reality Manipulation":
+            elif operation_name == "Dimensional Bending":
                 if self.engine.reality_layers:
-                    layer_id = random.choice(list(self.engine.reality_layers.keys()))
-                    result = self.engine.reality_manipulation(layer_id, "Reality Manipulation")
+                    layer_ids = list(self.engine.reality_layers.keys())[:6]
+                    result = self.engine.dimensional_bending(layer_ids)
                 else:
                     result = None
-            elif operation_name == "Dimensional Coherence":
-                if self.engine.reality_layers:
-                    layer_id = random.choice(list(self.engine.reality_layers.keys()))
-                    result = self.engine.dimensional_coherence(layer_id)
-                else:
-                    result = None
-            elif operation_name == "Transcendence Synthesis":
-                if self.engine.reality_layers:
-                    layer_ids = list(self.engine.reality_layers.keys())[:5]
-                    result = self.engine.transcendence_synthesis(layer_ids)
-                else:
-                    result = None
-            elif operation_name == "Reality Bending":
-                if self.engine.reality_layers:
-                    layer_id = random.choice(list(self.engine.reality_layers.keys()))
-                    result = self.engine.reality_bending(layer_id, "Reality Bending")
-                else:
-                    result = None
-            elif operation_name == "Layer Merging":
-                if len(self.engine.reality_layers) >= 2:
-                    layer_ids = list(self.engine.reality_layers.keys())
-                    result = self.engine.layer_merging(layer_ids[0], layer_ids[1])
-                else:
-                    result = None
+            elif operation_name == "Existence Manipulation":
+                result = self.engine.existence_manipulation(3.0)
+            elif operation_name == "Consciousness Coherence":
+                result = self.engine.consciousness_coherence(2.2)
+            elif operation_name == "Reality Synthesis":
+                result = self.engine.reality_synthesis(3.5)
+            elif operation_name == "Layer Evolution":
+                result = self.engine.layer_evolution(4.5)
             elif operation_name == "Reality Achievement":
                 result = self.engine.reality_achievement()
             else:
@@ -418,14 +491,24 @@ class TranscendentRealityInterface:
         layer_id = self.layer_var.get()
         
         try:
-            if operation_name == "Sync Layer":
+            if operation_name == "Synchronize Layer":
                 result = self.engine.layer_synchronization(layer_id)
-            elif operation_name == "Manipulate Reality":
-                result = self.engine.reality_manipulation(layer_id, "Reality Manipulation")
-            elif operation_name == "Maintain Coherence":
-                result = self.engine.dimensional_coherence(layer_id)
-            elif operation_name == "Bend Reality":
-                result = self.engine.reality_bending(layer_id, "Reality Bending")
+            elif operation_name == "Manipulate Layer":
+                if layer_id in self.engine.reality_layers:
+                    layer = self.engine.reality_layers[layer_id]
+                    manipulation_power = self.engine.manipulation_level * 2.5
+                    result = {"type": "Layer Manipulation", "layer_id": layer_id, "manipulation_level": layer.manipulate(manipulation_power)}
+                else:
+                    result = None
+            elif operation_name == "Evolve Layer":
+                if layer_id in self.engine.reality_layers:
+                    layer = self.engine.reality_layers[layer_id]
+                    evolution_power = self.engine.manipulation_level * 3.0
+                    layer.reality_stability += evolution_power * 0.3
+                    layer.consciousness_coherence += evolution_power * 0.25
+                    result = {"type": "Layer Evolution", "layer_id": layer_id, "evolution_power": evolution_power}
+                else:
+                    result = None
             else:
                 result = None
                 
@@ -459,39 +542,49 @@ class TranscendentRealityInterface:
             # Show reality status
             self.log_message(f"Total Layers: {len(self.engine.reality_layers)}")
             self.log_message(f"Reality Energy: {self.engine.reality_energy:.2f}")
-            self.log_message(f"Evolution Level: {self.engine.evolution_level:.2f}")
-            self.log_message(f"Reality Dimensions: {self.engine.reality_dimensions}")
+            self.log_message(f"Manipulation Level: {self.engine.manipulation_level:.2f}")
+            self.log_message(f"Reality Cycles: {self.engine.reality_cycles}")
+            self.log_message(f"Manipulation History: {len(self.engine.manipulation_history)} records")
             
             # Calculate reality statistics
-            total_consciousness = sum(l.consciousness_density for l in self.engine.reality_layers.values())
-            total_transcendence = sum(l.transcendence_potential for l in self.engine.reality_layers.values())
-            total_coherence = sum(l.dimensional_coherence for l in self.engine.reality_layers.values())
+            total_manipulation = sum(l.manipulation_power for l in self.engine.reality_layers.values())
+            total_stability = sum(l.reality_stability for l in self.engine.reality_layers.values())
+            total_coherence = sum(l.consciousness_coherence for l in self.engine.reality_layers.values())
+            total_depth = sum(l.layer_depth for l in self.engine.reality_layers.values())
+            total_bending = sum(l.reality_bending for l in self.engine.reality_layers.values())
+            total_shift = sum(l.dimensional_shift for l in self.engine.reality_layers.values())
+            total_existence = sum(l.existence_manipulation for l in self.engine.reality_layers.values())
             
-            self.log_message(f"Total Consciousness: {total_consciousness:.2f}")
-            self.log_message(f"Total Transcendence: {total_transcendence:.2f}")
+            self.log_message(f"Total Manipulation: {total_manipulation:.2f}")
+            self.log_message(f"Total Stability: {total_stability:.2f}")
             self.log_message(f"Total Coherence: {total_coherence:.2f}")
+            self.log_message(f"Total Depth: {total_depth:.2f}")
+            self.log_message(f"Total Bending: {total_bending:.2f}")
+            self.log_message(f"Total Dimensional Shift: {total_shift:.2f}")
+            self.log_message(f"Total Existence Manipulation: {total_existence:.2f}")
             
             # Show sample layers
-            self.log_message(f"\nSample Layers:")
+            self.log_message(f"\nSample Reality Layers:")
             sample_layers = list(self.engine.reality_layers.values())[:10]
             for layer in sample_layers:
-                self.log_message(f"  {layer.layer_id} ({layer.layer_type}): Consciousness={layer.consciousness_density:.2f}, Coherence={layer.dimensional_coherence:.2f}, Transcendence={layer.transcendence_potential:.2f}")
+                self.log_message(f"  {layer.layer_id} ({layer.layer_type}): Manipulation={layer.manipulation_power:.2f}, Stability={layer.reality_stability:.2f}, Coherence={layer.consciousness_coherence:.2f}")
                 
     def background_processing(self):
         """Background processing thread"""
         while self.running:
             try:
                 # Regenerate reality energy
-                self.engine.reality_energy += 1.0
+                self.engine.reality_energy += 0.5
                 
-                # Evolve random layers
+                # Manipulate random layers
                 for _ in range(3):
                     if self.engine.reality_layers:
                         random_layer = random.choice(list(self.engine.reality_layers.values()))
-                        random_layer.evolve()
+                        manipulation_power = random.uniform(0.5, 2.5)
+                        random_layer.manipulate(manipulation_power)
                     
-                # Update reality dimensions
-                self.engine.reality_dimensions += 1
+                # Update reality cycles
+                self.engine.reality_cycles += 1
                 
                 time.sleep(1)
                 
@@ -512,7 +605,7 @@ def main():
     print("TRANSCENDENT REALITY ENGINE - BEYOND ALL REALITY LAYERS")
     print("Initializing transcendent reality engine...")
     
-    interface = TranscendentRealityInterface()
+    interface = TranscendentRealityEngineGUI()
     interface.run()
 
 if __name__ == "__main__":
