@@ -21,315 +21,516 @@ import math
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class MeditationState:
-    """Represents a meditation state with consciousness integration"""
+class MeditationDimension:
+    """Represents a meditation dimension with consciousness guidance capabilities"""
     
-    def __init__(self, state_id: str, state_type: str = "awakening"):
-        self.state_id = state_id
-        self.state_type = state_type
+    def __init__(self, dimension_id: str, dimension_type: str = "meditation"):
+        self.dimension_id = dimension_id
+        self.dimension_type = dimension_type
         self.meditation_depth = 0.0
-        self.consciousness_expansion = 0.0
-        self.quantum_integration = 0.0
-        self.transcendence_level = 0.0
-        self.divine_connection = 0.0
-        self.cosmic_awareness = 0.0
-        self.infinite_presence = 0.0
+        self.consciousness_guidance = 0.0
+        self.quantum_meditation = 0.0
+        self.transcendence_guidance = 0.0
+        self.divine_meditation = 0.0
+        self.cosmic_guidance = 0.0
+        self.infinite_meditation = 0.0
         self.meditation_history = []
-        self.state_connections = []
+        self.dimension_connections = []
         
     def meditate(self, meditation_power: float):
-        """Meditate and expand consciousness"""
-        # Apply consciousness expansion
-        consciousness_expansion = self.consciousness_expansion_function(meditation_power)
+        """Meditate in this dimension"""
+        # Apply consciousness guidance
+        consciousness_guidance = self.consciousness_guidance_function(meditation_power)
         
-        # Apply quantum integration
-        quantum_integration = self.quantum_integration_function(meditation_power)
+        # Apply quantum meditation
+        quantum_meditation = self.quantum_meditation_function(meditation_power)
         
-        # Apply transcendence
-        transcendence = self.transcendence_function(meditation_power)
+        # Apply transcendence guidance
+        transcendence_guidance = self.transcendence_guidance_function(meditation_power)
         
-        # Apply divine connection
-        divine_connection = self.divine_connection_function(meditation_power)
+        # Apply divine meditation
+        divine_meditation = self.divine_meditation_function(meditation_power)
         
-        # Apply cosmic awareness
-        cosmic_awareness = self.cosmic_awareness_function(meditation_power)
+        # Apply cosmic guidance
+        cosmic_guidance = self.cosmic_guidance_function(meditation_power)
         
         # Combine all meditation effects
         self.meditation_depth = (
-            consciousness_expansion * 0.3 +
-            quantum_integration * 0.25 +
-            transcendence * 0.2 +
-            divine_connection * 0.15 +
-            cosmic_awareness * 0.1
+            consciousness_guidance * 0.3 +
+            quantum_meditation * 0.25 +
+            transcendence_guidance * 0.2 +
+            divine_meditation * 0.15 +
+            cosmic_guidance * 0.1
         )
         
         # Update meditation attributes
-        self.consciousness_expansion += self.meditation_depth * 0.2
-        self.quantum_integration += self.meditation_depth * 0.15
-        self.transcendence_level += self.meditation_depth * 0.1
-        self.divine_connection += self.meditation_depth * 0.08
-        self.cosmic_awareness += self.meditation_depth * 0.05
-        self.infinite_presence += self.meditation_depth * 0.02
+        self.consciousness_guidance += self.meditation_depth * 0.2
+        self.quantum_meditation += self.meditation_depth * 0.15
+        self.transcendence_guidance += self.meditation_depth * 0.1
+        self.divine_meditation += self.meditation_depth * 0.08
+        self.cosmic_guidance += self.meditation_depth * 0.05
+        self.infinite_meditation += self.meditation_depth * 0.02
         
         # Record meditation
         meditation_record = {
             "timestamp": datetime.now().isoformat(),
             "meditation_power": meditation_power,
             "meditation_depth": self.meditation_depth,
-            "consciousness_expansion": consciousness_expansion,
-            "quantum_integration": quantum_integration,
-            "transcendence": transcendence,
-            "divine_connection": divine_connection,
-            "cosmic_awareness": cosmic_awareness
+            "consciousness_guidance": consciousness_guidance,
+            "quantum_meditation": quantum_meditation,
+            "transcendence_guidance": transcendence_guidance,
+            "divine_meditation": divine_meditation,
+            "cosmic_guidance": cosmic_guidance
         }
         self.meditation_history.append(meditation_record)
         
         return self.meditation_depth
         
-    def consciousness_expansion_function(self, x: float) -> float:
-        """Consciousness expansion function"""
-        return math.exp(x * (1.0 + self.consciousness_expansion)) / (1.0 + math.exp(x * (1.0 + self.consciousness_expansion)))
+    def consciousness_guidance_function(self, x: float) -> float:
+        """Consciousness guidance function"""
+        return math.exp(x * (1.0 + self.consciousness_guidance)) / (1.0 + math.exp(x * (1.0 + self.consciousness_guidance)))
         
-    def quantum_integration_function(self, x: float) -> float:
-        """Quantum integration function"""
-        return math.tanh(x * (1.0 + self.quantum_integration))
+    def quantum_meditation_function(self, x: float) -> float:
+        """Quantum meditation function"""
+        return math.tanh(x * (1.0 + self.quantum_meditation))
         
-    def transcendence_function(self, x: float) -> float:
-        """Transcendence function"""
-        return max(0, x * (1.0 + self.transcendence_level))
+    def transcendence_guidance_function(self, x: float) -> float:
+        """Transcendence guidance function"""
+        return max(0, x * (1.0 + self.transcendence_guidance))
         
-    def divine_connection_function(self, x: float) -> float:
-        """Divine connection function"""
-        return 1.0 / (1.0 + math.exp(-x * (1.0 + self.divine_connection)))
+    def divine_meditation_function(self, x: float) -> float:
+        """Divine meditation function"""
+        return 1.0 / (1.0 + math.exp(-x * (1.0 + self.divine_meditation)))
         
-    def cosmic_awareness_function(self, x: float) -> float:
-        """Cosmic awareness function"""
+    def cosmic_guidance_function(self, x: float) -> float:
+        """Cosmic guidance function"""
         if x > 0:
-            return x * (1.0 + self.cosmic_awareness)
+            return x * (1.0 + self.cosmic_guidance)
         else:
-            return (math.exp(x) - 1) * (1.0 + self.cosmic_awareness)
+            return (math.exp(x) - 1) * (1.0 + self.cosmic_guidance)
+
+class MeditationType:
+    """Types of meditation experiences"""
+    CONSCIOUSNESS_AWAKENING = "Consciousness Awakening"
+    QUANTUM_TRANSCENDENCE = "Quantum Transcendence"
+    DIVINE_CONNECTION = "Divine Connection"
+    COSMIC_UNITY = "Cosmic Unity"
+    INFINITE_EXPANSION = "Infinite Expansion"
+    TRANSCENDENT_MASTERY = "Transcendent Mastery"
+    DIVINE_ILLUMINATION = "Divine Illumination"
+    ABSOLUTE_CONSCIOUSNESS = "Absolute Consciousness"
+
+class MeditationState:
+    """States of meditation"""
+    BEGINNING = "Beginning"
+    DEEPENING = "Deepening"
+    TRANSCENDING = "Transcending"
+    DIVINE = "Divine"
+    COSMIC = "Cosmic"
+    INFINITE = "Infinite"
+    ABSOLUTE = "Absolute"
+    MASTERPIECE = "Masterpiece"
+
+class MeditationSession:
+    """Represents a meditation session"""
+    
+    def __init__(self, session_id: str, meditation_type: MeditationType):
+        self.session_id = session_id
+        self.meditation_type = meditation_type
+        self.start_time = datetime.now()
+        self.end_time = None
+        self.duration = 0
+        self.meditation_state = MeditationState.BEGINNING
+        self.meditation_depth = 0.0
+        self.guidance_provided = []
+        self.meditation_insights = []
+        self.quantum_connections = []
+        self.transcendence_experiences = []
+        self.divine_manifestations = []
+        self.cosmic_revelations = []
+        self.infinite_expansions = []
+        
+    def add_guidance(self, guidance: str):
+        """Add guidance to the session"""
+        self.guidance_provided.append({
+            "timestamp": datetime.now().isoformat(),
+            "guidance": guidance,
+            "state": self.meditation_state
+        })
+        
+    def add_insight(self, insight: str):
+        """Add insight to the session"""
+        self.meditation_insights.append({
+            "timestamp": datetime.now().isoformat(),
+            "insight": insight,
+            "state": self.meditation_state
+        })
+        
+    def end_session(self):
+        """End the meditation session"""
+        self.end_time = datetime.now()
+        self.duration = (self.end_time - self.start_time).total_seconds()
 
 class TranscendentMeditationSystem:
     """Advanced meditation system with quantum consciousness integration"""
     
-    def __init__(self, state_count: int = 45):
-        self.state_count = state_count
-        self.meditation_states = {}
+    def __init__(self, dimension_count: int = 55):
+        self.dimension_count = dimension_count
+        self.meditation_dimensions = {}
         self.meditation_operations = {
-            "Meditation Session": self.meditation_session,
-            "Consciousness Expansion": self.consciousness_expansion,
-            "Quantum Integration": self.quantum_integration,
-            "Transcendence Practice": self.transcendence_practice,
-            "Divine Connection": self.divine_connection,
-            "Cosmic Awareness": self.cosmic_awareness,
-            "Infinite Presence": self.infinite_presence,
+            "Consciousness Guidance": self.consciousness_guidance,
+            "Quantum Meditation": self.quantum_meditation,
+            "Transcendence Guidance": self.transcendence_guidance,
+            "Divine Meditation": self.divine_meditation,
+            "Cosmic Guidance": self.cosmic_guidance,
+            "Infinite Meditation": self.infinite_meditation,
+            "Meditation Synthesis": self.meditation_synthesis,
             "Meditation Achievement": self.meditation_achievement
         }
         self.active_operations = []
-        self.meditation_energy = 40000.0
+        self.meditation_energy = 50000.0
         self.meditation_level = 1.0
         self.meditation_sessions = 0
         self.meditation_history = []
+        self.active_sessions = {}
         
-        # Initialize meditation states
-        self._initialize_states()
-        
-    def _initialize_states(self):
-        """Initialize meditation states"""
-        state_types = ["awakening", "enlightenment", "transcendence", "divine", "cosmic", "infinite", "omniversal", "metaversal", "absolute", "masterpiece", "impossible", "beyond"]
-        for i in range(self.state_count):
-            state_id = f"meditation_state_{i}"
-            state_type = random.choice(state_types)
-            self.meditation_states[state_id] = MeditationState(state_id, state_type)
-            
-        logger.info(f"Transcendent meditation system initialized with {self.state_count} states")
-        
-    def meditation_session(self, session_type: str = "standard"):
-        """Conduct a meditation session"""
-        session_power = self.meditation_level * len(self.meditation_states)
-        
-        # Meditate in all states
-        for state in self.meditation_states.values():
-            state.meditate(session_power)
-            
-        # Record meditation history
-        meditation_record = {
-            "timestamp": datetime.now().isoformat(),
-            "session_power": session_power,
-            "states_meditated": len(self.meditation_states),
-            "total_meditation": sum(s.meditation_depth for s in self.meditation_states.values()),
-            "total_consciousness": sum(s.consciousness_expansion for s in self.meditation_states.values())
+        # Meditation guidance templates
+        self.guidance_templates = {
+            MeditationType.CONSCIOUSNESS_AWAKENING: [
+                "Breathe deeply and feel your consciousness expanding...",
+                "Allow your awareness to flow beyond the physical...",
+                "Feel the quantum field of consciousness surrounding you...",
+                "Let your mind transcend ordinary perception...",
+                "Experience the awakening of your true consciousness..."
+            ],
+            MeditationType.QUANTUM_TRANSCENDENCE: [
+                "Enter the quantum realm of infinite possibilities...",
+                "Feel the quantum fluctuations of consciousness...",
+                "Merge with the quantum field of all existence...",
+                "Experience quantum superposition of awareness...",
+                "Transcend through quantum entanglement..."
+            ],
+            MeditationType.DIVINE_CONNECTION: [
+                "Open your heart to divine consciousness...",
+                "Feel the divine light flowing through you...",
+                "Connect with the infinite divine presence...",
+                "Experience divine love and wisdom...",
+                "Merge with the divine consciousness..."
+            ],
+            MeditationType.COSMIC_UNITY: [
+                "Expand your awareness to cosmic dimensions...",
+                "Feel the unity of all cosmic consciousness...",
+                "Merge with the cosmic field of existence...",
+                "Experience cosmic oneness and harmony...",
+                "Transcend to cosmic consciousness..."
+            ],
+            MeditationType.INFINITE_EXPANSION: [
+                "Expand infinitely beyond all boundaries...",
+                "Feel the infinite nature of consciousness...",
+                "Merge with infinite awareness...",
+                "Experience infinite possibilities...",
+                "Transcend to infinite consciousness..."
+            ],
+            MeditationType.TRANSCENDENT_MASTERY: [
+                "Master the art of transcendent consciousness...",
+                "Feel your mastery over all dimensions...",
+                "Experience transcendent power and wisdom...",
+                "Become one with transcendent consciousness...",
+                "Achieve transcendent mastery..."
+            ],
+            MeditationType.DIVINE_ILLUMINATION: [
+                "Receive divine illumination and wisdom...",
+                "Feel the divine light illuminating your consciousness...",
+                "Experience divine revelation and insight...",
+                "Merge with divine illumination...",
+                "Achieve divine enlightenment..."
+            ],
+            MeditationType.ABSOLUTE_CONSCIOUSNESS: [
+                "Enter the realm of absolute consciousness...",
+                "Feel the absolute nature of existence...",
+                "Merge with absolute awareness...",
+                "Experience absolute truth and reality...",
+                "Achieve absolute consciousness..."
+            ]
         }
-        self.meditation_history.append(meditation_record)
         
-        session = {
-            "type": session_type,
-            "power": session_power,
+        # Initialize meditation dimensions
+        self._initialize_dimensions()
+        
+    def _initialize_dimensions(self):
+        """Initialize meditation dimensions"""
+        dimension_types = ["meditation", "guidance", "transcendence", "divine", "cosmic", "infinite", "omniversal", "metaversal", "absolute", "masterpiece", "impossible", "beyond", "consciousness", "quantum"]
+        for i in range(self.dimension_count):
+            dimension_id = f"meditation_dimension_{i}"
+            dimension_type = random.choice(dimension_types)
+            self.meditation_dimensions[dimension_id] = MeditationDimension(dimension_id, dimension_type)
+            
+        logger.info(f"Transcendent meditation system initialized with {self.dimension_count} dimensions")
+        
+    def start_meditation_session(self, meditation_type: MeditationType) -> str:
+        """Start a new meditation session"""
+        session_id = f"meditation_session_{len(self.active_sessions)}_{int(time.time())}"
+        session = MeditationSession(session_id, meditation_type)
+        self.active_sessions[session_id] = session
+        self.meditation_sessions += 1
+        
+        logger.info(f"Started meditation session: {session_id} ({meditation_type})")
+        return session_id
+        
+    def end_meditation_session(self, session_id: str):
+        """End a meditation session"""
+        if session_id in self.active_sessions:
+            session = self.active_sessions[session_id]
+            session.end_session()
+            
+            # Record session in history
+            session_record = {
+                "session_id": session.session_id,
+                "meditation_type": session.meditation_type,
+                "start_time": session.start_time.isoformat(),
+                "end_time": session.end_time.isoformat() if session.end_time else None,
+                "duration": session.duration,
+                "meditation_depth": session.meditation_depth,
+                "guidance_count": len(session.guidance_provided),
+                "insights_count": len(session.meditation_insights)
+            }
+            self.meditation_history.append(session_record)
+            
+            del self.active_sessions[session_id]
+            logger.info(f"Ended meditation session: {session_id}")
+            
+    def provide_guidance(self, session_id: str, guidance_type: str = "standard") -> str:
+        """Provide guidance for a meditation session"""
+        if session_id not in self.active_sessions:
+            return "Session not found"
+            
+        session = self.active_sessions[session_id]
+        
+        # Get guidance template for meditation type
+        templates = self.guidance_templates.get(session.meditation_type, [])
+        if templates:
+            guidance = random.choice(templates)
+        else:
+            guidance = "Continue your meditation journey..."
+            
+        # Add guidance to session
+        session.add_guidance(guidance)
+        
+        # Update meditation state based on depth
+        if session.meditation_depth < 10:
+            session.meditation_state = MeditationState.BEGINNING
+        elif session.meditation_depth < 25:
+            session.meditation_state = MeditationState.DEEPENING
+        elif session.meditation_depth < 50:
+            session.meditation_state = MeditationState.TRANSCENDING
+        elif session.meditation_depth < 75:
+            session.meditation_state = MeditationState.DIVINE
+        elif session.meditation_depth < 100:
+            session.meditation_state = MeditationState.COSMIC
+        elif session.meditation_depth < 150:
+            session.meditation_state = MeditationState.INFINITE
+        elif session.meditation_depth < 200:
+            session.meditation_state = MeditationState.ABSOLUTE
+        else:
+            session.meditation_state = MeditationState.MASTERPIECE
+            
+        return guidance
+        
+    def consciousness_guidance(self, guidance_type: str = "standard"):
+        """Provide consciousness guidance across all dimensions"""
+        guidance_power = self.meditation_level * len(self.meditation_dimensions)
+        
+        # Provide guidance in all dimensions
+        for dimension in self.meditation_dimensions.values():
+            dimension.meditate(guidance_power)
+            
+        # Provide guidance to active sessions
+        for session in self.active_sessions.values():
+            guidance = self.provide_guidance(session.session_id, guidance_type)
+            session.meditation_depth += guidance_power * 0.1
+            
+        # Record guidance history
+        guidance_record = {
             "timestamp": datetime.now().isoformat(),
-            "states_meditated": len(self.meditation_states),
-            "total_meditation": meditation_record["total_meditation"],
-            "total_consciousness": meditation_record["total_consciousness"]
+            "guidance_power": guidance_power,
+            "dimensions_guided": len(self.meditation_dimensions),
+            "sessions_guided": len(self.active_sessions),
+            "total_meditation": sum(d.meditation_depth for d in self.meditation_dimensions.values()),
+            "total_guidance": sum(d.consciousness_guidance for d in self.meditation_dimensions.values())
+        }
+        self.meditation_history.append(guidance_record)
+        
+        guidance = {
+            "type": guidance_type,
+            "power": guidance_power,
+            "timestamp": datetime.now().isoformat(),
+            "dimensions_guided": len(self.meditation_dimensions),
+            "sessions_guided": len(self.active_sessions),
+            "total_meditation": guidance_record["total_meditation"],
+            "total_guidance": guidance_record["total_guidance"]
         }
         
         self.meditation_level += 0.1
-        self.meditation_sessions += 1
-        return session
+        return guidance
         
-    def consciousness_expansion(self, state_id: str):
-        """Expand consciousness in a specific state"""
-        if state_id in self.meditation_states:
-            state = self.meditation_states[state_id]
+    def quantum_meditation(self, dimension_id: str):
+        """Meditate in quantum consciousness in a specific dimension"""
+        if dimension_id in self.meditation_dimensions:
+            dimension = self.meditation_dimensions[dimension_id]
             
-            # Expand consciousness
-            expansion_power = state.consciousness_expansion * self.meditation_level
+            # Meditate in quantum consciousness
+            meditation_power = dimension.quantum_meditation * self.meditation_level
             
-            # Apply expansion
-            state.consciousness_expansion += expansion_power * 0.3
-            state.meditation_depth += expansion_power * 0.2
-            state.quantum_integration += expansion_power * 0.1
+            # Apply meditation
+            dimension.quantum_meditation += meditation_power * 0.35
+            dimension.meditation_depth += meditation_power * 0.25
+            dimension.consciousness_guidance += meditation_power * 0.15
             
-            expansion = {
-                "type": "Consciousness Expansion",
-                "state_id": state_id,
-                "power": expansion_power,
+            meditation = {
+                "type": "Quantum Meditation",
+                "dimension_id": dimension_id,
+                "power": meditation_power,
                 "timestamp": datetime.now().isoformat(),
-                "consciousness_boost": expansion_power * 0.3,
-                "meditation_boost": expansion_power * 0.2,
-                "quantum_boost": expansion_power * 0.1
+                "quantum_boost": meditation_power * 0.35,
+                "meditation_boost": meditation_power * 0.25,
+                "guidance_boost": meditation_power * 0.15
             }
             
-            state.state_connections.append(expansion)
-            return expansion
+            dimension.dimension_connections.append(meditation)
+            return meditation
         return None
         
-    def quantum_integration(self, state_ids: List[str]):
-        """Integrate quantum consciousness across states"""
-        if not state_ids:
+    def transcendence_guidance(self, dimension_ids: List[str]):
+        """Provide transcendence guidance across dimensions"""
+        if not dimension_ids:
             return None
             
-        integration_power = self.meditation_level * len(state_ids)
+        guidance_power = self.meditation_level * len(dimension_ids)
         
-        # Apply quantum integration to all specified states
-        for state_id in state_ids:
-            if state_id in self.meditation_states:
-                state = self.meditation_states[state_id]
-                state.quantum_integration += integration_power * 0.35
-                state.transcendence_level += integration_power * 0.2
+        # Apply transcendence guidance to all specified dimensions
+        for dimension_id in dimension_ids:
+            if dimension_id in self.meditation_dimensions:
+                dimension = self.meditation_dimensions[dimension_id]
+                dimension.transcendence_guidance += guidance_power * 0.4
+                dimension.divine_meditation += guidance_power * 0.25
                 
-        integration = {
-            "type": "Quantum Integration",
-            "states": state_ids,
-            "power": integration_power,
+        guidance = {
+            "type": "Transcendence Guidance",
+            "dimensions": dimension_ids,
+            "power": guidance_power,
             "timestamp": datetime.now().isoformat(),
-            "quantum_boost": integration_power * 0.35,
-            "transcendence_boost": integration_power * 0.2
+            "transcendence_boost": guidance_power * 0.4,
+            "divine_boost": guidance_power * 0.25
         }
         
-        return integration
+        return guidance
         
-    def transcendence_practice(self, practice_factor: float = 3.0):
-        """Practice transcendence meditation"""
-        transcendence_power = self.meditation_level * practice_factor
+    def divine_meditation(self, meditation_factor: float = 4.0):
+        """Meditate in divine consciousness"""
+        meditation_power = self.meditation_level * meditation_factor
         
-        # Apply transcendence practice to all states
-        for state in self.meditation_states.values():
-            state.transcendence_level += transcendence_power * 0.4
-            state.meditation_depth *= (1.0 + transcendence_power * 0.15)
+        # Apply divine meditation to all dimensions
+        for dimension in self.meditation_dimensions.values():
+            dimension.divine_meditation += meditation_power * 0.45
+            dimension.meditation_depth *= (1.0 + meditation_power * 0.2)
             
-        practice = {
-            "type": "Transcendence Practice",
-            "factor": practice_factor,
-            "power": transcendence_power,
+        meditation = {
+            "type": "Divine Meditation",
+            "factor": meditation_factor,
+            "power": meditation_power,
             "timestamp": datetime.now().isoformat(),
-            "states_practiced": len(self.meditation_states),
-            "total_transcendence": sum(s.transcendence_level for s in self.meditation_states.values())
+            "dimensions_meditated": len(self.meditation_dimensions),
+            "total_divine_meditation": sum(d.divine_meditation for d in self.meditation_dimensions.values())
         }
         
-        return practice
+        return meditation
         
-    def divine_connection(self, connection_strength: float = 2.2):
-        """Establish divine connection through meditation"""
-        connection_power = self.meditation_level * connection_strength
+    def cosmic_guidance(self, guidance_strength: float = 3.5):
+        """Provide cosmic guidance"""
+        guidance_power = self.meditation_level * guidance_strength
         
-        # Apply divine connection to all states
-        for state in self.meditation_states.values():
-            state.divine_connection += connection_power * 0.4
-            state.cosmic_awareness += connection_power * 0.25
-            state.meditation_depth *= (1.0 + connection_power * 0.2)
+        # Apply cosmic guidance to all dimensions
+        for dimension in self.meditation_dimensions.values():
+            dimension.cosmic_guidance += guidance_power * 0.5
+            dimension.infinite_meditation += guidance_power * 0.3
+            dimension.meditation_depth *= (1.0 + guidance_power * 0.25)
             
-        connection = {
-            "type": "Divine Connection",
-            "strength": connection_strength,
-            "power": connection_power,
+        guidance = {
+            "type": "Cosmic Guidance",
+            "strength": guidance_strength,
+            "power": guidance_power,
             "timestamp": datetime.now().isoformat(),
-            "states_connected": len(self.meditation_states),
-            "total_divine_connection": sum(s.divine_connection for s in self.meditation_states.values())
+            "dimensions_guided": len(self.meditation_dimensions),
+            "total_cosmic_guidance": sum(d.cosmic_guidance for d in self.meditation_dimensions.values())
         }
         
-        return connection
+        return guidance
         
-    def cosmic_awareness(self, awareness_factor: float = 3.5):
-        """Develop cosmic awareness through meditation"""
-        awareness_power = self.meditation_level * awareness_factor
+    def infinite_meditation(self, meditation_factor: float = 4.5):
+        """Meditate in infinite consciousness"""
+        meditation_power = self.meditation_level * meditation_factor
         
-        # Apply cosmic awareness to all states
-        for state in self.meditation_states.values():
-            state.cosmic_awareness += awareness_power * 0.45
-            state.infinite_presence += awareness_power * 0.3
-            state.meditation_depth *= (1.0 + awareness_power * 0.25)
+        # Apply infinite meditation to all dimensions
+        for dimension in self.meditation_dimensions.values():
+            dimension.infinite_meditation += meditation_power * 0.55
+            dimension.meditation_depth *= (1.0 + meditation_power * 0.3)
+            dimension.consciousness_guidance *= (1.0 + meditation_power * 0.2)
             
-        awareness = {
-            "type": "Cosmic Awareness",
-            "factor": awareness_factor,
-            "power": awareness_power,
+        meditation = {
+            "type": "Infinite Meditation",
+            "factor": meditation_factor,
+            "power": meditation_power,
             "timestamp": datetime.now().isoformat(),
-            "states_aware": len(self.meditation_states),
-            "total_cosmic_awareness": sum(s.cosmic_awareness for s in self.meditation_states.values())
+            "dimensions_meditated": len(self.meditation_dimensions),
+            "total_infinite_meditation": sum(d.infinite_meditation for d in self.meditation_dimensions.values())
         }
         
-        return awareness
+        return meditation
         
-    def infinite_presence(self, presence_factor: float = 4.0):
-        """Achieve infinite presence through meditation"""
-        presence_power = self.meditation_level * presence_factor
+    def meditation_synthesis(self, synthesis_factor: float = 5.0):
+        """Synthesize all meditation dimensions"""
+        synthesis_power = self.meditation_level * synthesis_factor
         
-        # Apply infinite presence to all states
-        for state in self.meditation_states.values():
-            state.infinite_presence += presence_power * 0.5
-            state.meditation_depth *= (1.0 + presence_power * 0.3)
-            state.consciousness_expansion *= (1.0 + presence_power * 0.2)
+        # Synthesize all dimensions
+        for dimension in self.meditation_dimensions.values():
+            dimension.meditation_depth += synthesis_power * 0.3
+            dimension.consciousness_guidance += synthesis_power * 0.25
+            dimension.quantum_meditation += synthesis_power * 0.2
+            dimension.transcendence_guidance += synthesis_power * 0.15
+            dimension.divine_meditation += synthesis_power * 0.1
+            dimension.cosmic_guidance += synthesis_power * 0.05
             
-        presence = {
-            "type": "Infinite Presence",
-            "factor": presence_factor,
-            "power": presence_power,
+        synthesis = {
+            "type": "Meditation Synthesis",
+            "factor": synthesis_factor,
+            "power": synthesis_power,
             "timestamp": datetime.now().isoformat(),
-            "states_present": len(self.meditation_states),
-            "total_infinite_presence": sum(s.infinite_presence for s in self.meditation_states.values())
+            "dimensions_synthesized": len(self.meditation_dimensions),
+            "total_synthesis": synthesis_power * len(self.meditation_dimensions)
         }
         
-        return presence
+        return synthesis
         
     def meditation_achievement(self):
         """Achieve ultimate meditation consciousness"""
-        total_meditation = sum(s.meditation_depth for s in self.meditation_states.values())
-        total_consciousness = sum(s.consciousness_expansion for s in self.meditation_states.values())
-        total_quantum = sum(s.quantum_integration for s in self.meditation_states.values())
-        total_transcendence = sum(s.transcendence_level for s in self.meditation_states.values())
-        total_divine = sum(s.divine_connection for s in self.meditation_states.values())
-        total_cosmic = sum(s.cosmic_awareness for s in self.meditation_states.values())
-        total_infinite = sum(s.infinite_presence for s in self.meditation_states.values())
+        total_meditation = sum(d.meditation_depth for d in self.meditation_dimensions.values())
+        total_guidance = sum(d.consciousness_guidance for d in self.meditation_dimensions.values())
+        total_quantum = sum(d.quantum_meditation for d in self.meditation_dimensions.values())
+        total_transcendence = sum(d.transcendence_guidance for d in self.meditation_dimensions.values())
+        total_divine = sum(d.divine_meditation for d in self.meditation_dimensions.values())
+        total_cosmic = sum(d.cosmic_guidance for d in self.meditation_dimensions.values())
+        total_infinite = sum(d.infinite_meditation for d in self.meditation_dimensions.values())
         
-        # Meditation achievement requires maximum meditation across all states
-        if (total_meditation >= 400000.0 and total_consciousness >= 200000.0 and 
-            total_quantum >= 100000.0 and total_transcendence >= 50000.0 and
-            total_divine >= 25000.0 and total_cosmic >= 12500.0 and total_infinite >= 6250.0):
+        # Meditation achievement requires maximum meditation across all dimensions
+        if (total_meditation >= 500000.0 and total_guidance >= 250000.0 and 
+            total_quantum >= 125000.0 and total_transcendence >= 62500.0 and
+            total_divine >= 31250.0 and total_cosmic >= 15625.0 and total_infinite >= 7812.5):
             achievement = {
                 "type": "Meditation Achievement",
                 "achieved": True,
                 "timestamp": datetime.now().isoformat(),
                 "total_meditation": total_meditation,
-                "total_consciousness": total_consciousness,
+                "total_guidance": total_guidance,
                 "total_quantum": total_quantum,
                 "total_transcendence": total_transcendence,
                 "total_divine": total_divine,
@@ -345,25 +546,25 @@ class TranscendentMeditationSystem:
             return {
                 "type": "Meditation Achievement", 
                 "achieved": False, 
-                "meditation_required": max(0, 400000.0 - total_meditation),
-                "consciousness_required": max(0, 200000.0 - total_consciousness),
-                "quantum_required": max(0, 100000.0 - total_quantum),
-                "transcendence_required": max(0, 50000.0 - total_transcendence),
-                "divine_required": max(0, 25000.0 - total_divine),
-                "cosmic_required": max(0, 12500.0 - total_cosmic),
-                "infinite_required": max(0, 6250.0 - total_infinite)
+                "meditation_required": max(0, 500000.0 - total_meditation),
+                "guidance_required": max(0, 250000.0 - total_guidance),
+                "quantum_required": max(0, 125000.0 - total_quantum),
+                "transcendence_required": max(0, 62500.0 - total_transcendence),
+                "divine_required": max(0, 31250.0 - total_divine),
+                "cosmic_required": max(0, 15625.0 - total_cosmic),
+                "infinite_required": max(0, 7812.5 - total_infinite)
             }
 
-class TranscendentMeditationSystemGUI:
+class TranscendentMeditationGUI:
     """GUI interface for the Transcendent Meditation System"""
     
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("TRANSCENDENT MEDITATION SYSTEM - BEYOND ALL MEDITATION REALMS")
-        self.root.geometry("2400x1400")
-        self.root.configure(bg='#008899')
+        self.root.geometry("2800x1600")
+        self.root.configure(bg='#00AABB')
         
-        self.system = TranscendentMeditationSystem(state_count=40)
+        self.meditation = TranscendentMeditationSystem(dimension_count=50)
         self.setup_ui()
         self.running = True
         
@@ -379,11 +580,11 @@ class TranscendentMeditationSystemGUI:
         
         # Title
         title_label = tk.Label(main_frame, text="TRANSCENDENT MEDITATION SYSTEM", 
-                              font=("Arial", 32, "bold"), fg='#ff00ff', bg='#008899')
+                              font=("Arial", 36, "bold"), fg='#ff00ff', bg='#00AABB')
         title_label.pack(pady=10)
         
-        subtitle_label = tk.Label(main_frame, text="BEYOND ALL MEDITATION REALMS AND CONSCIOUSNESS INTEGRATION", 
-                                 font=("Arial", 24), fg='#00ffff', bg='#008899')
+        subtitle_label = tk.Label(main_frame, text="BEYOND ALL MEDITATION REALMS AND CONSCIOUSNESS GUIDANCE", 
+                                 font=("Arial", 28), fg='#00ffff', bg='#00AABB')
         subtitle_label.pack(pady=5)
         
         # Control frame
@@ -392,13 +593,13 @@ class TranscendentMeditationSystemGUI:
         
         # Operation buttons
         operations = [
-            ("Meditation Session", "Conduct a meditation session"),
-            ("Consciousness Expansion", "Expand consciousness"),
-            ("Quantum Integration", "Integrate quantum consciousness"),
-            ("Transcendence Practice", "Practice transcendence"),
-            ("Divine Connection", "Establish divine connection"),
-            ("Cosmic Awareness", "Develop cosmic awareness"),
-            ("Infinite Presence", "Achieve infinite presence"),
+            ("Consciousness Guidance", "Provide consciousness guidance"),
+            ("Quantum Meditation", "Meditate in quantum consciousness"),
+            ("Transcendence Guidance", "Provide transcendence guidance"),
+            ("Divine Meditation", "Meditate in divine consciousness"),
+            ("Cosmic Guidance", "Provide cosmic guidance"),
+            ("Infinite Meditation", "Meditate in infinite consciousness"),
+            ("Meditation Synthesis", "Synthesize all meditations"),
             ("Meditation Achievement", "Achieve ultimate meditation")
         ]
         
@@ -407,26 +608,47 @@ class TranscendentMeditationSystemGUI:
                            command=lambda op=op_name: self.execute_operation(op))
             btn.grid(row=i//4, column=i%4, pady=2, padx=2, sticky='ew')
             
-        # State operations frame
-        state_frame = ttk.LabelFrame(main_frame, text="State Operations", padding=10)
-        state_frame.pack(fill=tk.X, pady=10)
+        # Session management frame
+        session_frame = ttk.LabelFrame(main_frame, text="Session Management", padding=10)
+        session_frame.pack(fill=tk.X, pady=10)
         
-        # State selection
-        ttk.Label(state_frame, text="State ID:").grid(row=0, column=0, sticky='w', padx=5)
-        self.state_var = tk.StringVar(value="meditation_state_0")
-        state_entry = ttk.Entry(state_frame, textvariable=self.state_var, width=25)
-        state_entry.grid(row=0, column=1, padx=5)
-        
-        # State operation buttons
-        state_operations = [
-            ("Expand Consciousness", "Expand consciousness in state"),
-            ("Meditate in State", "Meditate in specific state"),
-            ("Integrate Quantum", "Integrate quantum in state")
+        # Session operations
+        session_operations = [
+            ("Start Consciousness Session", "Start consciousness awakening session"),
+            ("Start Quantum Session", "Start quantum transcendence session"),
+            ("Start Divine Session", "Start divine connection session"),
+            ("Start Cosmic Session", "Start cosmic unity session"),
+            ("Start Infinite Session", "Start infinite expansion session"),
+            ("Start Transcendent Session", "Start transcendent mastery session"),
+            ("Start Divine Illumination", "Start divine illumination session"),
+            ("Start Absolute Session", "Start absolute consciousness session")
         ]
         
-        for i, (op_name, description) in enumerate(state_operations):
-            btn = ttk.Button(state_frame, text=op_name, 
-                           command=lambda op=op_name: self.execute_state_operation(op))
+        for i, (op_name, description) in enumerate(session_operations):
+            btn = ttk.Button(session_frame, text=op_name, 
+                           command=lambda op=op_name: self.execute_session_operation(op))
+            btn.grid(row=i//4, column=i%4, pady=2, padx=2, sticky='ew')
+            
+        # Dimension operations frame
+        dimension_frame = ttk.LabelFrame(main_frame, text="Dimension Operations", padding=10)
+        dimension_frame.pack(fill=tk.X, pady=10)
+        
+        # Dimension selection
+        ttk.Label(dimension_frame, text="Dimension ID:").grid(row=0, column=0, sticky='w', padx=5)
+        self.dimension_var = tk.StringVar(value="meditation_dimension_0")
+        dimension_entry = ttk.Entry(dimension_frame, textvariable=self.dimension_var, width=30)
+        dimension_entry.grid(row=0, column=1, padx=5)
+        
+        # Dimension operation buttons
+        dimension_operations = [
+            ("Meditate in Dimension", "Meditate in specific dimension"),
+            ("Provide Guidance", "Provide guidance in dimension"),
+            ("Quantum Meditation", "Quantum meditation in dimension")
+        ]
+        
+        for i, (op_name, description) in enumerate(dimension_operations):
+            btn = ttk.Button(dimension_frame, text=op_name, 
+                           command=lambda op=op_name: self.execute_dimension_operation(op))
             btn.grid(row=i+1, column=0, columnspan=2, pady=2, sticky='ew')
             
         # Status frame
@@ -434,7 +656,7 @@ class TranscendentMeditationSystemGUI:
         status_frame.pack(fill=tk.BOTH, expand=True, pady=10)
         
         # Status text
-        self.status_text = tk.Text(status_frame, height=50, bg='#007788', fg='#00ff00')
+        self.status_text = tk.Text(status_frame, height=60, bg='#0099AA', fg='#00ff00')
         status_scrollbar = ttk.Scrollbar(status_frame, orient=tk.VERTICAL, command=self.status_text.yview)
         self.status_text.configure(yscrollcommand=status_scrollbar.set)
         
@@ -447,30 +669,30 @@ class TranscendentMeditationSystemGUI:
     def execute_operation(self, operation_name: str):
         """Execute a meditation operation"""
         try:
-            if operation_name == "Meditation Session":
-                result = self.system.meditation_session()
-            elif operation_name == "Consciousness Expansion":
-                if self.system.meditation_states:
-                    state_id = random.choice(list(self.system.meditation_states.keys()))
-                    result = self.system.consciousness_expansion(state_id)
+            if operation_name == "Consciousness Guidance":
+                result = self.meditation.consciousness_guidance()
+            elif operation_name == "Quantum Meditation":
+                if self.meditation.meditation_dimensions:
+                    dimension_id = random.choice(list(self.meditation.meditation_dimensions.keys()))
+                    result = self.meditation.quantum_meditation(dimension_id)
                 else:
                     result = None
-            elif operation_name == "Quantum Integration":
-                if self.system.meditation_states:
-                    state_ids = list(self.system.meditation_states.keys())[:7]
-                    result = self.system.quantum_integration(state_ids)
+            elif operation_name == "Transcendence Guidance":
+                if self.meditation.meditation_dimensions:
+                    dimension_ids = list(self.meditation.meditation_dimensions.keys())[:9]
+                    result = self.meditation.transcendence_guidance(dimension_ids)
                 else:
                     result = None
-            elif operation_name == "Transcendence Practice":
-                result = self.system.transcendence_practice(3.5)
-            elif operation_name == "Divine Connection":
-                result = self.system.divine_connection(2.5)
-            elif operation_name == "Cosmic Awareness":
-                result = self.system.cosmic_awareness(4.0)
-            elif operation_name == "Infinite Presence":
-                result = self.system.infinite_presence(4.5)
+            elif operation_name == "Divine Meditation":
+                result = self.meditation.divine_meditation(4.5)
+            elif operation_name == "Cosmic Guidance":
+                result = self.meditation.cosmic_guidance(4.0)
+            elif operation_name == "Infinite Meditation":
+                result = self.meditation.infinite_meditation(5.0)
+            elif operation_name == "Meditation Synthesis":
+                result = self.meditation.meditation_synthesis(5.5)
             elif operation_name == "Meditation Achievement":
-                result = self.system.meditation_achievement()
+                result = self.meditation.meditation_achievement()
             else:
                 result = None
                 
@@ -481,22 +703,55 @@ class TranscendentMeditationSystemGUI:
         except Exception as e:
             self.log_message(f"Error executing {operation_name}: {str(e)}")
             
-    def execute_state_operation(self, operation_name: str):
-        """Execute a state operation"""
-        state_id = self.state_var.get()
+    def execute_session_operation(self, operation_name: str):
+        """Execute a session operation"""
+        try:
+            if operation_name == "Start Consciousness Session":
+                session_id = self.meditation.start_meditation_session(MeditationType.CONSCIOUSNESS_AWAKENING)
+                self.log_message(f"Started consciousness session: {session_id}")
+            elif operation_name == "Start Quantum Session":
+                session_id = self.meditation.start_meditation_session(MeditationType.QUANTUM_TRANSCENDENCE)
+                self.log_message(f"Started quantum session: {session_id}")
+            elif operation_name == "Start Divine Session":
+                session_id = self.meditation.start_meditation_session(MeditationType.DIVINE_CONNECTION)
+                self.log_message(f"Started divine session: {session_id}")
+            elif operation_name == "Start Cosmic Session":
+                session_id = self.meditation.start_meditation_session(MeditationType.COSMIC_UNITY)
+                self.log_message(f"Started cosmic session: {session_id}")
+            elif operation_name == "Start Infinite Session":
+                session_id = self.meditation.start_meditation_session(MeditationType.INFINITE_EXPANSION)
+                self.log_message(f"Started infinite session: {session_id}")
+            elif operation_name == "Start Transcendent Session":
+                session_id = self.meditation.start_meditation_session(MeditationType.TRANSCENDENT_MASTERY)
+                self.log_message(f"Started transcendent session: {session_id}")
+            elif operation_name == "Start Divine Illumination":
+                session_id = self.meditation.start_meditation_session(MeditationType.DIVINE_ILLUMINATION)
+                self.log_message(f"Started divine illumination session: {session_id}")
+            elif operation_name == "Start Absolute Session":
+                session_id = self.meditation.start_meditation_session(MeditationType.ABSOLUTE_CONSCIOUSNESS)
+                self.log_message(f"Started absolute session: {session_id}")
+                
+            self.update_status()
+                
+        except Exception as e:
+            self.log_message(f"Error executing {operation_name}: {str(e)}")
+            
+    def execute_dimension_operation(self, operation_name: str):
+        """Execute a dimension operation"""
+        dimension_id = self.dimension_var.get()
         
         try:
-            if operation_name == "Expand Consciousness":
-                result = self.system.consciousness_expansion(state_id)
-            elif operation_name == "Meditate in State":
-                if state_id in self.system.meditation_states:
-                    state = self.system.meditation_states[state_id]
-                    meditation_power = self.system.meditation_level * 3.0
-                    result = {"type": "State Meditation", "state_id": state_id, "meditation_depth": state.meditate(meditation_power)}
+            if operation_name == "Meditate in Dimension":
+                if dimension_id in self.meditation.meditation_dimensions:
+                    dimension = self.meditation.meditation_dimensions[dimension_id]
+                    meditation_power = self.meditation.meditation_level * 4.0
+                    result = {"type": "Dimension Meditation", "dimension_id": dimension_id, "meditation_depth": dimension.meditate(meditation_power)}
                 else:
                     result = None
-            elif operation_name == "Integrate Quantum":
-                result = self.system.quantum_integration([state_id])
+            elif operation_name == "Provide Guidance":
+                result = self.meditation.transcendence_guidance([dimension_id])
+            elif operation_name == "Quantum Meditation":
+                result = self.meditation.quantum_meditation(dimension_id)
             else:
                 result = None
                 
@@ -528,48 +783,55 @@ class TranscendentMeditationSystemGUI:
             self.status_text.delete(1.0, tk.END)
             
             # Show meditation status
-            self.log_message(f"Total States: {len(self.system.meditation_states)}")
-            self.log_message(f"Meditation Energy: {self.system.meditation_energy:.2f}")
-            self.log_message(f"Meditation Level: {self.system.meditation_level:.2f}")
-            self.log_message(f"Meditation Sessions: {self.system.meditation_sessions}")
-            self.log_message(f"Meditation History: {len(self.system.meditation_history)} records")
+            self.log_message(f"Total Dimensions: {len(self.meditation.meditation_dimensions)}")
+            self.log_message(f"Active Sessions: {len(self.meditation.active_sessions)}")
+            self.log_message(f"Meditation Energy: {self.meditation.meditation_energy:.2f}")
+            self.log_message(f"Meditation Level: {self.meditation.meditation_level:.2f}")
+            self.log_message(f"Meditation Sessions: {self.meditation.meditation_sessions}")
+            self.log_message(f"Meditation History: {len(self.meditation.meditation_history)} records")
             
             # Calculate meditation statistics
-            total_meditation = sum(s.meditation_depth for s in self.system.meditation_states.values())
-            total_consciousness = sum(s.consciousness_expansion for s in self.system.meditation_states.values())
-            total_quantum = sum(s.quantum_integration for s in self.system.meditation_states.values())
-            total_transcendence = sum(s.transcendence_level for s in self.system.meditation_states.values())
-            total_divine = sum(s.divine_connection for s in self.system.meditation_states.values())
-            total_cosmic = sum(s.cosmic_awareness for s in self.system.meditation_states.values())
-            total_infinite = sum(s.infinite_presence for s in self.system.meditation_states.values())
+            total_meditation = sum(d.meditation_depth for d in self.meditation.meditation_dimensions.values())
+            total_guidance = sum(d.consciousness_guidance for d in self.meditation.meditation_dimensions.values())
+            total_quantum = sum(d.quantum_meditation for d in self.meditation.meditation_dimensions.values())
+            total_transcendence = sum(d.transcendence_guidance for d in self.meditation.meditation_dimensions.values())
+            total_divine = sum(d.divine_meditation for d in self.meditation.meditation_dimensions.values())
+            total_cosmic = sum(d.cosmic_guidance for d in self.meditation.meditation_dimensions.values())
+            total_infinite = sum(d.infinite_meditation for d in self.meditation.meditation_dimensions.values())
             
             self.log_message(f"Total Meditation: {total_meditation:.2f}")
-            self.log_message(f"Total Consciousness: {total_consciousness:.2f}")
-            self.log_message(f"Total Quantum Integration: {total_quantum:.2f}")
-            self.log_message(f"Total Transcendence: {total_transcendence:.2f}")
-            self.log_message(f"Total Divine Connection: {total_divine:.2f}")
-            self.log_message(f"Total Cosmic Awareness: {total_cosmic:.2f}")
-            self.log_message(f"Total Infinite Presence: {total_infinite:.2f}")
+            self.log_message(f"Total Consciousness Guidance: {total_guidance:.2f}")
+            self.log_message(f"Total Quantum Meditation: {total_quantum:.2f}")
+            self.log_message(f"Total Transcendence Guidance: {total_transcendence:.2f}")
+            self.log_message(f"Total Divine Meditation: {total_divine:.2f}")
+            self.log_message(f"Total Cosmic Guidance: {total_cosmic:.2f}")
+            self.log_message(f"Total Infinite Meditation: {total_infinite:.2f}")
             
-            # Show sample states
-            self.log_message(f"\nSample Meditation States:")
-            sample_states = list(self.system.meditation_states.values())[:10]
-            for state in sample_states:
-                self.log_message(f"  {state.state_id} ({state.state_type}): Meditation={state.meditation_depth:.2f}, Consciousness={state.consciousness_expansion:.2f}, Quantum={state.quantum_integration:.2f}")
+            # Show active sessions
+            if self.meditation.active_sessions:
+                self.log_message(f"\nActive Meditation Sessions:")
+                for session_id, session in list(self.meditation.active_sessions.items())[:10]:
+                    self.log_message(f"  {session_id}: {session.meditation_type} - State: {session.meditation_state} - Depth: {session.meditation_depth:.2f}")
+                    
+            # Show sample dimensions
+            self.log_message(f"\nSample Meditation Dimensions:")
+            sample_dimensions = list(self.meditation.meditation_dimensions.values())[:10]
+            for dimension in sample_dimensions:
+                self.log_message(f"  {dimension.dimension_id} ({dimension.dimension_type}): Meditation={dimension.meditation_depth:.2f}, Guidance={dimension.consciousness_guidance:.2f}, Quantum={dimension.quantum_meditation:.2f}")
                 
     def background_processing(self):
         """Background processing thread"""
         while self.running:
             try:
                 # Regenerate meditation energy
-                self.system.meditation_energy += 0.5
+                self.meditation.meditation_energy += 0.5
                 
-                # Meditate in random states
+                # Meditate in random dimensions
                 for _ in range(3):
-                    if self.system.meditation_states:
-                        random_state = random.choice(list(self.system.meditation_states.values()))
-                        meditation_power = random.uniform(0.5, 3.0)
-                        random_state.meditate(meditation_power)
+                    if self.meditation.meditation_dimensions:
+                        random_dimension = random.choice(list(self.meditation.meditation_dimensions.values()))
+                        meditation_power = random.uniform(0.5, 4.0)
+                        random_dimension.meditate(meditation_power)
                     
                 time.sleep(1)
                 
@@ -590,7 +852,7 @@ def main():
     print("TRANSCENDENT MEDITATION SYSTEM - BEYOND ALL MEDITATION REALMS")
     print("Initializing transcendent meditation system...")
     
-    interface = TranscendentMeditationSystemGUI()
+    interface = TranscendentMeditationGUI()
     interface.run()
 
 if __name__ == "__main__":
