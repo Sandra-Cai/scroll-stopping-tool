@@ -1,0 +1,70 @@
+# Comprehensive Requirements for Scroll Stopping Tool - Advanced Features
+# This file includes all dependencies for the complete advanced system
+
+# Core dependencies
+psutil==5.9.6
+plyer==2.1.0
+schedule==1.2.0
+matplotlib==3.7.2
+tkinter-tooltip==2.0.0
+
+# Web framework and API
+Flask==2.3.2
+Flask-SocketIO==5.3.6
+requests==2.31.0
+
+# Database and data processing
+sqlite3
+pandas==2.1.4
+numpy==1.24.3
+
+# Machine Learning and AI
+scikit-learn==1.3.2
+xgboost==2.0.2
+lightgbm==4.1.0
+joblib==1.3.2
+
+# Analytics and Visualization
+plotly==5.17.0
+dash==2.14.2
+dash-bootstrap-components==1.5.0
+
+# Security and Privacy
+cryptography==42.0.5
+bcrypt==4.1.2
+PyJWT==2.8.0
+firebase-admin==6.4.0
+
+# Voice Control and Accessibility
+SpeechRecognition==3.10.0
+pyttsx3==2.90
+pyaudio==0.2.13
+librosa==0.10.1
+
+# Mobile Integration
+qrcode==7.4.2
+Pillow==10.2.0
+
+# UI Enhancement
+ttkbootstrap==1.10.1
+
+# Additional utilities
+python-dotenv==1.0.0
+python-dateutil==2.8.2
+pytz==2023.3
+
+# Development and testing (optional)
+pytest==7.4.3
+black==23.11.0
+flake8==6.1.0
+
+# System-specific dependencies
+# For Windows
+# pywin32==306
+
+# For macOS
+# pyaudio (install via brew)
+
+# For Linux
+# portaudio19-dev
+# python3-pyaudio
